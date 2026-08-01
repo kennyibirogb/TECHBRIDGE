@@ -1,0 +1,887 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TechBridge — Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --gold: #C9973F;
+    --sage: #7C9885;
+    --cream: #F7F4EF;
+    --ink: #0F1729;
+    --muted: #5A6578;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Work Sans', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--sage));
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(247, 244, 239, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(27, 42, 74, 0.08);
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--navy);
+    text-decoration: none;
+  }
+  .mark svg { width: 26px; height: 26px; }
+
+  nav ul {
+    display: flex;
+    gap: 1.8rem;
+    list-style: none;
+  }
+  nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+  }
+  nav a:hover, nav a.active { opacity: 1; }
+  nav a.active { color: var(--gold); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .nav-enroll {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--navy);
+    text-decoration: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .nav-enroll:hover { background: #152238; }
+
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--navy);
+    transition: 0.25s;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 52vh;
+    display: flex;
+    align-items: flex-end;
+    padding: 8rem 2.5rem 4rem;
+    overflow: hidden;
+  }
+  #bgCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+  }
+  .eyebrow {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    line-height: 1.1;
+    color: var(--navy);
+    margin-bottom: 1rem;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 540px;
+  }
+
+  /* ── Filters ── */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 2.5rem 2.5rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.1rem;
+    background: transparent;
+    border: 1.5px solid rgba(27, 42, 74, 0.18);
+    border-radius: 2px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--cream);
+  }
+
+  /* ── Events Grid ── */
+  .events-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 2.5rem 5rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+  }
+
+  .event-card {
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(27, 42, 74, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    display: flex;
+    flex-direction: column;
+  }
+  .event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(15, 23, 41, 0.08);
+  }
+
+  .event-date {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .event-date .day {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .event-date .meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .event-body {
+    padding: 1.5rem 1.4rem 1.6rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .event-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.6rem;
+  }
+  .event-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--navy);
+    line-height: 1.25;
+    margin-bottom: 0.6rem;
+  }
+  .event-card p {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.55;
+    flex: 1;
+    margin-bottom: 1.25rem;
+  }
+  .event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.3rem;
+  }
+  .event-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .event-meta svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+  }
+
+  .event-cta {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--gold);
+    padding-bottom: 2px;
+    align-self: flex-start;
+    transition: color 0.2s;
+  }
+  .event-cta:hover { color: var(--gold); }
+
+  /* Featured / large card */
+  .featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    min-height: 280px;
+  }
+  .featured .event-date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+  }
+  .featured .event-date .day { font-size: 3.2rem; }
+  .featured .event-body { padding: 2rem 2.2rem; justify-content: center; }
+  .featured h3 { font-size: 1.8rem; }
+
+  /* Past events */
+  .past-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2.5rem 5rem;
+  }
+  .past-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid rgba(27, 42, 74, 0.1);
+  }
+  .past-item {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(27, 42, 74, 0.08);
+  }
+  .past-item .date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .past-item h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--navy);
+  }
+  .past-item .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+
+  /* CTA band */
+  .cta-band {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 4rem 2.5rem;
+    text-align: center;
+  }
+  .cta-band h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin-bottom: 0.75rem;
+  }
+  .cta-band p {
+    opacity: 0.8;
+    margin-bottom: 1.75rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-band a {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--gold);
+    text-decoration: none;
+    padding: 0.9rem 1.8rem;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .cta-band a:hover { background: #d4a84f; }
+
+  /* Footer */
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2.5rem;
+    border-top: 1px solid rgba(27, 42, 74, 0.08);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  footer .mark { font-size: 0.95rem; }
+  .foot-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .foot-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .foot-links a:hover { color: var(--navy); }
+
+  /* Mobile */
+  @media (max-width: 860px) {
+    header { padding: 1rem 1.25rem; }
+    nav { display: none; }
+    nav.open {
+      display: block;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--cream);
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(27, 42, 74, 0.1);
+    }
+    nav.open ul { flex-direction: column; gap: 1rem; }
+    .burger { display: flex; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .filters, .events-section, .past-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .featured { grid-template-columns: 1fr; }
+    .past-item { grid-template-columns: 80px 1fr; }
+    .past-item .tag { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+  .social-btn img{
+    width:24px;
+    height:24px;
+}
+
+.social-btn{
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+.social-btn img{
+    width:24px;
+    height:24px;
+    display: block;
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header>
+  <a href="{% url 'main' %}" class="mark">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+    </svg>
+    TechBridge
+  </a>
+  <nav id="nav">
+    <ul>
+      <li><a href="{% url 'main' %}">Home</a></li>
+      <li><a href="{% url 'studentdashboard' %}">Dashboard</a></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <a href="#" class="nav-enroll">Enroll</a>
+    <button class="burger" id="burger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <canvas id="bgCanvas"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow">Upcoming & Past</span>
+    <h1>Events at<br>the studio</h1>
+    <p>Talks, workshops, demo nights, and open studios. Small rooms, real conversations, and the people who actually ship things.</p>
+  </div>
+</section>
+
+<!-- Filters -->
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="workshop">Workshops</button>
+  <button class="filter-btn" data-filter="talk">Talks</button>
+  <button class="filter-btn" data-filter="demo">Demo Nights</button>
+  <button class="filter-btn" data-filter="open">Open Studio</button>
+</div>
+
+<!-- Upcoming -->
+<section class="events-section">
+  <div class="section-label">Upcoming</div>
+  <div class="events-grid" id="eventsGrid">
+
+    <!-- Featured -->
+    <article class="event-card featured" data-type="demo">
+      <div class="event-date">
+        <span class="day">14</span>
+        <div class="meta">Aug 2026<br>Fri · 18:00</div>
+      </div>
+      <div class="event-body">
+        <span class="event-tag">Demo Night</span>
+        <h3>Summer Demo Night — Cohort 07</h3>
+        <p>Twelve projects go live in one evening. Bring a laptop, stay for the critiques, leave with new collaborators.</p>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Main Studio
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            40 seats
+          </span>
+        </div>
+        <a href="#" class="event-cta">Register free →</a>
+      </div>
+    </article>
+
+    <article class="event-card" data-type="workshop">
+      <div class="event-date">
+        <span class="day">22</span>
+        <div class="meta">Aug 2026<br>Sat · 10:00</div>
+      </div>
+      <div class="event-body">
+        <span class="event-tag">Workshop</span>
+        <h3>Systems Design Sprint</h3>
+        <p>A full-day hands-on workshop on mapping complex product systems. Limited to 16 participants.</p>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Studio B
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            16 seats
+          </span>
+        </div>
+        <a href="#" class="event-cta">Apply →</a>
+      </div>
+    </article>
+
+    <article class="event-card" data-type="talk">
+      <div class="event-date">
+        <span class="day">05</span>
+        <div class="meta">Sep 2026<br>Thu · 19:00</div>
+      </div>
+      <div class="event-body">
+        <span class="event-tag">Talk</span>
+        <h3>Building in Public, Without the Noise</h3>
+        <p>An evening conversation with two founders who shipped quietly and grew deliberately.</p>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Main Studio
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Open
+          </span>
+        </div>
+        <a href="#" class="event-cta">RSVP →</a>
+      </div>
+    </article>
+
+    <article class="event-card" data-type="open">
+      <div class="event-date">
+        <span class="day">12</span>
+        <div class="meta">Sep 2026<br>Sat · 14:00</div>
+      </div>
+      <div class="event-body">
+        <span class="event-tag">Open Studio</span>
+        <h3>Open Studio Afternoon</h3>
+        <p>Drop in, work on anything, ask questions, or just watch others build. Coffee and power outlets provided.</p>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Entire Floor
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Drop-in
+          </span>
+        </div>
+        <a href="#" class="event-cta">No RSVP needed →</a>
+      </div>
+    </article>
+
+    <article class="event-card" data-type="workshop">
+      <div class="event-date">
+        <span class="day">28</span>
+        <div class="meta">Sep 2026<br>Sun · 11:00</div>
+      </div>
+      <div class="event-body">
+        <span class="event-tag">Workshop</span>
+        <h3>From Sketch to Working Prototype</h3>
+        <p>Three hours, one idea, a shippable demo by the end. Tools of your choice — we provide the structure.</p>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Studio A
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            12 seats
+          </span>
+        </div>
+        <a href="#" class="event-cta">Apply →</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Past -->
+<section class="past-section">
+  <div class="section-label">Recently past</div>
+  <div class="past-list">
+    <div class="past-item">
+      <div class="date">Jul 19</div>
+      <h4>Mid-year Demo Night — Cohort 06</h4>
+      <span class="tag">Demo Night</span>
+    </div>
+    <div class="past-item">
+      <div class="date">Jun 28</div>
+      <h4>Design Systems that Scale</h4>
+      <span class="tag">Workshop</span>
+    </div>
+    <div class="past-item">
+      <div class="date">Jun 12</div>
+      <h4>Shipping the Unsexy Parts</h4>
+      <span class="tag">Talk</span>
+    </div>
+    <div class="past-item">
+      <div class="date">May 31</div>
+      <h4>Open Studio — May Session</h4>
+      <span class="tag">Open Studio</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <h2>Want early access to the next cohort events?</h2>
+  <p>Join the waitlist and we’ll send you the calendar before it goes public.</p>
+  <a href="#">Get on the list</a>
+</section>
+
+<footer>
+  <div class="mark">TechBridge</div>
+  <div class="foot-links">
+    <button type="button" class="social-btn">
+      <img src="{% static 'images/discord.svg' %}" alt="discord">
+    </button>
+    <button type="button" class="social-btn">
+      <img src="{% static 'images/x.svg' %}" alt="x">
+    </button>
+  </div>
+  <div>&copy; 2026</div>
+</footer>
+
+<script>
+  /* Burger */
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    nav.classList.toggle('open');
+  });
+
+  /* Progress */
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100 || 0;
+    progress.style.width = pct + '%';
+  });
+
+  /* Filters */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.event-card');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      cards.forEach(card => {
+        if (filter === 'all' || card.dataset.type === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  /* Three.js network */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('bgCanvas');
+  const heroEl = document.querySelector('.hero');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, heroEl.clientWidth / heroEl.clientHeight, 0.1, 2000);
+  camera.position.set(0, 0, 420);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const isMobile = window.innerWidth < 860;
+  const NODE_COUNT = isMobile ? 40 : 75;
+  const BOUND = { x: 480, y: 280, z: 260 };
+  const LINK_DIST = isMobile ? 110 : 130;
+
+  const nodeColors = [0x1B2A4A, 0xC9973F, 0x7C9885];
+  const nodes = [];
+  const positions = new Float32Array(NODE_COUNT * 3);
+  const colorsArr = new Float32Array(NODE_COUNT * 3);
+  const tmpColor = new THREE.Color();
+
+  for (let i = 0; i < NODE_COUNT; i++) {
+    const x = (Math.random() - 0.5) * BOUND.x * 2;
+    const y = (Math.random() - 0.5) * BOUND.y * 2;
+    const z = (Math.random() - 0.5) * BOUND.z * 2;
+    nodes.push({
+      base: new THREE.Vector3(x, y, z),
+      speed: 0.15 + Math.random() * 0.25,
+      phase: Math.random() * Math.PI * 2
+    });
+    positions[i * 3] = x; positions[i * 3 + 1] = y; positions[i * 3 + 2] = z;
+    tmpColor.setHex(nodeColors[i % nodeColors.length]);
+    colorsArr[i * 3] = tmpColor.r; colorsArr[i * 3 + 1] = tmpColor.g; colorsArr[i * 3 + 2] = tmpColor.b;
+  }
+
+  const pointGeo = new THREE.BufferGeometry();
+  pointGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  pointGeo.setAttribute('color', new THREE.BufferAttribute(colorsArr, 3));
+
+  const spriteCanvas = document.createElement('canvas');
+  spriteCanvas.width = 64; spriteCanvas.height = 64;
+  const sctx = spriteCanvas.getContext('2d');
+  const grad = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  sctx.fillStyle = grad;
+  sctx.fillRect(0, 0, 64, 64);
+  const spriteTex = new THREE.CanvasTexture(spriteCanvas);
+
+  const pointMat = new THREE.PointsMaterial({
+    size: isMobile ? 7 : 8,
+    map: spriteTex,
+    transparent: true,
+    vertexColors: true,
+    opacity: 0.85,
+    depthWrite: false,
+    blending: THREE.NormalBlending
+  });
+  const points = new THREE.Points(pointGeo, pointMat);
+  group.add(points);
+
+  const maxLines = NODE_COUNT * 8;
+  const linePositions = new Float32Array(maxLines * 6);
+  const lineColors = new Float32Array(maxLines * 6);
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+  lineGeo.setDrawRange(0, 0);
+  const lineMat = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.18,
+    blending: THREE.NormalBlending
+  });
+  const lines = new THREE.LineSegments(lineGeo, lineMat);
+  group.add(lines);
+
+  const mouse = { x: 0, y: 0 };
+  function setMouseFromClient(clientX, clientY) {
+    const rect = heroEl.getBoundingClientRect();
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  }
+  window.addEventListener('mousemove', e => setMouseFromClient(e.clientX, e.clientY));
+  window.addEventListener('touchmove', e => {
+    if (e.touches && e.touches[0]) setMouseFromClient(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  function resizeScene() {
+    const w = heroEl.clientWidth, h = heroEl.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  window.addEventListener('resize', resizeScene);
+
+  const clock = new THREE.Clock();
+  let frame = 0;
+
+  function updateLines() {
+    let count = 0;
+    const posAttr = points.geometry.attributes.position.array;
+    for (let i = 0; i < NODE_COUNT && count < maxLines; i++) {
+      const ax = posAttr[i * 3], ay = posAttr[i * 3 + 1], az = posAttr[i * 3 + 2];
+      for (let j = i + 1; j < NODE_COUNT && count < maxLines; j++) {
+        const bx = posAttr[j * 3], by = posAttr[j * 3 + 1], bz = posAttr[j * 3 + 2];
+        const dx = ax - bx, dy = ay - by, dz = az - bz;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (dist < LINK_DIST) {
+          const idx = count * 6;
+          linePositions[idx] = ax; linePositions[idx + 1] = ay; linePositions[idx + 2] = az;
+          linePositions[idx + 3] = bx; linePositions[idx + 4] = by; linePositions[idx + 5] = bz;
+          const alpha = 1 - dist / LINK_DIST;
+          tmpColor.setHex(0x1B2A4A);
+          lineColors[idx] = tmpColor.r * alpha; lineColors[idx + 1] = tmpColor.g * alpha; lineColors[idx + 2] = tmpColor.b * alpha;
+          lineColors[idx + 3] = lineColors[idx]; lineColors[idx + 4] = lineColors[idx + 1]; lineColors[idx + 5] = lineColors[idx + 2];
+          count++;
+        }
+      }
+    }
+    lineGeo.setDrawRange(0, count * 2);
+    lineGeo.attributes.position.needsUpdate = true;
+    lineGeo.attributes.color.needsUpdate = true;
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    frame++;
+
+    const posAttr = points.geometry.attributes.position.array;
+    for (let i = 0; i < NODE_COUNT; i++) {
+      const n = nodes[i];
+      posAttr[i * 3]     = n.base.x + Math.sin(t * n.speed + n.phase) * 14;
+      posAttr[i * 3 + 1] = n.base.y + Math.cos(t * n.speed * 0.8 + n.phase) * 14;
+      posAttr[i * 3 + 2] = n.base.z + Math.sin(t * n.speed * 0.6 + n.phase) * 14;
+    }
+    points.geometry.attributes.position.needsUpdate = true;
+
+    if (!reduceMotion && frame % 3 === 0) updateLines();
+    else if (reduceMotion && frame === 1) updateLines();
+
+    if (!reduceMotion) {
+      group.rotation.y = t * 0.04;
+      group.rotation.x = Math.sin(t * 0.05) * 0.08;
+      camera.position.x += (mouse.x * 60 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 40 - camera.position.y) * 0.04;
+      camera.lookAt(0, 0, 0);
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  resizeScene();
+  updateLines();
+  animate();
+</script>
+</body>
+</html>

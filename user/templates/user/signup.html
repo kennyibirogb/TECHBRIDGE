@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sign Up · TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink: #1B2A4A;
+  --ink-soft: #3D4E72;
+  --paper: #F6F1E7;
+  --paper-line: #BAB3A4;
+  --card: #FFFDF8;
+  --gold: #C9973F;
+  --gold-deep: #A97B28;
+  --sage: #7C9885;
+  --danger: #B23A48;
+  --display: 'Fraunces', serif;
+  --body: 'Work Sans', sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  min-height:50dvh;
+  display:grid; place-items:center;
+  padding:32px 16px; /* OUTER SAFE PADDING SO CARD NEVER TOUCHES SCREEN */
+  position:relative;
+  overflow-x:hidden;
+}
+
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.05;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+ header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(247, 244, 239, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(27, 42, 74, 0.08);
+}
+
+.mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--navy);
+    text-decoration: none;
+  }
+
+.mark svg { width: 26px; height: 26px; }
+
+.nav-right a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.45rem 1.1rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+.nav-right a:hover {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+
+.circle{ position:fixed; border-radius:50%; border:1px solid rgba(27,42,74,.06); z-index:0; pointer-events:none; }
+.c1{ width:720px; height:720px; left:-300px; top:20px; }
+.c2{ width:520px; height:520px; right:-200px; bottom:80px; }
+
+.wrap{
+  position:relative; 
+  z-index:1;
+  width:100%;
+  max-width:1100px; /* WIDER BUT NOT FULL */
+  margin:100px auto 0; /* CENTER WITH GAP FROM EDGES */
+  display:grid; grid-template-columns:42% 58%;
+  background:var(--card);
+  border:1.5px solid var(--ink);
+  border-radius:24px 60px 24px 24px;
+  box-shadow:12px 12px 0 rgba(27,42,74,.08);
+  overflow:hidden;
+}
+
+/* LEFT: Brand */
+.brand-pane{
+  background:linear-gradient(180deg, rgba(201,151,63,.10), transparent);
+  padding:3.5rem 3rem; /* INNER PADDING */
+  display:flex; flex-direction:column; justify-content:space-between;
+  border-right:1.5px solid var(--ink);
+}
+.brand-mark{
+  font-family:var(--display); font-weight:600; font-size:1.5rem;
+  display:flex; align-items:center; gap:12px; color:var(--ink);
+}
+.brand-mark svg{ width:28px; height:28px; }
+.brand-copy h1{
+  font-family:var(--display); font-weight:500; font-size:2.4rem; line-height:1.2; margin:2rem 0 1rem;
+}
+.brand-copy h1 em{ font-style:italic; color:var(--gold-deep); }
+.brand-copy p{ color:var(--ink-soft); line-height:1.7; font-size:1rem; }
+.benefits{ list-style:none; margin-top:1.8rem; display:grid; gap:1rem; font-size:.95rem; }
+.benefits li{ display:flex; gap:.8rem; align-items:flex-start; }
+.benefits li::before{ content:"✓"; font-family:var(--mono); color:var(--sage); font-weight:700; }
+
+
+/* RIGHT: Form */
+.form-pane{ padding:3.5rem 3rem; } /* INNER PADDING - THIS FIXES YOUR ISSUE */
+.eyebrow{
+  font-family:var(--mono); font-size:.75rem; text-transform:uppercase;
+  letter-spacing:.14em; color:var(--gold-deep); margin-bottom:.8rem; display:block;
+}
+.form-pane h2{
+  font-family:var(--display); font-weight:500; font-size:2rem; margin-bottom:2rem;
+}
+
+.form{ display:grid; gap:1.8rem; } /* MORE SPACE BETWEEN FIELDS */
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:1.8rem; }
+
+.field label{
+  display:block; font-family:var(--mono); font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft);
+  margin-bottom:.7rem;
+}
+.input{
+  width:100%; background:var(--paper); border:1.5px solid var(--ink);
+  border-radius:14px; padding:16px 18px; font:inherit; font-size:1rem; color:var(--ink);
+  outline:0; transition:border .15s ease;
+}
+.input:focus{ border-color:var(--gold-deep); box-shadow:0 0 0 4px rgba(201,151,63,.12); }
+.input::placeholder{ color:var(--paper-line); }
+
+.select{
+  appearance:none; background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231B2A4A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 18px center;
+  padding-right:44px;
+}
+
+.check{
+  display:flex; align-items:flex-start; gap:.8rem;
+  font-size:.9rem; color:var(--ink-soft); line-height:1.6; margin-top:.2rem;
+}
+.check input{ accent-color:var(--gold); margin-top:4px; width:18px; height:18px; flex-shrink:0; }
+
+.btn{
+  background:var(--ink); color:var(--paper); border:1.5px solid var(--ink);
+  padding:18px 24px; border-radius:999px; font-family:var(--mono);
+  font-size:.9rem; text-transform:uppercase; letter-spacing:.05em;
+  cursor:pointer; transition:transform .15s ease, background .15s ease;
+  width:100%; margin-top:1rem; /* GAP ABOVE BUTTON */
+}
+.btn:hover{ transform:translateY(-3px); background:var(--gold-deep); border-color:var(--gold-deep); }
+
+.link{
+  text-align:center; margin-top:1.8rem; font-size:.92rem; color:var(--ink-soft);
+}
+.link a{ color:var(--gold-deep); font-weight:600; text-decoration:none; }
+
+.error{ color:var(--danger); font-size:.8rem; margin-top:.5rem; display:none; font-family:var(--mono); }
+.toast{
+  position:fixed; top:30px; left:50%; transform:translateX(-50%);
+  background:var(--danger); color:#fff; padding:14px 22px; border-radius:14px;
+  font-size:.9rem; font-weight:700; z-index:100; opacity:0; transition:opacity .3s;
+  font-family:var(--mono);
+}
+.toast.show{ opacity:1; }
+
+/* MOBILE FIXES */
+@media (max-width:1024px){
+  .wrap{ grid-template-columns:1fr; max-width:680px; }
+  .brand-pane{ border-right:0; border-bottom:1.5px solid var(--ink); padding:2.5rem 2rem; }
+  .form-pane{ padding:2.5rem 2rem; } /* SAFE PADDING ON MOBILE */
+}
+@media (max-width:640px){
+  body{ padding:24px 12px; } /* KEEP 12px GAP FROM SCREEN EDGE */
+  .wrap{ border-radius:20px 40px 20px 20px; }
+  .grid-2{ grid-template-columns:1fr; }
+  .form-pane{ padding:2rem 1.5rem; } /* BIGGER INNER PADDING SO INPUTS DONT TOUCH */
+}
+
+.messages .msg-error { color: var(--danger); font-family:var(--mono); font-size:.9rem; }
+.messages .msg-success { color: var(--sage); font-family:var(--mono); font-size:.9rem; }
+</style>
+</head>
+<body>
+  
+<header>
+  <a href="{% url 'main' %}" class="mark">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+    </svg>
+    TechBridge
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'main' %}">Back to Home</a>
+  </div>
+</header>
+
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div class="brand-pane">
+    <div class="brand-mark">
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+      </svg>
+      TechBridge
+    </div>
+    <div class="brand-copy">
+      <h1>Build skills that <em>actually</em> get you hired.</h1>
+      <p>Join 12,000+ students learning AI, Robotics, Cybersecurity and Software Dev with real projects and 1-on-1 mentorship.</p>
+      <ul class="benefits">
+        <li>Hands-on courses with portfolio projects</li>
+        <li>Live mentor sessions every week</li>
+        <li>Certificates recognized by partner companies</li>
+      </ul>
+    </div>
+      </div>
+
+  <!-- RIGHT -->
+  <div class="form-pane">
+    <span class="eyebrow">Create your student account</span>
+    <h2>Start Learning Today</h2>
+    
+    {% if messages %}
+     <ul class="messages">
+       {% for message in messages %}
+          <li class="msg-{{ message.tags }}">{{ message }}</li>
+       {% endfor %}
+     </ul>
+    {% endif %}
+
+    <form id="signupForm" class="form" method="POST">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="fullname" name="fullname" class="input" placeholder="Ada Okafor" required>
+          <span class="error" id="nameError">Please enter your full name</span>
+        </div>
+        <div class="field">
+          <label>Phone Number</label>
+          <input type="tel" id="phone" name="phone" class="input" placeholder="+234 803 123 4567" required>
+          <span class="error" id="phoneError">Enter a valid phone number</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" name="email" class="input" placeholder="you@email.com" required>
+        <span class="error" id="emailError">Enter a valid email</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="dob" name="dob" class="input" required>
+          <span class="error" id="dobError">You must be 18+</span>
+        </div>
+        <div class="field">
+          <label>Track of Interest</label>
+          <select id="track" name="track" class="input select">
+            <option>AI & Machine Learning</option>
+            <option>Robotics</option>
+            <option>Cybersecurity</option>
+            <option>Software Development</option>
+            <option>IoT</option>
+            <option>Startup Incubation</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="password" name="password" class="input" placeholder="Min 6 characters" required>
+          <span class="error" id="passError">Min 6 characters</span>
+        </div>
+        <div class="field">
+          <label>Confirm Password</label>
+          <input type="password" id="confirmPassword" class="input" placeholder="Re-enter password" required>
+          <span class="error" id="confirmError">Passwords do not match</span>
+        </div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="terms" name="terms" required>
+        <span>I agree to TechBridge <a href="#" style="color:var(--gold-deep)">Terms</a> and <a href="#" style="color:var(--gold-deep)">Privacy Policy</a></span>
+      </label>
+
+      <button type="submit" class="btn" id="signupBtn">Create Account</button>
+    </form>
+
+    <p class="link">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+  </div>
+</div>
+</body>
+</html>

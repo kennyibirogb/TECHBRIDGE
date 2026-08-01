@@ -1,0 +1,858 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<style>
+/* ══════════ COURSES SECTION ══════════ */
+.courses-section{
+  position:relative;
+  width:100%;
+  padding:110px 24px 130px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 30%, rgba(201,151,63,.07) 0%, transparent 60%),
+    #252D36;
+}
+
+.courses-section::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(201,151,63,.14) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, black 0%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, black 0%, transparent 75%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* layered background: rings */
+.courses-section .ring{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  left:50%;
+  top:46%;
+  transform:translate(-50%,-50%);
+}
+.courses-section .ring.r1{width:1020px;height:1020px;border:1px solid rgba(201,151,63,.05);}
+.courses-section .ring.r2{width:820px;height:820px;border:1px solid rgba(124,152,133,.06);}
+.courses-section .ring.r3{width:640px;height:640px;border:1px solid rgba(201,151,63,.09);}
+.courses-section .ring.r4{width:460px;height:460px;border:1px solid rgba(244,241,234,.04);}
+
+/* soft color glows */
+.courses-section .glow{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  filter:blur(2px);
+}
+.courses-section .glow.g1{
+  width:420px;height:420px;
+  left:-140px;top:8%;
+  background:radial-gradient(circle, rgba(201,151,63,.10) 0%, transparent 70%);
+}
+.courses-section .glow.g2{
+  width:380px;height:380px;
+  right:-120px;bottom:6%;
+  background:radial-gradient(circle, rgba(124,152,133,.09) 0%, transparent 70%);
+}
+.courses-section .glow.g3{
+  width:260px;height:260px;
+  right:12%;top:2%;
+  background:radial-gradient(circle, rgba(27,42,74,.35) 0%, transparent 70%);
+}
+.courses-section .glow.g4{
+  width:300px;height:300px;
+  left:8%;bottom:2%;
+  background:radial-gradient(circle, rgba(201,151,63,.06) 0%, transparent 70%);
+}
+
+/* floating specks */
+.courses-section .speck{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:1;
+}
+.courses-section .speck.gold{background:#C9973F;}
+.courses-section .speck.sage{background:#7C9885;}
+.courses-section .speck.cream{background:#F4F1EA;}
+
+.courses-section .speck.s1{top:10%;left:14%;width:4px;height:4px;opacity:.5;}
+.courses-section .speck.s2{top:18%;right:10%;width:3px;height:3px;opacity:.4;}
+.courses-section .speck.s3{top:42%;left:4%;width:5px;height:5px;opacity:.35;}
+.courses-section .speck.s4{bottom:22%;left:9%;width:3px;height:3px;opacity:.45;}
+.courses-section .speck.s5{bottom:14%;right:12%;width:4px;height:4px;opacity:.4;}
+.courses-section .speck.s6{top:30%;right:4%;width:3px;height:3px;opacity:.3;}
+.courses-section .speck.s7{bottom:36%;right:6%;width:2px;height:2px;opacity:.5;}
+.courses-section .speck.s8{top:6%;right:26%;width:3px;height:3px;opacity:.3;}
+.courses-section .speck.s9{bottom:8%;left:26%;width:4px;height:4px;opacity:.35;}
+.courses-section .speck.s10{top:54%;left:2%;width:3px;height:3px;opacity:.3;}
+.courses-section .speck.s11{top:4%;left:44%;width:2px;height:2px;opacity:.4;}
+.courses-section .speck.s12{bottom:4%;right:40%;width:3px;height:3px;opacity:.3;}
+
+/* drifting motion for a handful of specks */
+@media(prefers-reduced-motion: no-preference){
+  .courses-section .speck.drift{animation:speck-drift 9s ease-in-out infinite;}
+  .courses-section .speck.s2{animation-delay:-1.5s;}
+  .courses-section .speck.s4{animation-delay:-4s;}
+  .courses-section .speck.s6{animation-delay:-2.5s;}
+  .courses-section .speck.s9{animation-delay:-6s;}
+}
+@keyframes speck-drift{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+
+/* faint diamond / plus marks for texture */
+.courses-section .mark-glyph{
+  position:absolute;
+  color:#C9973F;
+  font-size:11px;
+  opacity:.18;
+  pointer-events:none;
+  z-index:1;
+  user-select:none;
+  line-height:1;
+  font-family:'Space Mono',monospace;
+}
+.courses-section .mark-glyph.plus{color:#F4F1EA;opacity:.09;}
+.courses-section .mark-glyph.mg1{top:14%;left:22%;font-size:13px;}
+.courses-section .mark-glyph.mg2{top:24%;right:20%;}
+.courses-section .mark-glyph.mg3{bottom:20%;left:5%;font-size:12px;}
+.courses-section .mark-glyph.mg4{bottom:30%;right:3%;}
+.courses-section .mark-glyph.mg5{top:6%;left:6%;font-size:14px;}
+.courses-section .mark-glyph.mg6{top:36%;right:2%;font-size:10px;}
+.courses-section .mark-glyph.mg7{bottom:6%;left:36%;font-size:12px;}
+.courses-section .mark-glyph.mg8{top:46%;left:44%;font-size:9px;opacity:.12;}
+
+.courses-section .eyebrow{
+  position:relative;
+  z-index:2;
+}
+
+.courses-section .courses-heading{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:2.3rem;
+  color:#F4F1EA;
+  margin:14px 0 60px;
+  text-align:center;
+  letter-spacing:-.01em;
+  position:relative;
+  z-index:2;
+}
+.courses-section .courses-heading em{
+  color:#C9973F;
+  font-style:italic;
+  font-weight:500;
+}
+
+.cluster{
+  position:relative;
+  width:920px;
+  max-width:100%;
+  height:600px;
+  margin:0 auto;
+  z-index:2;
+}
+
+.connector{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+
+.connector path{
+  fill:none;
+  stroke:#C9973F;
+  stroke-width:1.4;
+  stroke-dasharray:2 8;
+  stroke-linecap:round;
+  opacity:.32;
+}
+
+.connector .travel-dot{
+  fill:#C9973F;
+  filter:drop-shadow(0 0 4px rgba(201,151,63,.8));
+}
+
+.courses-section .card{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--w);
+  min-height:var(--h);
+  border-radius:16px;
+  padding:26px 26px 24px;
+  background:#fdfbf7;
+  box-shadow:0 6px 30px rgba(0,0,0,.25);
+  text-decoration:none;
+  color:#1B2A4A;
+  display:flex;
+  flex-direction:column;
+  font-family:'Work Sans',sans-serif;
+  border:1px solid rgba(201,151,63,.15);
+  border-top:2.5px solid var(--accent, #C9973F);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+  z-index:3;
+}
+
+.courses-section .card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 40px rgba(0,0,0,.35);
+}
+
+.courses-section .card--dark{
+  background:#1B2A4A;
+  color:#fff;
+}
+
+.courses-section .card__top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.courses-section .card__icon{
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(201,151,63,.12);
+  color:var(--accent, #C9973F);
+  flex-shrink:0;
+}
+.courses-section .card--dark .card__icon{
+  background:rgba(201,151,63,.18);
+}
+.courses-section .card__icon svg{width:18px;height:18px;}
+
+.courses-section .card__num{
+  font-family:'Space Mono',monospace;
+  font-size:.72rem;
+  color:#a89a78;
+  letter-spacing:.05em;
+  font-weight:700;
+}
+.courses-section .card--dark .card__num{color:#8492ad;}
+
+.courses-section .card h3{
+  font-family:'Fraunces',serif;
+  font-size:1.15rem;
+  margin-bottom:8px;
+  font-weight:600;
+  line-height:1.25;
+  letter-spacing:-.01em;
+}
+
+.courses-section .card p{
+  font-size:.87rem;
+  opacity:.68;
+  line-height:1.5;
+  font-weight:400;
+}
+.courses-section .card--dark p{opacity:.8;}
+
+.courses-section .card__arrow{
+  margin-top:auto;
+  padding-top:14px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'Space Mono',monospace;
+  font-size:.75rem;
+  font-weight:700;
+  color:var(--accent,#C9973F);
+  opacity:0;
+  transform:translateX(-4px);
+  transition:opacity .2s ease, transform .2s ease;
+}
+.courses-section .card:hover .card__arrow{
+  opacity:1;
+  transform:translateX(0);
+}
+
+@media(max-width:760px){
+  .cluster{
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    width:100%;
+  }
+  .connector{display:none;}
+  .courses-section .card{
+    position:static!important;
+    width:100%!important;
+  }
+  .courses-section .courses-heading{font-size:1.6rem;margin-bottom:40px;}
+  .courses-section{padding:60px 16px 80px;}
+  .courses-section .ring,
+  .courses-section .glow,
+  .courses-section .speck,
+  .courses-section .mark-glyph{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header>
+  <div class="mark">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+    </svg>
+    TechBridge
+  </div>
+  <nav id="nav">
+    <ul>
+      <li><a href="{% url 'main' %}" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#courses" class="nav-link">Programs</a></li>
+      <li><a href="{% url 'event' %}" class="nav-link">Events</a></li>
+      <li><a href="#team" class="nav-link">Team</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+      <li><a href="{% url 'studentdashboard' %}" class="nav-link">Dashboard</a></li> <!-- supposed to show only if the user is logged in -->
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <a href="{% url 'signup' %}" class="nav-enroll">Enroll</a>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="hero" id="about">
+  <canvas id="bgCanvas"></canvas>
+  <div class="hero-inner">
+    <div class="about-card">
+      <span class="eyebrow">About the Academy</span>
+      <h1>THINK</h1>
+      <h1>CREATE</h1>
+      <h1>TRANSFORM</h1>
+      <p>We're a small academy for people who'd rather build the real thing than sit through a slide deck about it. Small cohorts, working instructors, and a studio that stays open long after class ends.</p>
+      <a class="about-cta" href="#courses">See how it's structured &rarr;</a>
+    </div>
+    <div class="hero-right">
+      <h2>about the website</h2>
+      <span>about the website</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ COURSES ══════════ -->
+<section class="courses-section" id="courses">
+
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="ring r3"></div>
+  <div class="ring r4"></div>
+
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+  <div class="glow g4"></div>
+
+  <span class="speck gold drift s1"></span>
+  <span class="speck sage drift s2"></span>
+  <span class="speck cream s3"></span>
+  <span class="speck gold drift s4"></span>
+  <span class="speck sage s5"></span>
+  <span class="speck cream drift s6"></span>
+  <span class="speck gold s7"></span>
+  <span class="speck sage s8"></span>
+  <span class="speck gold drift s9"></span>
+  <span class="speck cream s10"></span>
+  <span class="speck sage s11"></span>
+  <span class="speck gold s12"></span>
+
+  <span class="mark-glyph mg1">◇</span>
+  <span class="mark-glyph mg2">◇</span>
+  <span class="mark-glyph mg3">◇</span>
+  <span class="mark-glyph plus mg4">+</span>
+  <span class="mark-glyph plus mg5">+</span>
+  <span class="mark-glyph mg6">◇</span>
+  <span class="mark-glyph plus mg7">+</span>
+  <span class="mark-glyph mg8">◇</span>
+
+  <span class="eyebrow">Courses</span>
+  <h2 class="courses-heading">Six paths. <em>One</em> direction forward.</h2>
+
+  <div class="cluster">
+    <svg class="connector" viewBox="0 0 920 600" fill="none">
+      <path id="journey-path" d="M150 470 C110 350 180 200 340 180 S560 60 700 140 S760 380 600 470 S260 560 150 470"/>
+      <circle class="travel-dot" r="4">
+        <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#journey-path"/>
+        </animateMotion>
+      </circle>
+    </svg>
+
+    <a href="#" class="card" style="--x:0%;--y:48%;--w:300px;--h:180px;--accent:#C9973F">
+      <div class="card__top">
+        <span class="card__num">01</span>
+        <span class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+        </span>
+      </div>
+      <h3>AI</h3>
+      <p>Your starting point for every learning journey.</p>
+      <span class="card__arrow">Start here →</span>
+    </a>
+
+    <a href="#" class="card" style="--x:34%;--y:60%;--w:290px;--h:175px;--accent:#7C9885">
+      <div class="card__top">
+        <span class="card__num">02</span>
+        <span class="card__icon" style="--accent:#7C9885">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="12" height="9" rx="2"/><path d="M9 9V6a3 3 0 0 1 6 0v3M9 14h.01M15 14h.01"/></svg>
+        </span>
+      </div>
+      <h3>ROBOTICS</h3>
+      <p>Cloud, Software Engineering and AI.</p>
+      <span class="card__arrow" style="--accent:#7C9885">Explore →</span>
+    </a>
+
+    <a href="#" class="card card--dark" style="--x:70%;--y:44%;--w:295px;--h:180px;--accent:#C9973F">
+      <div class="card__top">
+        <span class="card__num">03</span>
+        <span class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+        </span>
+      </div>
+      <h3>CYBERSECURITY</h3>
+      <p>Mentorship, reviews and certification.</p>
+      <span class="card__arrow">Secure it →</span>
+    </a>
+
+    <a href="#" class="card" style="--x:74%;--y:6%;--w:280px;--h:150px;--accent:#7C9885">
+      <div class="card__top">
+        <span class="card__num">04</span>
+        <span class="card__icon" style="--accent:#7C9885">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg>
+        </span>
+      </div>
+      <h3>IOT</h3>
+      <p>Learn together.</p>
+      <span class="card__arrow" style="--accent:#7C9885">Connect →</span>
+    </a>
+
+    <a href="#" class="card" style="--x:36%;--y:0%;--w:310px;--h:158px;--accent:#C9973F">
+      <div class="card__top">
+        <span class="card__num">05</span>
+        <span class="card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6L2 12l6 6M16 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+      <h3>SOFTWARE DEVELOPMENT</h3>
+      <p>Build real products.</p>
+      <span class="card__arrow">Build →</span>
+    </a>
+
+    <a href="#" class="card" style="--x:0%;--y:0%;--w:300px;--h:170px;--accent:#1B2A4A">
+      <div class="card__top">
+        <span class="card__num">06</span>
+        <span class="card__icon" style="--accent:#1B2A4A">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </span>
+      </div>
+      <h3>STARTUP INCUBATION</h3>
+      <p>Help after graduation.</p>
+      <span class="card__arrow" style="--accent:#1B2A4A">Launch →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════ TEAM ══════════ -->
+<section class="team-section" id="team">
+  <div class="team-inner">
+    <span class="eyebrow">The people</span>
+    <h2 class="team-heading">Working instructors,<br>not guest speakers</h2>
+    <p class="team-lead">Everyone teaching here still ships product. Small team, deep experience, and a studio that stays open long after class ends.</p>
+
+    <div class="section-label">Core team</div>
+    <div class="team-grid">
+
+      <article class="member-card">
+        <div class="member-photo"><span class="initials">AM</span></div>
+        <div class="member-body">
+          <div class="member-role">Founder · Lead Instructor</div>
+          <h3>Amina Okonkwo</h3>
+          <p>Former product lead at two Series B startups. Builds the curriculum and still runs the systems design track.</p>
+          <div class="member-links">
+            <a href="#">LinkedIn</a>
+            <a href="#">Site</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo"><span class="initials">JL</span></div>
+        <div class="member-body">
+          <div class="member-role">Engineering · Instructor</div>
+          <h3>Jonas Lindqvist</h3>
+          <p>Full-stack engineer who treats teaching like code review. Runs the prototype sprints and late-night studio hours.</p>
+          <div class="member-links">
+            <a href="#">GitHub</a>
+            <a href="#">LinkedIn</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo"><span class="initials">SR</span></div>
+        <div class="member-body">
+          <div class="member-role">Design · Instructor</div>
+          <h3>Sofia Reyes</h3>
+          <p>Independent designer who has shipped interfaces for three different industries. Leads the visual systems and critique sessions.</p>
+          <div class="member-links">
+            <a href="#">Portfolio</a>
+            <a href="#">LinkedIn</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo"><span class="initials">DK</span></div>
+        <div class="member-body">
+          <div class="member-role">Operations · Studio Lead</div>
+          <h3>David Kim</h3>
+          <p>Keeps the space running, the cohorts organized, and the coffee machine alive. First person most students meet.</p>
+          <div class="member-links">
+            <a href="#">LinkedIn</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="section-label" style="margin-top: 3.5rem;">Advisors & frequent guests</div>
+    <div class="advisors-grid">
+
+      <div class="advisor-card">
+        <div class="advisor-avatar">EL</div>
+        <div class="advisor-info">
+          <h4>Elena Vargas</h4>
+          <div class="role">Advisor · Design Systems</div>
+          <p>Head of Design at a well-known design tool. Drops in for critiques and the occasional deep-dive session.</p>
+        </div>
+      </div>
+
+      <div class="advisor-card">
+        <div class="advisor-avatar">RH</div>
+        <div class="advisor-info">
+          <h4>Ravi Hossain</h4>
+          <div class="role">Advisor · Engineering</div>
+          <p>Staff engineer who has scaled three platforms. Occasional workshop lead on architecture and performance.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-note">
+      <blockquote>
+        “We don’t bring in people who only talk about building. Everyone on the floor has shipped something real in the last year.”
+      </blockquote>
+      <cite>— Amina Okonkwo, Founder</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <span class="eyebrow">Get in touch</span>
+      <h2 class="contact-heading">Let’s talk</h2>
+      <p class="contact-lead">Questions about the next cohort, partnerships, or just want to visit the studio? Send a note ,we read every message.</p>
+
+      <div class="contact-details">
+        <div class="contact-item">
+          <span class="contact-label">Email</span>
+          <a href="mailto:hello@techbridge.studio">hello@techbridge.studio</a>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Studio</span>
+          <span>12 Maker Lane, Floor 3<br>Lagos · Open weekdays 10–18</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Social</span>
+          <div class="contact-social">
+            <button type="button" class="social-btn">
+              <img src="{% static 'main/img/discord.svg' %}" alt="Logo">
+            </button>
+            <button type="button" class="social-btn">
+              <img src="{% static 'main/img/x.svg' %}" alt="Logo">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+       <li class="msg-{{ message.tags }}">{{ message }}</li>
+      {% endfor%}
+    </ul>
+    {% endif %}
+    <form class="contact-form" id="contactForm" method="POST">
+      {% csrf_token %}
+      <div class="field">
+        <label for="c-name">Name</label>
+        <input type="text" id="c-name" name="name" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label for="c-email">Email</label>
+        <input type="email" id="c-email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="c-subject">Subject</label>
+        <select id="c-subject" name="subject">
+          <option value="cohort">Next cohort</option>
+          <option value="visit">Studio visit</option>
+          <option value="partnership">Partnership</option>
+          <option value="teaching">Teaching / mentoring</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="c-message">Message</label>
+        <textarea id="c-message" name="message" rows="5" placeholder="Tell us what’s on your mind…" required></textarea>
+      </div>
+      <button type="submit" class="contact-btn" name="contact-submit">Send message</button>
+    </form>
+  </div>
+</section>
+<footer>
+  <div class="mark">TechBridge</div>
+  <div class="foot-links">
+    <button type="button" class="social-btn">
+      <img src="{% static 'main/img/discord.svg' %}" alt="Logo">
+    </button>
+    <button type="button" class="social-btn">
+      <img src="{% static 'main/img/x.svg' %}" alt="Logo">
+    </button>
+  </div>
+  <div>&copy; 2026</div>
+</footer>
+
+<script>
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    burger.classList.toggle('open', isOpen);
+    burger.setAttribute('aria-expanded', isOpen);
+  });
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.addEventListener('click', () => {
+      nav.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', false);
+    });
+  });
+
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('bgCanvas');
+  const heroEl = document.querySelector('.hero');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, heroEl.clientWidth / heroEl.clientHeight, 0.1, 2000);
+  camera.position.set(0, 0, 420);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const isMobile = window.innerWidth < 860;
+  const NODE_COUNT = isMobile ? 45 : 90;
+  const BOUND = { x: 480, y: 300, z: 260 };
+  const LINK_DIST = isMobile ? 110 : 130;
+
+  const nodeColors = [0x1B2A4A, 0xC9973F, 0x7C9885];
+  const nodes = [];
+  const positions = new Float32Array(NODE_COUNT * 3);
+  const colorsArr = new Float32Array(NODE_COUNT * 3);
+  const tmpColor = new THREE.Color();
+
+  for(let i = 0; i < NODE_COUNT; i++){
+    const x = (Math.random() - 0.5) * BOUND.x * 2;
+    const y = (Math.random() - 0.5) * BOUND.y * 2;
+    const z = (Math.random() - 0.5) * BOUND.z * 2;
+    nodes.push({
+      base: new THREE.Vector3(x, y, z),
+      speed: 0.15 + Math.random() * 0.25,
+      phase: Math.random() * Math.PI * 2
+    });
+    positions[i*3] = x; positions[i*3+1] = y; positions[i*3+2] = z;
+    tmpColor.setHex(nodeColors[i % nodeColors.length]);
+    colorsArr[i*3] = tmpColor.r; colorsArr[i*3+1] = tmpColor.g; colorsArr[i*3+2] = tmpColor.b;
+  }
+
+  const pointGeo = new THREE.BufferGeometry();
+  pointGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  pointGeo.setAttribute('color', new THREE.BufferAttribute(colorsArr, 3));
+
+  const spriteCanvas = document.createElement('canvas');
+  spriteCanvas.width = 64; spriteCanvas.height = 64;
+  const sctx = spriteCanvas.getContext('2d');
+  const grad = sctx.createRadialGradient(32,32,0,32,32,32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  sctx.fillStyle = grad;
+  sctx.fillRect(0,0,64,64);
+  const spriteTex = new THREE.CanvasTexture(spriteCanvas);
+
+  const pointMat = new THREE.PointsMaterial({
+    size: isMobile ? 7 : 8,
+    map: spriteTex,
+    transparent: true,
+    vertexColors: true,
+    opacity: 0.85,
+    depthWrite: false,
+    blending: THREE.NormalBlending
+  });
+  const points = new THREE.Points(pointGeo, pointMat);
+  group.add(points);
+
+  const maxLines = NODE_COUNT * 8;
+  const linePositions = new Float32Array(maxLines * 6);
+  const lineColors = new Float32Array(maxLines * 6);
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+  lineGeo.setDrawRange(0, 0);
+  const lineMat = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.18,
+    blending: THREE.NormalBlending
+  });
+  const lines = new THREE.LineSegments(lineGeo, lineMat);
+  group.add(lines);
+
+  const mouse = { x: 0, y: 0 };
+  function setMouseFromClient(clientX, clientY){
+    const rect = heroEl.getBoundingClientRect();
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  }
+  window.addEventListener('mousemove', e => setMouseFromClient(e.clientX, e.clientY));
+  window.addEventListener('touchmove', e => {
+    if(e.touches && e.touches[0]) setMouseFromClient(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  if(isMobile && window.DeviceOrientationEvent){
+    window.addEventListener('deviceorientation', e => {
+      if(e.gamma === null) return;
+      mouse.x = Math.max(-1, Math.min(1, e.gamma / 30));
+      mouse.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+    });
+  }
+
+  function resizeScene(){
+    const w = heroEl.clientWidth, h = heroEl.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  window.addEventListener('resize', resizeScene);
+
+  const clock = new THREE.Clock();
+  let frame = 0;
+
+  function updateLines(){
+    let count = 0;
+    const posAttr = points.geometry.attributes.position.array;
+    for(let i = 0; i < NODE_COUNT && count < maxLines; i++){
+      const ax = posAttr[i*3], ay = posAttr[i*3+1], az = posAttr[i*3+2];
+      for(let j = i+1; j < NODE_COUNT && count < maxLines; j++){
+        const bx = posAttr[j*3], by = posAttr[j*3+1], bz = posAttr[j*3+2];
+        const dx = ax-bx, dy = ay-by, dz = az-bz;
+        const dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
+        if(dist < LINK_DIST){
+          const idx = count * 6;
+          linePositions[idx] = ax; linePositions[idx+1] = ay; linePositions[idx+2] = az;
+          linePositions[idx+3] = bx; linePositions[idx+4] = by; linePositions[idx+5] = bz;
+          const alpha = 1 - dist / LINK_DIST;
+          tmpColor.setHex(0x1B2A4A);
+          lineColors[idx] = tmpColor.r*alpha; lineColors[idx+1] = tmpColor.g*alpha; lineColors[idx+2] = tmpColor.b*alpha;
+          lineColors[idx+3] = lineColors[idx]; lineColors[idx+4] = lineColors[idx+1]; lineColors[idx+5] = lineColors[idx+2];
+          count++;
+        }
+      }
+    }
+    lineGeo.setDrawRange(0, count * 2);
+    lineGeo.attributes.position.needsUpdate = true;
+    lineGeo.attributes.color.needsUpdate = true;
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    frame++;
+
+    const posAttr = points.geometry.attributes.position.array;
+    for(let i = 0; i < NODE_COUNT; i++){
+      const n = nodes[i];
+      posAttr[i*3]   = n.base.x + Math.sin(t*n.speed + n.phase) * 14;
+      posAttr[i*3+1] = n.base.y + Math.cos(t*n.speed*0.8 + n.phase) * 14;
+      posAttr[i*3+2] = n.base.z + Math.sin(t*n.speed*0.6 + n.phase) * 14;
+    }
+    points.geometry.attributes.position.needsUpdate = true;
+
+    if(!reduceMotion && frame % 3 === 0) updateLines();
+    else if(reduceMotion && frame === 1) updateLines();
+
+    if(!reduceMotion){
+      group.rotation.y = t * 0.04;
+      group.rotation.x = Math.sin(t*0.05) * 0.08;
+      camera.position.x += (mouse.x * 70 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 50 - camera.position.y) * 0.04;
+      camera.lookAt(0,0,0);
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  resizeScene();
+  updateLines();
+  animate();
+</script>
+
+</body>
+</html>

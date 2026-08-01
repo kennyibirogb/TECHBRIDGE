@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Login · TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink: #1B2A4A;
+  --ink-soft: #3D4E72;
+  --paper: #F6F1E7;
+  --paper-line: #BAB3A4;
+  --card: #FFFDF8;
+  --gold: #C9973F;
+  --gold-deep: #A97B28;
+  --sage: #7C9885;
+  --danger: #B23A48;
+  --display: 'Fraunces', serif;
+  --body: 'Work Sans', sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  min-height:100dvh;
+  display:grid; place-items:center;
+  padding:32px 16px; /* OUTER SAFE PADDING */
+  position:relative;
+  overflow-x:hidden;
+}
+
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.05;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(247, 244, 239, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(27, 42, 74, 0.08);
+}
+
+.mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--navy);
+    text-decoration: none;
+  }
+
+.mark svg { width: 26px; height: 26px; }
+
+.nav-right a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.45rem 1.1rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+.nav-right a:hover {
+    background: var(--navy);
+    color: var(--cream);
+}
+
+.circle{ position:fixed; border-radius:50%; border:1px solid rgba(27,42,74,.06); z-index:0; pointer-events:none; }
+.c1{ width:720px; height:720px; left:-300px; top:20px; }
+.c2{ width:520px; height:520px; right:-200px; bottom:80px; }
+
+.wrap{
+  position:relative; z-index:1;
+  width:100%; max-width:1100px;
+  margin:0 auto;
+  display:grid; grid-template-columns:42% 58%;
+  background:var(--card);
+  border:1.5px solid var(--ink);
+  border-radius:24px 60px 24px 24px;
+  box-shadow:12px 12px 0 rgba(27,42,74,.08);
+  overflow:hidden;
+}
+
+/* LEFT: Brand */
+.brand-pane{
+  background:linear-gradient(180deg, rgba(201,151,63,.10), transparent);
+  padding:3.5rem 3rem;
+  display:flex; flex-direction:column; justify-content:space-between;
+  border-right:1.5px solid var(--ink);
+}
+.brand-mark{
+  font-family:var(--display); font-weight:600; font-size:1.5rem;
+  display:flex; align-items:center; gap:12px; color:var(--ink);
+}
+.brand-mark svg{ width:28px; height:28px; }
+.brand-copy h1{
+  font-family:var(--display); font-weight:500; font-size:2.4rem; line-height:1.2; margin:2rem 0 1rem;
+}
+.brand-copy h1 em{ font-style:italic; color:var(--gold-deep); }
+.brand-copy p{ color:var(--ink-soft); line-height:1.7; font-size:1rem; }
+.quote{
+  margin-top:2rem; padding:1.2rem; background:rgba(201,151,63,.08);
+  border-left:3px solid var(--gold); border-radius:8px;
+  font-size:.9rem; color:var(--ink-soft); font-style:italic;
+}
+
+
+/* RIGHT: Form */
+.form-pane{ padding:3.5rem 3rem; }
+.eyebrow{
+  font-family:var(--mono); font-size:.75rem; text-transform:uppercase;
+  letter-spacing:.14em; color:var(--gold-deep); margin-bottom:.8rem; display:block;
+}
+.form-pane h2{
+  font-family:var(--display); font-weight:500; font-size:2rem; margin-bottom:2rem;
+}
+
+.form{ display:grid; gap:1.8rem; }
+.field label{
+  display:block; font-family:var(--mono); font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft);
+  margin-bottom:.7rem;
+}
+.input{
+  width:100%; background:var(--paper); border:1.5px solid var(--ink);
+  border-radius:14px; padding:16px 18px; font:inherit; font-size:1rem; color:var(--ink);
+  outline:0; transition:border .15s ease;
+}
+.input:focus{ border-color:var(--gold-deep); box-shadow:0 0 0 4px rgba(201,151,63,.12); }
+.input::placeholder{ color:var(--paper-line); }
+
+.row{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.9rem;
+}
+.row label{ display:flex; align-items:center; gap:.6rem; color:var(--ink-soft); }
+.row a{ color:var(--gold-deep); font-weight:600; text-decoration:none; }
+.row a:hover{ text-decoration:underline; }
+
+.btn{
+  background:var(--ink); color:var(--paper); border:1.5px solid var(--ink);
+  padding:18px 24px; border-radius:999px; font-family:var(--mono);
+  font-size:.9rem; text-transform:uppercase; letter-spacing:.05em;
+  cursor:pointer; transition:transform .15s ease, background .15s ease;
+  width:100%; margin-top:1rem;
+}
+.btn:hover{ transform:translateY(-3px); background:var(--gold-deep); border-color:var(--gold-deep); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+.link{
+  text-align:center; margin-top:1.8rem; font-size:.92rem; color:var(--ink-soft);
+}
+.link a{ color:var(--gold-deep); font-weight:600; text-decoration:none; }
+
+.error{ color:var(--danger); font-size:.8rem; margin-top:.5rem; display:none; font-family:var(--mono); }
+.toast{
+  position:fixed; top:30px; left:50%; transform:translateX(-50%);
+  background:var(--danger); color:#fff; padding:14px 22px; border-radius:14px;
+  font-size:.9rem; font-weight:700; z-index:100; opacity:0; transition:opacity .3s;
+  font-family:var(--mono);
+}
+.toast.show{ opacity:1; }
+
+/* MOBILE */
+@media (max-width:1024px){
+  .wrap{ grid-template-columns:1fr; max-width:680px; }
+  .brand-pane{ border-right:0; border-bottom:1.5px solid var(--ink); padding:2.5rem 2rem; }
+  .form-pane{ padding:2.5rem 2rem; }
+}
+@media (max-width:640px){
+  body{ padding:24px 12px; }
+  .wrap{ border-radius:20px 40px 20px 20px; }
+  .form-pane{ padding:2rem 1.5rem; }
+}
+
+.messages { list-style:none; margin-bottom:1.2rem; }
+.messages .msg-error { color: var(--danger); font-family:var(--mono); font-size:.9rem; }
+.messages .msg-success { color: var(--sage); font-family:var(--mono); font-size:.9rem; }
+</style>
+</head>
+<body>
+
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+<div class="toast" id="toast"></div>
+
+<header>
+  <a href="{% url 'main' %}" class="mark">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+    </svg>
+    TechBridge
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'main' %}">Back to Home</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div class="brand-pane">
+    <div class="brand-mark">
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
+      </svg>
+      TechBridge
+    </div>
+    <div class="brand-copy">
+      <h1>Welcome back, <em>Builder</em>.</h1>
+      <p>Log in to continue your courses, track progress, and connect with mentors.</p>
+      <div class="quote">
+        "Skills are the new currency. Keep investing in yourself."
+      </div>
+    </div>
+   </div>
+
+  <!-- RIGHT -->
+  <div class="form-pane">
+    <span class="eyebrow">Sign in to your account</span>
+    <h2>Continue Learning</h2>
+
+    {% if messages %}
+     <ul class="messages">
+       {% for message in messages %}
+         <li class="msg-{{ message.tags }}">{{ message }}</li>
+       {% endfor %}
+     </ul>
+    {% endif %}
+
+    <form method="POST" class="form">
+       {% csrf_token %}
+      <div class="field">
+        <label>Email or Phone</label>
+        <input type="text" id="identifier" name="identifier" class="input" placeholder="you@email.com or +2348031234567" required>
+        <span class="error" id="idError">Enter your email or phone</span>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" name="password" class="input" placeholder="Enter password" required>
+        <span class="error" id="passError">Enter your password</span>
+      </div>
+
+      <div class="row">
+        <label><input type="checkbox" id="remember"> Remember me</label>
+        <a href="#">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn" id="loginBtn">Login</button>
+    </form>
+
+    <p class="link">Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+  </div>
+</div>
+</body>
+</html>
