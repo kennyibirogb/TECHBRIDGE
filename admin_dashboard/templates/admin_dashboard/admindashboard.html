@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,6 +245,21 @@ button{font-family:inherit;cursor:pointer;}
   .dash-main{padding:24px 18px 40px;}
   .data-table{display:block;overflow-x:auto;}
 }
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+  padding: 5px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
 </style>
 </head>
 <body>
@@ -299,12 +315,27 @@ button{font-family:inherit;cursor:pointer;}
 
     <div class="sidebar-foot">
       <div class="sidebar-user">
-        <div class="avatar">AO</div>
-        <div class="who">
-          <strong>Amina Okonkwo</strong>
-          <span>Founder · Admin</span>
-        </div>
-      </div>
+  <div class="avatar">
+    {% if request.user.first_name %}
+      {% with parts=request.user.first_name.split %}
+        {{ parts.0|slice:":1"|upper }}{% if parts|length > 1 %}{{ parts.1|slice:":1"|upper }}{% endif %}
+      {% endwith %}
+    {% else %}
+      {{ request.user.username|slice:":1"|upper }}
+    {% endif %}
+  </div>
+
+  <div class="who">
+    <strong>
+      {% if request.user.first_name %}
+        {{ request.user.first_name }}
+      {% else %}
+        {{ request.user.username }}
+      {% endif %}
+    </strong>
+    <span>Admin</span>
+  </div>
+</div>
     </div>
   </aside>
 
@@ -329,7 +360,19 @@ button{font-family:inherit;cursor:pointer;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
           New cohort
         </button>
-        <div class="avatar">AO</div>
+        <div class="header-right">
+        <div class="avatar">
+          {% if request.user.first_name %}
+            {% with parts=request.user.first_name.split %}
+              {{ parts.0|slice:":1"|upper }}{% if parts|length > 1 %}{{ parts.1|slice:":1"|upper }}{% endif %}
+           {% endwith %}
+         {% else %}
+         {{ request.user.username|slice:":1"|upper }}
+        {% endif %}
+      </div>
+
+  <a href="{% url 'admin_logout' %}" class="logout-btn">Logout</a>
+</div>
       </div>
     </div>
 
