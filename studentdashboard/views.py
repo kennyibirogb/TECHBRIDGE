@@ -21,3 +21,9 @@ def studentdashboard(request):
 def logout_view(request):
     request.session.flush()
     return redirect('login')
+
+def lesson(request):
+    return render(request, "studentdashboard/lesson.html")
+
+def certificate(request):
+    return render(request, "studentdashboard/certificate.html")

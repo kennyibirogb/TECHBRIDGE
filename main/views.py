@@ -37,3 +37,7 @@ def main(request):
 def event(request):
     return render(request, 'main/events.html')
 
+def programs(request):
+    return render(request, 'main/programs.html')
+
+

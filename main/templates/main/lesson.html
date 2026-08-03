@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lesson | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lesson | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #F2F6FB; --ink-soft: #A9B7CE; --navy: #050a1a;
+    --navy-card: rgba(6, 13, 33, 0.55); --navy-card-solid: #0a1226;
+    --line: rgba(242, 246, 251, 0.14);
+    --cyan: #00e5ff; --blue: #00afff; --mint: #29ffb0; --amber: #ffb648; --danger: #ff5c7a;
+    --display: 'Fraunces', serif; --body: 'Work Sans', sans-serif; --mono: 'Space Mono', monospace;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ background: var(--navy); color: var(--ink); font-family: var(--body); min-height:100vh; }
+  .bg-overlay{
+    position: fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(0,175,255,0.16), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(0,229,255,0.08), transparent 50%),
+      linear-gradient(180deg, rgba(5,10,26,1) 0%, rgba(6,13,30,1) 45%, rgba(5,10,26,1) 100%);
+    pointer-events:none;
+  }
+  header{
+    position: sticky; top:0; z-index:999; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw; background: rgba(5,10,26,.78); backdrop-filter: blur(10px); border-bottom:1px solid var(--line);
+  }
+  .mark{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .mark img{
+    width: 34px;
+    height: auto;
+    flex-shrink: 0;
+  }
+  .mark-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .mark-text .main-name{ font-family: var(--display); font-weight:600; font-size:1.15rem; color: var(--ink); }
+  .mark-text .sub-name{ font-family: var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color: var(--blue); margin-top:2px; }
+  .back-link{
+    font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;
+    color: var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:8px;
+    border:1px solid var(--line); padding:8px 16px; border-radius:999px; transition: border-color .2s ease, color .2s ease;
+  }
+  .back-link:hover{ border-color: rgba(0,229,255,.4); color: var(--ink); }
+
+  main{ min-width: 0; }
+
+  .lesson-shell{
+    max-width: 1180px; margin: 0 auto; padding: 2.4rem 6vw 5rem;
+    display: grid; grid-template-columns: 270px 1fr; gap: 2.2rem; align-items: start;
+  }
+
+  /* ── Lesson list sidebar ── */
+  .lesson-nav{
+    position: sticky; top: 90px;
+    background: var(--navy-card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.4rem 1.2rem; backdrop-filter: blur(6px);
+    max-height: calc(100vh - 120px); overflow-y: auto;
+  }
+  .lesson-nav h3{
+    font-family: var(--mono); font-size:.64rem; text-transform:uppercase; letter-spacing:.08em;
+    color: var(--ink-soft); margin-bottom: 1rem;
+  }
+  .lesson-nav-list{ list-style:none; display:flex; flex-direction:column; gap:.3rem; }
+  .lesson-nav-item a{
+    display:flex; align-items:center; gap:.7rem; padding:.6rem .6rem; border-radius:10px;
+    text-decoration:none; color: var(--ink-soft); font-size:.85rem; line-height:1.3;
+    border: 1px solid transparent; transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .lesson-nav-item a:hover{ background: rgba(242,246,251,.05); color: var(--ink); }
+  .lesson-nav-item.is-current a{
+    background: rgba(0,229,255,.1); color: var(--ink); border-color: rgba(0,229,255,.3);
+  }
+  .lesson-nav-item .ln-icon{
+    width:22px; height:22px; border-radius:50%; flex-shrink:0; display:grid; place-items:center;
+    font-family: var(--mono); font-size:.6rem; border:1px solid var(--line); color: var(--ink-soft);
+  }
+  .lesson-nav-item.is-done .ln-icon{ background: var(--mint); border-color: var(--mint); color:#04101f; }
+  .lesson-nav-item.is-current .ln-icon{ border-color: var(--cyan); color: var(--cyan); }
+  .lesson-nav-item .ln-title{ flex:1; }
+  .lesson-nav-item .ln-num{
+    font-family: var(--mono); font-size:.62rem; color: var(--ink-soft); flex-shrink:0;
+  }
+
+  @media (max-width: 980px){
+    .lesson-shell{ grid-template-columns: 230px 1fr; gap: 1.6rem; }
+  }
+  @media (max-width: 860px){
+    .lesson-shell{ grid-template-columns: 1fr; padding: 1.8rem 5vw 4rem; }
+    .lesson-nav{ position: static; max-height: none; order: -1; padding: 1.1rem 1rem; }
+    .lesson-nav-list{ flex-direction: row; overflow-x: auto; padding-bottom: .3rem; gap:.5rem; }
+    .lesson-nav-item{ flex-shrink: 0; }
+    .lesson-nav-item a{ white-space: nowrap; }
+  }
+
+  .crumb{ font-family: var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color: var(--blue); margin-bottom:.6rem; }
+  .course-progress-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: 1.6rem; }
+  .course-progress-row .cp-label{ font-family: var(--mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft); }
+  .cp-track{ flex:1; height:7px; border-radius:999px; background: rgba(242,246,251,.08); overflow:hidden; margin: 0 1rem; }
+  .cp-fill{ height:100%; border-radius:999px; background: linear-gradient(90deg, var(--blue), var(--cyan)); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+  .cp-pct{ font-family: var(--mono); font-size:.72rem; color: var(--cyan); font-weight:700; min-width: 3ch; text-align:right; }
+
+  h1.lesson-title{ font-family: var(--display); font-weight:600; font-size: clamp(1.7rem, 3.4vw, 2.4rem); margin-bottom: .7rem; }
+  .lesson-meta{ display:flex; flex-wrap:wrap; gap: .6rem 1.4rem; font-family: var(--mono); font-size:.72rem; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-bottom: 1.6rem; }
+  .lesson-meta b{ color: var(--ink); font-weight:600; }
+  .lesson-desc{ color: var(--ink-soft); line-height:1.7; margin-bottom: 2.2rem; max-width: 68ch; }
+
+  .card{ background: var(--navy-card); border:1px solid var(--line); border-radius:16px; padding: 1.8rem 1.7rem; margin-bottom: 1.6rem; backdrop-filter: blur(6px); }
+  .card h2{ font-family: var(--display); font-weight:600; font-size:1.2rem; margin-bottom: 1rem; display:flex; align-items:center; gap: .6rem; }
+  .step-num{
+    width: 26px; height:26px; border-radius:50%; background: rgba(0,229,255,.1); border:1px solid var(--cyan);
+    color: var(--cyan); font-family: var(--mono); font-size:.72rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .card.locked{ opacity:.5; }
+  .card.locked h2 .step-num{ border-color: var(--line); color: var(--ink-soft); background:none; }
+  .lock-note{ font-family: var(--mono); font-size:.68rem; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-top: .4rem; }
+
+  video{ width:100%; border-radius:12px; background:#000; display:block; }
+  .video-fallback{
+    aspect-ratio: 16/9; border-radius:12px; border: 1px dashed var(--line); display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap: .6rem; color: var(--ink-soft); font-family: var(--mono); font-size:.72rem; text-align:center; padding: 1.5rem;
+  }
+  .resource-row{ display:flex; gap: .8rem; margin-top: 1.1rem; flex-wrap:wrap; }
+  .resource-link{
+    font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; text-decoration:none;
+    color: var(--ink); border:1px solid var(--line); padding: 9px 16px; border-radius:999px; transition: border-color .2s ease;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .resource-link:hover{ border-color: rgba(0,229,255,.4); }
+
+  .quiz-q{ margin-bottom: 1.4rem; }
+  .quiz-q p{ font-weight:500; margin-bottom: .7rem; }
+  .quiz-opt{ display:flex; align-items:center; gap:.7rem; padding: .55rem .3rem; cursor:pointer; border-radius:8px; transition: background .15s ease; }
+  .quiz-opt:hover{ background: rgba(242,246,251,.04); }
+  .quiz-opt input{ accent-color: var(--cyan); width:16px; height:16px; }
+  .quiz-opt.correct{ color: var(--mint); }
+  .quiz-opt.wrong{ color: var(--danger); }
+
+  textarea{
+    width:100%; min-height: 130px; background: rgba(5,10,26,.5); border:1px solid var(--line); border-radius:10px;
+    color: var(--ink); font-family: var(--body); font-size:.92rem; padding: .9rem 1rem; resize: vertical;
+  }
+  textarea:focus{ outline:none; border-color: var(--cyan); }
+
+  .btn{
+    font-family: var(--mono); font-size:.74rem; text-transform:uppercase; letter-spacing:.03em; font-weight:700;
+    padding: 11px 22px; border-radius:999px; border:none; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    background: linear-gradient(90deg, var(--blue), var(--cyan)); color:#04101f;
+    text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+  }
+  .btn:hover:not(:disabled){ transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,175,255,.35); }
+  .btn:disabled{ opacity:.35; cursor:not-allowed; }
+  .btn-ghost{ background:transparent; color: var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover:not(:disabled){ border-color: var(--cyan); box-shadow:none; }
+  .btn-row{ display:flex; gap: .8rem; flex-wrap:wrap; align-items:center; margin-top: .4rem; }
+  .status-msg{ font-family: var(--mono); font-size:.72rem; margin-top: .8rem; }
+  .status-msg.ok{ color: var(--mint); }
+  .status-msg.err{ color: var(--danger); }
+
+  .complete-panel{ text-align:center; padding: 2.4rem 1.7rem; }
+  .complete-panel .big-check{ font-size: 2.2rem; color: var(--mint); margin-bottom: .8rem; }
+  .complete-panel h2{ justify-content:center; }
+  .complete-panel p{ color: var(--ink-soft); margin-bottom: 1.4rem; }
+
+  @media (max-width: 640px){
+    .lesson-shell{ padding: 1.8rem 5vw 4rem; }
+    .course-progress-row{ flex-wrap:wrap; }
+    .cp-track{ order:3; width:100%; margin: .5rem 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="dashboard.html" class="mark">
+    <img src="techbridge-mark.svg" alt="TechBridge logo">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">Lesson</span>
+    </div>
+  </a>
+  <a href="dashboard.html" class="back-link">&larr; Dashboard</a>
+</header>
+
+<div class="lesson-shell">
+  <aside class="lesson-nav" id="lessonNav">
+    <p style="font-family:var(--mono); color:var(--ink-soft); font-size:.75rem;">Loading…</p>
+  </aside>
+  <main id="lessonRoot">
+    <p style="font-family:var(--mono); color:var(--ink-soft); font-size:.8rem;">Loading lesson…</p>
+  </main>
+</div>
+
+<script src="course-data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get("course");
+  const requestedLessonId = params.get("lesson");
+  const root = document.getElementById("lessonRoot");
+
+  // ── Resolve course + lesson ────────────────────────────────────────────
+  // The URL might carry no lesson param, a placeholder like "intro", or a
+  // stale/typo'd id. Rather than dead-ending on "not found", we self-heal:
+  // if the requested lesson doesn't exist, fall back to the learner's real
+  // current lesson for this course (first incomplete lesson, or the last
+  // one if the course is already finished) and generate that instead.
+  const course = getCourse(courseId);
+  let lesson = course ? getLesson(courseId, requestedLessonId) : null;
+  let healed = false;
+
+  if (course && !lesson) {
+    lesson = getCurrentLesson(courseId);
+    healed = true;
+  }
+
+  if (lesson && healed) {
+    // Keep the address bar (and any bookmarks/back-button use) pointed at
+    // the real lesson id going forward.
+    const url = new URL(window.location.href);
+    url.searchParams.set("lesson", lesson.id);
+    window.history.replaceState({}, "", url);
+  }
+
+  if (!course || !lesson) {
+    document.getElementById("lessonNav").style.display = "none";
+    root.innerHTML = `
+      <div class="card">
+        <h2>Course not found</h2>
+        <p class="lesson-desc">We couldn't find "${courseId || "(no course)"}" in the catalog. It may have moved.</p>
+        <a href="dashboard.html" class="btn">Back to dashboard</a>
+      </div>`;
+  } else {
+    renderLessonNav();
+    renderLesson();
+  }
+
+  function renderLessonNav() {
+    const nav = document.getElementById("lessonNav");
+    nav.innerHTML = `
+      <h3>${course.title}</h3>
+      <ul class="lesson-nav-list">
+        ${course.lessons.map((l, i) => {
+          const isCurrent = l.id === lesson.id;
+          const isDone = l.completed;
+          const cls = ['lesson-nav-item', isCurrent ? 'is-current' : '', isDone ? 'is-done' : ''].filter(Boolean).join(' ');
+          const icon = isDone ? '&#10003;' : (i + 1);
+          return `
+            <li class="${cls}">
+              <a href="lesson.html?course=${courseId}&lesson=${l.id}">
+                <span class="ln-icon">${icon}</span>
+                <span class="ln-title">${l.title}</span>
+              </a>
+            </li>`;
+        }).join('')}
+      </ul>
+    `;
+  }
+
+  function lessonIndex() {
+    return course.lessons.findIndex(l => l.id === lesson.id);
+  }
+
+  function renderLesson() {
+    const idx = lessonIndex();
+    const total = course.lessons.length;
+    const pct = getCourseCompletionPercent(courseId);
+    const already = isLessonComplete(lesson);
+
+    root.innerHTML = `
+      <div class="crumb">${course.category} · ${course.title}</div>
+      <div class="course-progress-row">
+        <span class="cp-label">Lesson ${idx + 1} of ${total}</span>
+        <div class="cp-track"><div class="cp-fill" style="width:${pct}%"></div></div>
+        <span class="cp-pct">${pct}%</span>
+      </div>
+
+      <h1 class="lesson-title">${lesson.title}</h1>
+      <div class="lesson-meta">
+        <span>Instructor: <b>${lesson.instructor}</b></span>
+        <span>Duration: <b>${lesson.duration}</b></span>
+        ${already ? '<span style="color: var(--mint);">&#10003; Already completed</span>' : ''}
+      </div>
+      <p class="lesson-desc">${lesson.description}</p>
+
+      <div class="card">
+        <h2><span class="step-num">1</span> Watch the lecture</h2>
+        <video controls preload="metadata" poster="">
+          <source src="${lesson.video}" type="video/mp4">
+        </video>
+        <div class="video-fallback" id="videoFallback" style="display:none;">
+          Video file not found at <code>${lesson.video}</code> in this scaffold — drop the real file at that path and it will play automatically.
+        </div>
+        <div class="resource-row">
+          <a class="resource-link" href="${lesson.notes}" download>&#128196; Lesson notes (PDF)</a>
+          <a class="resource-link" href="${lesson.slides}" download>&#128202; Slides (PDF)</a>
+        </div>
+      </div>
+
+      <div class="card" id="quizCard">
+        <h2><span class="step-num">2</span> Take the quiz</h2>
+        <form id="quizForm"></form>
+        <div class="btn-row">
+          <button class="btn" id="quizSubmit" type="button">Submit quiz</button>
+        </div>
+        <div class="status-msg" id="quizStatus"></div>
+      </div>
+
+      <div class="card locked" id="assignmentCard">
+        <h2><span class="step-num">3</span> Complete the assignment</h2>
+        <p class="lesson-desc" style="margin-bottom:1rem;"><b style="color:var(--ink);">${lesson.assignment.title}.</b> ${lesson.assignment.brief}</p>
+        <textarea id="assignmentText" placeholder="Write your response here…" disabled></textarea>
+        <div class="btn-row">
+          <button class="btn" id="assignmentSubmit" type="button" disabled>${lesson.assignment.submitLabel}</button>
+        </div>
+        <div class="status-msg" id="assignmentStatus"></div>
+        <div class="lock-note" id="assignmentLockNote">Pass the quiz above to unlock this.</div>
+      </div>
+
+      <div class="card locked" id="completeCard">
+        <h2><span class="step-num">4</span> Mark lesson complete</h2>
+        <p class="lesson-desc" style="margin-bottom:1rem;">Once the quiz is passed and the assignment is submitted, wrap up this lesson to update your progress${idx === total - 1 ? " and unlock your certificate" : " and move to the next lesson"}.</p>
+        <div class="btn-row">
+          <button class="btn" id="completeBtn" type="button" disabled>Mark lesson complete</button>
+        </div>
+      </div>
+    `;
+
+    // Video fallback: if the source 404s (expected in this scaffold since no
+    // real video files are bundled), swap in a friendly placeholder instead
+    // of a broken player.
+    const videoEl = root.querySelector("video");
+    videoEl.addEventListener("error", () => {
+      videoEl.style.display = "none";
+      document.getElementById("videoFallback").style.display = "flex";
+    }, true);
+
+    renderQuiz();
+    wireAssignment();
+    wireComplete(idx, total, already);
+
+    if (already) {
+      // Already-completed lesson: unlock everything so it can be reviewed freely.
+      unlockAssignment();
+      document.getElementById("completeCard").classList.remove("locked");
+      const btn = document.getElementById("completeBtn");
+      btn.disabled = false;
+      btn.textContent = "Reviewed — go to next";
+    }
+  }
+
+  function renderQuiz() {
+    const form = document.getElementById("quizForm");
+    form.innerHTML = lesson.quiz.map((q, qi) => `
+      <div class="quiz-q" data-qi="${qi}">
+        <p>${qi + 1}. ${q.q}</p>
+        ${q.options.map((opt, oi) => `
+          <label class="quiz-opt">
+            <input type="radio" name="q${qi}" value="${oi}">
+            <span>${opt}</span>
+          </label>
+        `).join("")}
+      </div>
+    `).join("");
+
+    document.getElementById("quizSubmit").addEventListener("click", () => {
+      let correct = 0;
+      let answeredAll = true;
+      lesson.quiz.forEach((q, qi) => {
+        const chosen = form.querySelector(`input[name="q${qi}"]:checked`);
+        const optionEls = form.querySelectorAll(`.quiz-q[data-qi="${qi}"] .quiz-opt`);
+        if (!chosen) { answeredAll = false; return; }
+        const chosenVal = parseInt(chosen.value, 10);
+        optionEls.forEach((el, oi) => {
+          el.classList.remove("correct", "wrong");
+          if (oi === q.answer) el.classList.add("correct");
+          else if (oi === chosenVal) el.classList.add("wrong");
+        });
+        if (chosenVal === q.answer) correct++;
+      });
+
+      const statusEl = document.getElementById("quizStatus");
+      if (!answeredAll) {
+        statusEl.textContent = "Answer every question before submitting.";
+        statusEl.className = "status-msg err";
+        return;
+      }
+      const scorePct = Math.round((correct / lesson.quiz.length) * 100);
+      const passed = scorePct >= 70;
+      statusEl.textContent = `Score: ${correct}/${lesson.quiz.length} (${scorePct}%) — ${passed ? "passed!" : "try again to reach 70%."}`;
+      statusEl.className = "status-msg " + (passed ? "ok" : "err");
+      if (passed) unlockAssignment();
+    });
+  }
+
+  function unlockAssignment() {
+    const card = document.getElementById("assignmentCard");
+    card.classList.remove("locked");
+    document.getElementById("assignmentText").disabled = false;
+    document.getElementById("assignmentSubmit").disabled = false;
+    document.getElementById("assignmentLockNote").style.display = "none";
+  }
+
+  let assignmentSubmitted = false;
+  function wireAssignment() {
+    document.getElementById("assignmentSubmit").addEventListener("click", () => {
+      const text = document.getElementById("assignmentText").value.trim();
+      const statusEl = document.getElementById("assignmentStatus");
+      if (text.length < 10) {
+        statusEl.textContent = "Write a bit more before submitting.";
+        statusEl.className = "status-msg err";
+        return;
+      }
+      assignmentSubmitted = true;
+      statusEl.textContent = "Assignment submitted.";
+      statusEl.className = "status-msg ok";
+      const completeCard = document.getElementById("completeCard");
+      completeCard.classList.remove("locked");
+      document.getElementById("completeBtn").disabled = false;
+    });
+  }
+
+  function wireComplete(idx, total, alreadyDone) {
+    document.getElementById("completeBtn").addEventListener("click", () => {
+      // NOTE: setLessonComplete needs the course id too, so progress is
+      // stored per-course (lesson ids are only unique within a course).
+      setLessonComplete(courseId, lesson.id, true);
+      const next = getNextLesson(courseId, lesson.id);
+
+      if (next) {
+        window.location.href = `lesson.html?course=${courseId}&lesson=${next.id}`;
+      } else if (isCourseComplete(courseId)) {
+        issueCertificate(courseId);
+        window.location.href = `certificate.html?course=${courseId}`;
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="{}" class="mark">
+    <img src="techbridge-mark.svg" alt="TechBridge logo">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">Lesson</span>
+    </div>
+  </a>
+  <a href="dashboard.html" class="back-link">&larr; Dashboard</a>
+</header>
+
+<div class="lesson-shell">
+  <aside class="lesson-nav" id="lessonNav">
+    <p style="font-family:var(--mono); color:var(--ink-soft); font-size:.75rem;">Loading…</p>
+  </aside>
+  <main id="lessonRoot">
+    <p style="font-family:var(--mono); color:var(--ink-soft); font-size:.8rem;">Loading lesson…</p>
+  </main>
+</div>
+
+<script src="course-data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get("course");
+  const requestedLessonId = params.get("lesson");
+  const root = document.getElementById("lessonRoot");
+
+  // ── Resolve course + lesson ────────────────────────────────────────────
+  // The URL might carry no lesson param, a placeholder like "intro", or a
+  // stale/typo'd id. Rather than dead-ending on "not found", we self-heal:
+  // if the requested lesson doesn't exist, fall back to the learner's real
+  // current lesson for this course (first incomplete lesson, or the last
+  // one if the course is already finished) and generate that instead.
+  const course = getCourse(courseId);
+  let lesson = course ? getLesson(courseId, requestedLessonId) : null;
+  let healed = false;
+
+  if (course && !lesson) {
+    lesson = getCurrentLesson(courseId);
+    healed = true;
+  }
+
+  if (lesson && healed) {
+    // Keep the address bar (and any bookmarks/back-button use) pointed at
+    // the real lesson id going forward.
+    const url = new URL(window.location.href);
+    url.searchParams.set("lesson", lesson.id);
+    window.history.replaceState({}, "", url);
+  }
+
+  if (!course || !lesson) {
+    document.getElementById("lessonNav").style.display = "none";
+    root.innerHTML = `
+      <div class="card">
+        <h2>Course not found</h2>
+        <p class="lesson-desc">We couldn't find "${courseId || "(no course)"}" in the catalog. It may have moved.</p>
+        <a href="dashboard.html" class="btn">Back to dashboard</a>
+      </div>`;
+  } else {
+    renderLessonNav();
+    renderLesson();
+  }
+
+  function renderLessonNav() {
+    const nav = document.getElementById("lessonNav");
+    nav.innerHTML = `
+      <h3>${course.title}</h3>
+      <ul class="lesson-nav-list">
+        ${course.lessons.map((l, i) => {
+          const isCurrent = l.id === lesson.id;
+          const isDone = l.completed;
+          const cls = ['lesson-nav-item', isCurrent ? 'is-current' : '', isDone ? 'is-done' : ''].filter(Boolean).join(' ');
+          const icon = isDone ? '&#10003;' : (i + 1);
+          return `
+            <li class="${cls}">
+              <a href="lesson.html?course=${courseId}&lesson=${l.id}">
+                <span class="ln-icon">${icon}</span>
+                <span class="ln-title">${l.title}</span>
+              </a>
+            </li>`;
+        }).join('')}
+      </ul>
+    `;
+  }
+
+  function lessonIndex() {
+    return course.lessons.findIndex(l => l.id === lesson.id);
+  }
+
+  function renderLesson() {
+    const idx = lessonIndex();
+    const total = course.lessons.length;
+    const pct = getCourseCompletionPercent(courseId);
+    const already = isLessonComplete(lesson);
+
+    root.innerHTML = `
+      <div class="crumb">${course.category} · ${course.title}</div>
+      <div class="course-progress-row">
+        <span class="cp-label">Lesson ${idx + 1} of ${total}</span>
+        <div class="cp-track"><div class="cp-fill" style="width:${pct}%"></div></div>
+        <span class="cp-pct">${pct}%</span>
+      </div>
+
+      <h1 class="lesson-title">${lesson.title}</h1>
+      <div class="lesson-meta">
+        <span>Instructor: <b>${lesson.instructor}</b></span>
+        <span>Duration: <b>${lesson.duration}</b></span>
+        ${already ? '<span style="color: var(--mint);">&#10003; Already completed</span>' : ''}
+      </div>
+      <p class="lesson-desc">${lesson.description}</p>
+
+      <div class="card">
+        <h2><span class="step-num">1</span> Watch the lecture</h2>
+        <video controls preload="metadata" poster="">
+          <source src="${lesson.video}" type="video/mp4">
+        </video>
+        <div class="video-fallback" id="videoFallback" style="display:none;">
+          Video file not found at <code>${lesson.video}</code> in this scaffold — drop the real file at that path and it will play automatically.
+        </div>
+        <div class="resource-row">
+          <a class="resource-link" href="${lesson.notes}" download>&#128196; Lesson notes (PDF)</a>
+          <a class="resource-link" href="${lesson.slides}" download>&#128202; Slides (PDF)</a>
+        </div>
+      </div>
+
+      <div class="card" id="quizCard">
+        <h2><span class="step-num">2</span> Take the quiz</h2>
+        <form id="quizForm"></form>
+        <div class="btn-row">
+          <button class="btn" id="quizSubmit" type="button">Submit quiz</button>
+        </div>
+        <div class="status-msg" id="quizStatus"></div>
+      </div>
+
+      <div class="card locked" id="assignmentCard">
+        <h2><span class="step-num">3</span> Complete the assignment</h2>
+        <p class="lesson-desc" style="margin-bottom:1rem;"><b style="color:var(--ink);">${lesson.assignment.title}.</b> ${lesson.assignment.brief}</p>
+        <textarea id="assignmentText" placeholder="Write your response here…" disabled></textarea>
+        <div class="btn-row">
+          <button class="btn" id="assignmentSubmit" type="button" disabled>${lesson.assignment.submitLabel}</button>
+        </div>
+        <div class="status-msg" id="assignmentStatus"></div>
+        <div class="lock-note" id="assignmentLockNote">Pass the quiz above to unlock this.</div>
+      </div>
+
+      <div class="card locked" id="completeCard">
+        <h2><span class="step-num">4</span> Mark lesson complete</h2>
+        <p class="lesson-desc" style="margin-bottom:1rem;">Once the quiz is passed and the assignment is submitted, wrap up this lesson to update your progress${idx === total - 1 ? " and unlock your certificate" : " and move to the next lesson"}.</p>
+        <div class="btn-row">
+          <button class="btn" id="completeBtn" type="button" disabled>Mark lesson complete</button>
+        </div>
+      </div>
+    `;
+
+    // Video fallback: if the source 404s (expected in this scaffold since no
+    // real video files are bundled), swap in a friendly placeholder instead
+    // of a broken player.
+    const videoEl = root.querySelector("video");
+    videoEl.addEventListener("error", () => {
+      videoEl.style.display = "none";
+      document.getElementById("videoFallback").style.display = "flex";
+    }, true);
+
+    renderQuiz();
+    wireAssignment();
+    wireComplete(idx, total, already);
+
+    if (already) {
+      // Already-completed lesson: unlock everything so it can be reviewed freely.
+      unlockAssignment();
+      document.getElementById("completeCard").classList.remove("locked");
+      const btn = document.getElementById("completeBtn");
+      btn.disabled = false;
+      btn.textContent = "Reviewed — go to next";
+    }
+  }
+
+  function renderQuiz() {
+    const form = document.getElementById("quizForm");
+    form.innerHTML = lesson.quiz.map((q, qi) => `
+      <div class="quiz-q" data-qi="${qi}">
+        <p>${qi + 1}. ${q.q}</p>
+        ${q.options.map((opt, oi) => `
+          <label class="quiz-opt">
+            <input type="radio" name="q${qi}" value="${oi}">
+            <span>${opt}</span>
+          </label>
+        `).join("")}
+      </div>
+    `).join("");
+
+    document.getElementById("quizSubmit").addEventListener("click", () => {
+      let correct = 0;
+      let answeredAll = true;
+      lesson.quiz.forEach((q, qi) => {
+        const chosen = form.querySelector(`input[name="q${qi}"]:checked`);
+        const optionEls = form.querySelectorAll(`.quiz-q[data-qi="${qi}"] .quiz-opt`);
+        if (!chosen) { answeredAll = false; return; }
+        const chosenVal = parseInt(chosen.value, 10);
+        optionEls.forEach((el, oi) => {
+          el.classList.remove("correct", "wrong");
+          if (oi === q.answer) el.classList.add("correct");
+          else if (oi === chosenVal) el.classList.add("wrong");
+        });
+        if (chosenVal === q.answer) correct++;
+      });
+
+      const statusEl = document.getElementById("quizStatus");
+      if (!answeredAll) {
+        statusEl.textContent = "Answer every question before submitting.";
+        statusEl.className = "status-msg err";
+        return;
+      }
+      const scorePct = Math.round((correct / lesson.quiz.length) * 100);
+      const passed = scorePct >= 70;
+      statusEl.textContent = `Score: ${correct}/${lesson.quiz.length} (${scorePct}%) — ${passed ? "passed!" : "try again to reach 70%."}`;
+      statusEl.className = "status-msg " + (passed ? "ok" : "err");
+      if (passed) unlockAssignment();
+    });
+  }
+
+  function unlockAssignment() {
+    const card = document.getElementById("assignmentCard");
+    card.classList.remove("locked");
+    document.getElementById("assignmentText").disabled = false;
+    document.getElementById("assignmentSubmit").disabled = false;
+    document.getElementById("assignmentLockNote").style.display = "none";
+  }
+
+  let assignmentSubmitted = false;
+  function wireAssignment() {
+    document.getElementById("assignmentSubmit").addEventListener("click", () => {
+      const text = document.getElementById("assignmentText").value.trim();
+      const statusEl = document.getElementById("assignmentStatus");
+      if (text.length < 10) {
+        statusEl.textContent = "Write a bit more before submitting.";
+        statusEl.className = "status-msg err";
+        return;
+      }
+      assignmentSubmitted = true;
+      statusEl.textContent = "Assignment submitted.";
+      statusEl.className = "status-msg ok";
+      const completeCard = document.getElementById("completeCard");
+      completeCard.classList.remove("locked");
+      document.getElementById("completeBtn").disabled = false;
+    });
+  }
+
+  function wireComplete(idx, total, alreadyDone) {
+    document.getElementById("completeBtn").addEventListener("click", () => {
+      // NOTE: setLessonComplete needs the course id too, so progress is
+      // stored per-course (lesson ids are only unique within a course).
+      setLessonComplete(courseId, lesson.id, true);
+      const next = getNextLesson(courseId, lesson.id);
+
+      if (next) {
+        window.location.href = `lesson.html?course=${courseId}&lesson=${next.id}`;
+      } else if (isCourseComplete(courseId)) {
+        issueCertificate(courseId);
+        window.location.href = `certificate.html?course=${courseId}`;
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

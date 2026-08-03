@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Certificate | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1B2A4A;
+    --ink-soft: #3D4E72;
+    --paper: #F6F1E7;
+    --paper-line: #BAB3A4;
+    --card: #FFFDF8;
+    --gold: #C9973F;
+    --gold-deep: #A97B28;
+    --sage: #7C9885;
+    --track: rgba(27,42,74,.10);
+    --danger: #B5563C;
+    --display: 'Fraunces', serif;
+    --body: 'Work Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    min-height: 100vh;
+  }
+
+  .bg-overlay{
+    position: fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(201,151,63,.12), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,152,133,.08), transparent 50%),
+      linear-gradient(180deg, #F6F1E7 0%, #F0EADF 100%);
+    pointer-events:none;
+  }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw;
+    border-bottom:1px solid var(--paper-line);
+    background: rgba(255,253,248,.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .mark-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .mark-text .main-name{
+    font-family: var(--display);
+    font-weight:600;
+    font-size:1.15rem;
+    color: var(--ink);
+  }
+  .mark-text .sub-name{
+    font-family: var(--mono);
+    font-size:.6rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color: var(--gold-deep);
+    margin-top:2px;
+  }
+
+  .back-link{
+    font-family: var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color: var(--ink-soft);
+    text-decoration:none;
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--paper-line);
+    padding:8px 16px;
+    border-radius:999px;
+    transition: border-color .2s ease, color .2s ease, background .2s ease;
+  }
+  .back-link:hover{
+    border-color: var(--gold);
+    color: var(--ink);
+    background: rgba(201,151,63,.08);
+  }
+
+  main{
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3rem 6vw 5rem;
+  }
+
+  .cert{
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 22px;
+    padding: 3.4rem 3rem;
+    text-align: center;
+    box-shadow:
+      0 20px 50px rgba(27,42,74,.08),
+      0 0 0 6px rgba(201,151,63,.08);
+  }
+
+  .cert::before{
+    content:"";
+    position:absolute;
+    inset: 14px;
+    border: 1px solid rgba(201,151,63,.35);
+    border-radius: 14px;
+    pointer-events:none;
+  }
+
+  .seal{
+    width: 68px; height:68px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #fff6da, var(--gold));
+    color: #3a2c05;
+    display:flex; align-items:center; justify-content:center;
+    margin: 0 auto 1.4rem;
+    font-size:1.6rem;
+    box-shadow: 0 6px 18px rgba(169,123,40,.25);
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    color: var(--gold-deep);
+    margin-bottom: 1.2rem;
+  }
+
+  .cert h1{
+    font-family: var(--display);
+    font-weight:600;
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    color: var(--ink);
+    margin-bottom: .6rem;
+  }
+
+  .cert .student-name{
+    font-style: italic;
+    color: var(--gold-deep);
+  }
+
+  .cert p.line{
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height:1.7;
+    margin: 0 auto 1.6rem;
+    max-width: 52ch;
+  }
+
+  .cert .course-name{
+    font-family: var(--display);
+    font-weight:600;
+    font-size: 1.4rem;
+    color: var(--ink);
+    display:block;
+    margin: .4rem 0 1.4rem;
+  }
+
+  .cert-meta{
+    display:flex;
+    justify-content:center;
+    gap: 2.4rem;
+    flex-wrap:wrap;
+    font-family: var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color: var(--ink-soft);
+    margin-top: 1.6rem;
+    padding-top: 1.6rem;
+    border-top: 1px dashed var(--paper-line);
+  }
+
+  .cert-meta b{
+    display:block;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: .92rem;
+    text-transform:none;
+    letter-spacing:0;
+    margin-top:.3rem;
+  }
+
+  .actions{
+    display:flex;
+    justify-content:center;
+    gap: .9rem;
+    margin-top: 2.2rem;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    font-family: var(--mono);
+    font-size:.74rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    font-weight:700;
+    padding: 12px 24px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+    color: #fff;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(169,123,40,.3);
+  }
+
+  .btn-ghost{
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--paper-line);
+  }
+  .btn-ghost:hover{
+    border-color: var(--gold);
+    background: rgba(201,151,63,.08);
+  }
+
+  .not-ready{
+    text-align:center;
+    padding: 3rem 1.5rem;
+  }
+  .not-ready p{
+    color: var(--ink-soft);
+    margin: 1rem 0 1.6rem;
+  }
+
+  @media print{
+    header, .actions{ display:none; }
+    body{ background:#fff; color:#111; }
+    .cert{
+      box-shadow:none;
+      border-color:#ccc;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="{% url 'studentdashboard' %}" class="mark-text" style="text-decoration:none;">
+    <span class="main-name">TechBridge</span>
+    <span class="sub-name">Certificate</span>
+  </a>
+  <a href="{% url 'studentdashboard' %}" class="back-link">&larr; Dashboard</a>
+</header>
+
+<main id="certRoot">
+  <p style="font-family:var(--mono); color:var(--ink-soft); font-size:.8rem; text-align:center;">Loading certificate…</p>
+</main>
+
+<script src="{% static 'studentdashboard/js/course-data.js' %}"></script>
+<script>
+  const STORAGE_KEY = 'techbridge_current_user';
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get("course");
+  const root = document.getElementById("certRoot");
+
+  let currentUser = null;
+  try { currentUser = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { currentUser = null; }
+
+  const course = getCourse(courseId);
+
+  if (!course) {
+    root.innerHTML = `
+      <div class="not-ready">
+        <h1 style="font-family:var(--display);">Course not found</h1>
+        <p>We couldn't find "${courseId || '(no course)'}" in the catalog.</p>
+        <a href="{% url 'studentdashboard' %}" class="btn">Back to dashboard</a>
+      </div>`;
+  } else if (!isCourseComplete(courseId)) {
+    const current = getCurrentLesson(courseId);
+    root.innerHTML = `
+      <div class="not-ready">
+        <h1 style="font-family:var(--display);">Not quite there yet</h1>
+        <p>You still have lessons left in <b>${course.title}</b> — finish those first and your certificate will generate automatically.</p>
+        <a class="btn" href="{% url 'lesson' %}?course=${courseId}&lesson=${current.id}">Continue course &rarr;</a>
+      </div>`;
+  } else {
+    const cert = issueCertificate(courseId);
+    const studentName = (currentUser && currentUser.name) || "Student";
+    const issuedDate = new Date(cert.issuedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+    root.innerHTML = `
+      <div class="cert">
+        <div class="seal">&#127942;</div>
+        <div class="eyebrow">Certificate of Completion</div>
+        <h1>This certifies that<br><span class="student-name">${studentName}</span></h1>
+        <p class="line">has successfully completed all lessons, quizzes, and assignments in</p>
+        <span class="course-name">${course.title}</span>
+        <p class="line">on the TechBridge learning platform.</p>
+        <div class="cert-meta">
+          <div>Instructor<b>${course.instructor}</b></div>
+          <div>Lessons completed<b>${course.lessons.length} / ${course.lessons.length}</b></div>
+          <div>Issued<b>${issuedDate}</b></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="window.print()">&#128424; Print / Save as PDF</button>
+        <a class="btn btn-ghost" href="{% url 'studentdashboard' %}">Back to dashboard</a>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>

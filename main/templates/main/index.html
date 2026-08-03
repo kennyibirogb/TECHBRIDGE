@@ -334,7 +334,7 @@
     <ul>
       <li><a href="{% url 'main' %}" class="nav-link">Home</a></li>
       <li><a href="#about" class="nav-link">About</a></li>
-      <li><a href="#courses" class="nav-link">Programs</a></li>
+      <li><a href="{% url 'programs' %}" class="nav-link">Programs</a></li>
       <li><a href="{% url 'event' %}" class="nav-link">Events</a></li>
       <li><a href="#team" class="nav-link">Team</a></li>
       <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -358,7 +358,7 @@
       <h1>CREATE</h1>
       <h1>TRANSFORM</h1>
       <p>We're a small academy for people who'd rather build the real thing than sit through a slide deck about it. Small cohorts, working instructors, and a studio that stays open long after class ends.</p>
-      <a class="about-cta" href="#courses">See how it's structured &rarr;</a>
+      <a class="about-cta" href="{% url 'programs' %}">See how it's structured &rarr;</a>
     </div>
     <div class="hero-right">
       <h2>about the website</h2>

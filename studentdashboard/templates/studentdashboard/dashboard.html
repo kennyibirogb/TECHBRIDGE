@@ -175,43 +175,59 @@ nav a:hover::after, nav a.active::after{ width:100%; }
 }
 .tabs button.active{ background:var(--ink); color:var(--paper); }
 
-/* ---------- orbit (signature element) ---------- */
-.orbit-wrap{
-  position:relative; width:100%; max-width:920px; margin:0 auto 1rem;
-  height:480px;
+/* ---------- rail-wrap (signature element) ---------- */
+:root{
+  --ink: #1B2A4A;
+  --ink-soft: #3D4E72;
+  --paper: #F6F1E7;
+  --paper-line: #BAB3A4;
+  --card: #FFFDF8;
+  --gold: #C9973F;
+  --gold-deep: #A97B28;
+  --sage: #7C9885;
+  --track: rgba(27,42,74,.10);
+  --display: 'Fraunces', serif;
+  --body: 'Work Sans', sans-serif;
+  --mono: 'Space Mono', monospace;
 }
-.orbit-wrap svg.connector{ position:absolute; inset:0; width:100%; height:100%; }
-.orbit-wrap svg.connector path{
-  fill:none; stroke:var(--ink); stroke-width:1.5;
-  stroke-dasharray:6 7; opacity:.28;
+
+.rail-wrap{
+  position: relative; margin-bottom: 2.6rem;
+  background: var(--gold); border: 1px solid var(--track);
+  border-radius: 18px; padding: 2.6rem 1.6rem 1.8rem;
+  overflow-x: auto;
 }
-.node{
-  position:absolute; left:var(--x); top:var(--y);
-  width:150px; transform:translate(-50%,-50%);
-  display:flex; flex-direction:column; align-items:center; gap:.5rem;
-  text-align:center; cursor:pointer;
-  animation:rise .7s cubic-bezier(.2,.8,.2,1) both;
+.rail-track{ position: relative; min-width: 760px; height: 132px; }
+.rail-track svg{ position:absolute; top: 40px; left:0; width:100%; height:2px; overflow:visible; }
+.rail-track svg line{ stroke: var(--paper-line); stroke-width:2; }
+.rail-track svg line.fill{ stroke: url(#railGrad); }
+
+.rail-node{
+  position:absolute; top:0; transform: translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:.6rem;
+  width: 108px; text-align:center; cursor:pointer;
 }
-.node .ring-outer{
-  width:78px; height:78px; border-radius:50%;
-  background:conic-gradient(var(--gold) calc(var(--p)*1%), var(--track) 0);
+.rail-node .dot{
+  width: 64px; height: 64px; border-radius: 50%;
+  background: conic-gradient(var(--ink) calc(var(--p)*1%), var(--track) 0);
   display:grid; place-items:center;
-  box-shadow:0 6px 18px rgba(27,42,74,.12);
-  transition:transform .2s ease;
+  transition: transform .2s ease;
 }
-.node:hover .ring-outer{ transform:scale(1.06); }
-.node .ring-inner{
-  width:60px; height:60px; border-radius:50%;
-  background:var(--card); display:grid; place-items:center;
-  font-family:var(--mono); font-weight:700; font-size:.82rem; color:var(--ink);
-  border:1px solid rgba(27,42,74,.08);
+.rail-node:hover .dot{ transform: scale(1.08); }
+.rail-node .dot-in{
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--card);
+  display:grid; place-items:center;
+  font-family: var(--mono); font-weight:700; font-size:.72rem; color: var(--ink);
+  border: 1px solid var(--paper-line);
 }
-.node .n-label{
-  font-family:var(--mono); font-size:.66rem; text-transform:uppercase;
-  letter-spacing:.05em; color:var(--ink-soft); background:var(--paper);
-  padding:2px 8px; border-radius:999px;
+.rail-node.is-done .dot{ background: var(--sage); }
+.rail-node.is-done .dot-in{ color: var(--sage); }
+.rail-node .r-label{
+  font-family: var(--mono); font-size:.62rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft);
 }
-.node.is-active .ring-inner{ outline:2px solid var(--gold-deep); outline-offset:2px; }
+.rail-node.is-active .dot-in{ outline: 2px solid var(--gold-deep); outline-offset:2px; }
+
 
 /* ---------- course cards ---------- */
 .courses{
@@ -458,7 +474,7 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
     <span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
   <span class="eyebrow">Student Dashboard</span>
- <h1>Welcome back, <em id="welcomeName">Ada</em>.</h1>
+ <h1>Welcome back, <em id="welcomeName">{{ student.full_name }}</em>.</h1>
  <p class="sub">You're 4 lessons from finishing this week's goal. Robotics has a submission due Friday — worth tackling first.</p>
   <div class="streak">
     <span class="flame">&#9679;</span> 5-day streak
@@ -498,98 +514,156 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
     </div>
   </div>
 
-  <div class="orbit-wrap">
-    <svg class="connector" viewBox="0 0 900 480">
-      <path d="M120 260 C150 90 340 60 420 130 S680 100 780 230 S650 440 420 390 S160 420 120 260"/>
-    </svg>
-
-    <div class="node" style="--x:12%;--y:52%;--p:85" data-course="ai">
-      <div class="ring-outer"><div class="ring-inner">85%</div></div>
-      <div class="n-label">AI</div>
-    </div>
-    <div class="node" style="--x:33%;--y:88%;--p:42" data-course="robotics">
-      <div class="ring-outer"><div class="ring-inner">42%</div></div>
-      <div class="n-label">Robotics</div>
-    </div>
-    <div class="node" style="--x:58%;--y:76%;--p:100" data-course="cyber">
-      <div class="ring-outer"><div class="ring-inner">100%</div></div>
-      <div class="n-label">Cybersecurity</div>
-    </div>
-    <div class="node" style="--x:81%;--y:44%;--p:15" data-course="iot">
-      <div class="ring-outer"><div class="ring-inner">15%</div></div>
-      <div class="n-label">IoT</div>
-    </div>
-    <div class="node" style="--x:62%;--y:14%;--p:60" data-course="swdev">
-      <div class="ring-outer"><div class="ring-inner">60%</div></div>
-      <div class="n-label">Software Dev</div>
-    </div>
-    <div class="node" style="--x:30%;--y:12%;--p:100" data-course="startup">
-      <div class="ring-outer"><div class="ring-inner">100%</div></div>
-      <div class="n-label">Startup Incubation</div>
+  <div class="rail-wrap">
+    <div class="rail-track" id="railTrack">
+      <svg viewBox="0 0 760 2" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="railGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#00afff"/>
+            <stop offset="100%" stop-color="#00e5ff"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="1" x2="760" y2="1"/>
+      </svg>
+      <!-- Rail nodes are generated from course-data.js so every course in
+           the catalog gets a stop on the rail automatically. -->
     </div>
   </div>
 
   <div class="courses">
-
-    <article class="course-card" data-status="progress" data-course="ai">
-      <div class="course-top"><span class="course-cat">01 · AI</span><span class="course-badge">In progress</span></div>
-      <h3>Applied Machine Learning</h3>
-      <p class="course-instructor">with Instructor Femi Alabi</p>
-      <div class="bar-row"><span>Progress</span><span>85%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="85"></div></div>
-      <p class="course-next">Next: <b>Model evaluation lab</b></p>
-      <a class="course-cta" href="#">Continue &rarr;</a>
-    </article>
-
-    <article class="course-card" data-status="progress" data-course="robotics">
-      <div class="course-top"><span class="course-cat">02 · Robotics</span><span class="course-badge">In progress</span></div>
-      <h3>Robotics Fundamentals</h3>
-      <p class="course-instructor">with Instructor Chidera Nwosu</p>
-      <div class="bar-row"><span>Progress</span><span>42%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="42"></div></div>
-      <p class="course-next">Next: <b>Servo control assignment — due Fri</b></p>
-      <a class="course-cta" href="#">Continue &rarr;</a>
-    </article>
-
-    <article class="course-card done" data-status="done" data-course="cyber">
-      <div class="course-top"><span class="course-cat">03 · Cybersecurity</span><span class="course-badge done">Completed</span></div>
+  {% with enrolled=student.track %}
+    {% if enrolled == "Cybersecurity" %}
+    <article class="course-card" data-status="progress" data-course="cyber">
+      <div class="course-top"><span class="course-cat">01 · Cybersecurity</span><span class="course-badge done">In progress</span></div>
       <h3>Cybersecurity Essentials</h3>
       <p class="course-instructor">with Instructor Wale Bello</p>
-      <div class="bar-row"><span>Progress</span><span>100%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
+      <div class="bar-row"><span>Progress</span><span>10%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
       <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta ghost" href="#">Review course &rarr;</a>
+      <a class="course-cta" href="{% url 'lesson' %}?course=cyber">Continue →</a>
     </article>
-
+     {% elif enrolled == "IoT" %}
     <article class="course-card" data-status="progress" data-course="iot">
-      <div class="course-top"><span class="course-cat">04 · IoT</span><span class="course-badge">In progress</span></div>
+      <div class="course-top"><span class="course-cat">02 · IoT</span><span class="course-badge">In progress</span></div>
       <h3>Internet of Things Studio</h3>
       <p class="course-instructor">with Instructor Ngozi Eze</p>
       <div class="bar-row"><span>Progress</span><span>15%</span></div>
       <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
       <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="#">Continue &rarr;</a>
+      <a class="course-cta" href="{% url 'lesson' %}?course=iot">Continue &rarr;</a>
     </article>
-
+    {% elif enrolled == "Software Development" %}
     <article class="course-card" data-status="progress" data-course="swdev">
-      <div class="course-top"><span class="course-cat">05 · Software Dev</span><span class="course-badge">In progress</span></div>
+      <div class="course-top"><span class="course-cat">03 · Software Dev</span><span class="course-badge">In progress</span></div>
       <h3>Software Development Track</h3>
       <p class="course-instructor">with Instructor Tunde Salako</p>
       <div class="bar-row"><span>Progress</span><span>60%</span></div>
       <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
       <p class="course-next">Next: <b>API design exercise</b></p>
-      <a class="course-cta" href="#">Continue &rarr;</a>
+      <a class="course-cta" href="{% url 'lesson' %}?course=swdev">Continue &rarr;</a>
     </article>
-
-    <article class="course-card done" data-status="done" data-course="startup">
-      <div class="course-top"><span class="course-cat">06 · Startup Incubation</span><span class="course-badge done">Completed</span></div>
+    {% elif enrolled == "Startup Incubation" %}
+    <article class="course-card" data-status="progress" data-course="startup">
+      <div class="course-top"><span class="course-cat">04 · Startup Incubation</span><span class="course-badge">In progress</span></div>
       <h3>Startup Incubation Sprint</h3>
+      <p class="course-instructor">with Instructor Zainab Yusuf</p>
+      <div class="bar-row"><span>Progress</span><span>10%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=startup">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "AI & Machine Learning" %}
+    <article class="course-card" data-status="progress" data-course="uiux">
+      <div class="course-top"><span class="course-cat">05 · UI/UX Design</span><span class="course-badge">In progress</span></div>
+      <h3>UI/UX Design Fundamentals</h3>
+      <p class="course-instructor">with Instructor Zainab Yusuf</p>
+      <div class="bar-row"><span>Progress</span><span>60%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=uiux">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "Data Science" %}
+    <article class="course-card" data-status="progress" data-course="datasci">
+      <div class="course-top"><span class="course-cat">06 · Data Science & Analytics</span><span class="course-badge">In progress</span></div>
+      <h3>Data Science Fundamentals</h3>
+      <p class="course-instructor">with Instructor Zainab Yusuf</p>
+      <div class="bar-row"><span>Progress</span><span>60%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=datasci">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "Mobile Dev" %}
+    <article class="course-card" data-status="progress" data-course="mobiledev">
+      <div class="course-top"><span class="course-cat">07 · Mobile App Development</span><span class="course-badge">In progress</span></div>
+      <h3>Mobile App Development Fundamentals</h3>
       <p class="course-instructor">with Instructor Zainab Yusuf</p>
       <div class="bar-row"><span>Progress</span><span>100%</span></div>
       <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
       <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta ghost" href="#">Review course &rarr;</a>
+      <a class="course-cta" href="{% url 'lesson' %}?course=mobiledev">Continue &rarr;</a>
     </article>
+    {% elif enrolled == "Cloud Computing" %}
+    <article class="course-card done" data-status="done" data-course="cloud">
+      <div class="course-top"><span class="course-cat">08 · Cloud Computing Essentials</span><span class="course-badge">Completed</span></div>
+      <h3>Cloud Computing Fundamentals</h3>
+      <p class="course-instructor">with Instructor Zainab Yusuf</p>
+      <div class="bar-row"><span>Progress</span><span>100%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=cloud">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "Game Development Lab" %}
+    <article class="course-card done" data-status="done" data-course="gamedev">
+      <div class="course-top"><span class="course-cat">09 · Game Development Lab</span><span class="course-badge">Completed</span></div>
+      <h3>Game Development Fundamentals</h3>
+      <p class="course-instructor">with Instructor Zainab Yusuf</p>
+      <div class="bar-row"><span>Progress</span><span>100%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=gamedev">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "Digital Marketing & Growth" %}
+    <article class="course-card" data-status="progress" data-course="growth">
+      <div class="course-top"><span class="course-cat">10 ·Digital Marketing</span><span class="course-badge">In progress</span></div>
+      <h3>Digital Marketing & Growth</h3>
+      <p class="course-instructor">with Instructor Ngozi Eze</p>
+      <div class="bar-row"><span>Progress</span><span>15%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
+      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=growth">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "Product Management Foundations" %}
+    <article class="course-card" data-status="progress" data-course="productmgmt">
+      <div class="course-top"><span class="course-cat">11 · Product Management</span><span class="course-badge">In progress</span></div>
+      <h3>Product Management Fundamentals</h3>
+      <p class="course-instructor">with Instructor Ngozi Eze</p>
+      <div class="bar-row"><span>Progress</span><span>15%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
+      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=productmgmt">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "DevOps & Site Reliability" %}
+    <article class="course-card" data-status="progress" data-course="devops">
+      <div class="course-top"><span class="course-cat">12 · DevOps</span><span class="course-badge">In progress</span></div>
+      <h3>DevOps Fundamentals</h3>
+      <p class="course-instructor">with Instructor Ngozi Eze</p>
+      <div class="bar-row"><span>Progress</span><span>15%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
+      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=devops">Continue &rarr;</a>
+    </article>
+    {% elif enrolled == "AR/VR & Immersive Tech" %}
+    <article class="course-card" data-status="progress" data-course="arvr">
+      <div class="course-top"><span class="course-cat">13 · AR/VR Development</span><span class="course-badge">In progress</span></div>
+      <h3>Augmented Reality & Virtual Reality</h3>
+      <p class="course-instructor">with Instructor Ngozi Eze</p>
+      <div class="bar-row"><span>Progress</span><span>15%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
+      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=arvr">Continue &rarr;</a>
+    </article>
+    {% endif %}
+  {% endwith %}
 
   </div>
 </section>
@@ -709,81 +783,42 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
-</script>
+</script> 
+
 <script>
-const $ = id => document.getElementById(id);
-// 2. FUNCTION TO GET INITIALS FOR AVATAR
-function getInitials(name){
-  if(!name) return "TB";
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-}
-
-// 3. INJECT DATA ON PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
+  const track = document.getElementById('railTrack');
+  const cards = document.querySelectorAll('.course-card');
+  const count = cards.length;
 
-  const firstName = currentUser.name.split(' ')[0];
+  cards.forEach((card, i) => {
+    const status   = card.dataset.status;
+    const course   = card.dataset.course;
+    const progress = card.querySelector('.bar-fill').dataset.p;
+    const catLabel = card.querySelector('.course-cat').textContent.split('·')[0].trim();
 
-  // HEADER CHIP - using IDs you already added
-  $('headerAvatar').textContent = getInitials(currentUser.name);
-  $('headerName').textContent = currentUser.name;
+    const node = document.createElement('div');
+    node.className = 'rail-node' + (status === 'done' ? ' is-done' : '');
+    node.dataset.course = course;
+    node.style.left = ((i + 0.5) / count * 100) + '%';
 
-  // WELCOME SECTION
-  $('welcomeName').textContent = firstName;
+    node.innerHTML = `
+      <div class="dot" style="--p:${progress}">
+        <div class="dot-in">${catLabel}</div>
+      </div>
+      <div class="r-label">${card.querySelector('h3').textContent}</div>
+    `;
+    track.appendChild(node);
+  });
 
-  // FOOTER
-  document.querySelector('footer div:nth-child(2)').textContent = `Keep going, ${firstName} — 3 courses left this term.`;
-
-  // STATS - pull from user object. defaults to 0 if not set
-  const statNums = document.querySelectorAll('.stats.stat-card.num');
-  statNums[0].innerHTML = `${currentUser.coursesInProgress || 0} <span class="unit">/ 6</span>`;
-  statNums[1].innerHTML = `${currentUser.hoursThisWeek || 0}<span class="unit">hrs</span>`;
-  statNums[2].innerHTML = `${currentUser.avgCompletion || 0}<span class="unit">%</span>`;
-  statNums[3].textContent = currentUser.certificates || 0;
-
-});
-</script>
-  
-  <script>
-const profileModal = document.getElementById('profileModal');
-const studentChip = document.querySelector('.student-chip');
-const closeProfile = document.getElementById('closeProfile');
-const logoutBtn = document.getElementById('logoutBtn');
-
-// OPEN POPUP
-studentChip.addEventListener('click', () => {
-  if(!currentUser) return;
-  
-  // Fill data from localStorage
-  document.getElementById('profileAvatar').textContent = getInitials(currentUser.name);
-  document.getElementById('profileName').textContent = currentUser.name;
-  document.getElementById('profileEmail').textContent = currentUser.email;
-  document.getElementById('profilePhone').textContent = currentUser.phone;
-  document.getElementById('profileTrack').textContent = currentUser.track;
-  
-  // Format DOB
-  const dob = new Date(currentUser.dob);
-  document.getElementById('profileDob').textContent = dob.toLocaleDateString('en-GB');
-
-  profileModal.classList.add('active');
-  document.body.style.overflow = 'hidden'; // prevent scroll
-});
-
-// CLOSE POPUP
-closeProfile.addEventListener('click', () => {
-  profileModal.classList.remove('active');
-  document.body.style.overflow = 'auto';
-});
-profileModal.addEventListener('click', (e) => {
-  if(e.target === profileModal) {
-    profileModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-  }
-});
-
-// LOGOUT
-logoutBtn.addEventListener('click', () => {
-  localStorage.removeItem('techbridge_current_user');
-  window.location.href = 'login.html';
+  document.querySelectorAll('.rail-node').forEach(node => {
+    node.addEventListener('click', () => {
+      document.querySelectorAll('.rail-node').forEach(n => n.classList.remove('is-active'));
+      node.classList.add('is-active');
+      const target = document.querySelector('.course-card[data-course="' + node.dataset.course + '"]');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
 });
 </script>
 </body>
