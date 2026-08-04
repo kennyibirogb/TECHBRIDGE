@@ -209,6 +209,107 @@ footer{
   flex-wrap: wrap; gap: 1rem;
 }
 
+  /* Footer */
+ footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2.5rem;
+    border-top: 1px solid rgba(27, 42, 74, 0.08);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  footer .mark { font-size: 0.95rem; }
+  .foot-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .foot-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .foot-links a:hover { color: var(--navy); }
+
+  .foot-partners{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.foot-partners-label{
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-soft);
+}
+.foot-partners-list{
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.partner-badge{
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.partner-badge img{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.foot-links{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+.social-label{
+  font-family: var(--mono);
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-soft);
+}
+.social-icons{
+  display: flex;
+  gap: .7rem;
+}
+
+.social-btn{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .2s ease, transform .15s ease;
+}
+.social-btn:hover{
+  border-color: var(--gold-deep);
+  transform: translateY(-2px);
+}
+.social-btn img{
+  width: 18px;
+  height: 18px;
+  display: block;
+}
 a:focus-visible, button:focus-visible{ outline: 2px solid var(--gold-deep); outline-offset: 3px; }
 
 @media (max-width: 860px){
@@ -283,9 +384,37 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--gold-deep); outl
   <a href="{% url 'signup' %}" class="program-cta">Create your account &rarr;</a>
 </div>
 
+<!-- ══════════ FOOTER ══════════ -->
 <footer>
-  <div class="mark-text"><span class="main-name" style="font-size:1rem;">TechBridge</span></div>
-  <div>&copy; 2026 TechBridge LASUSTECH. All rights reserved.</div>
+  <div class="mark">TechBridge</div>
+
+ <div class="foot-partners">
+   <span class="foot-partners-label">In partnership with</span>
+   <div class="foot-partners-list">
+     <span class="partner-badge">
+       <img src="{% static 'main/img/cisco.webp' %}" alt="Cisco Networking Academy">
+     </span>
+     <span class="partner-badge">
+       <img src="{% static 'main/img/aws.webp' %}" alt="AWS Academy">
+     </span>
+     <span class="partner-badge">
+       <img src="{% static 'main/img/huw.webp' %}" alt="Huawei">
+     </span>
+   </div>
+ </div>
+
+  <div class="foot-links">
+   <span class="social-label">Social</span>
+   <div class="social-icons">
+     <button type="button" class="social-btn">
+       <img src="{% static 'main/img/discord.svg' %}" alt="Discord">
+     </button>
+     <button type="button" class="social-btn">
+       <img src="{% static 'main/img/x.svg' %}" alt="X">
+     </button>
+   </div>
+ </div>
+  <div>&copy; 2026</div>
 </footer>
 
 <script src="{% static 'main/js/course-data.js' %}"></script>

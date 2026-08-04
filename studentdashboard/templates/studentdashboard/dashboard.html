@@ -336,15 +336,107 @@ nav a:hover::after, nav a.active::after{ width:100%; }
 .particles span:nth-child(6){ left:92%; top:66%; animation-delay:3s; }
 @keyframes float{ to{ transform:translateY(-160px); opacity:0; } }
 
-footer{
-  position:relative; z-index:1;
-  border-top:1.5px solid var(--ink); padding:2.2rem 6vw;
-  display:flex; align-items:center; justify-content:space-between;
-  font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
-  letter-spacing:.05em; color:var(--ink-soft); flex-wrap:wrap; gap:1rem;
+  /* Footer */
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2.5rem;
+    border-top: 1px solid rgba(27, 42, 74, 0.08);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  footer .mark { font-size: 0.95rem; }
+  .foot-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .foot-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .foot-links a:hover { color: var(--navy); }
+
+  .foot-partners{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.foot-partners-label{
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-soft);
+}
+.foot-partners-list{
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.partner-badge{
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.partner-badge img{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
-a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outline-offset:3px; }
+.foot-links{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+.social-label{
+  font-family: var(--mono);
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-soft);
+}
+.social-icons{
+  display: flex;
+  gap: .7rem;
+}
+
+.social-btn{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .2s ease, transform .15s ease;
+}
+.social-btn:hover{
+  border-color: var(--gold-deep);
+  transform: translateY(-2px);
+}
+.social-btn img{
+  width: 18px;
+  height: 18px;
+  display: block;
+}
 
 @media (prefers-reduced-motion: reduce){
   .stat-card, .node, .course-card, .particles span{ animation:none !important; }
@@ -432,11 +524,38 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
   font: inherit;
   padding: 0;
 }
+
+.student-chip{
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--mono); font-size:.72rem;
+  background:var(--card); border:1.5px solid var(--ink);
+  padding:6px 14px 6px 6px; border-radius:999px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.student-chip:hover{
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgba(27,42,74,.08);
+}
+.chip-caret{
+  font-size: 14px;
+  color: var(--ink-soft);
+  transition: transform .2s ease;
+}
+.student-chip:hover .chip-caret{
+  transform: translateY(1px);
+}
 </style>
 </head>
 <body>
 
 <div id="progress"></div>
+{{ student.full_name|json_script:"student-name" }}
+{{ student.email|json_script:"student-email" }}
+{{ student.track|default:"Track not set"|json_script:"student-track" }}
+{{ student.phone|default:"—"|json_script:"student-phone" }}
+{{ student.date_joined|date:"M Y"|default:"—"|json_script:"student-since" }}
+{{ student.date_of_birth|date:"M Y"|default:"—"|json_script:"student-dob" }}
 
 <div class="circle c1"></div>
 <div class="circle c2"></div>
@@ -462,11 +581,13 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
 <div class="student-chip">
   <div class="avatar" id="headerAvatar">{{ student.full_name|slice:":1" }}</div>
   <span id="headerName">{{ student.full_name }}</span>
-  <form action="{% url 'logout' %}" method="POST" class="logout-form">
-    {% csrf_token %}
-    <button type="submit" class="logout-btn" title="Log out">Log out</button>
-  </form>
+  <i class="ti ti-chevron-down chip-caret"></i>
 </div>
+
+<form action="{% url 'logout' %}" method="POST" class="logout-form" style="display:none;">
+  {% csrf_token %}
+  <button type="submit" id="logoutSubmit"></button>
+</form>
 </header>
 
 <section class="welcome" id="overview">
@@ -532,7 +653,17 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
 
   <div class="courses">
   {% with enrolled=student.track %}
-    {% if enrolled == "Cybersecurity" %}
+    {% if enrolled == "AI & Machine Learning" %}
+    <article class="course-card" data-status="progress" data-course="ai">
+      <div class="course-top"><span class="course-cat">01 · AI and Machine Learning</span><span class="course-badge done">In progress</span></div>
+      <h3>AI and Machine Learning Fundamentals</h3>
+      <p class="course-instructor">with Instructor Wale Bello</p>
+      <div class="bar-row"><span>Progress</span><span>10%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
+      <p class="course-next">Certificate issued — view it below</p>
+      <a class="course-cta" href="{% url 'lesson' %}?course=ai">Continue →</a>
+    </article>
+    {% elif enrolled == "Cybersecurity" %}
     <article class="course-card" data-status="progress" data-course="cyber">
       <div class="course-top"><span class="course-cat">01 · Cybersecurity</span><span class="course-badge done">In progress</span></div>
       <h3>Cybersecurity Essentials</h3>
@@ -572,7 +703,7 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
       <p class="course-next">Certificate issued — view it below</p>
       <a class="course-cta" href="{% url 'lesson' %}?course=startup">Continue &rarr;</a>
     </article>
-    {% elif enrolled == "AI & Machine Learning" %}
+    {% elif enrolled == "UI/UX Design" %}
     <article class="course-card" data-status="progress" data-course="uiux">
       <div class="course-top"><span class="course-cat">05 · UI/UX Design</span><span class="course-badge">In progress</span></div>
       <h3>UI/UX Design Fundamentals</h3>
@@ -705,7 +836,33 @@ a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-deep); outli
 
 <footer>
   <div class="mark">TechBridge</div>
-  <div>Keep going, Ada — 3 courses left this term.</div>
+
+ <div class="foot-partners">
+   <span class="foot-partners-label">In partnership with</span>
+   <div class="foot-partners-list">
+     <span class="partner-badge">
+       <img src="{% static 'main/img/cisco.webp' %}" alt="Cisco Networking Academy">
+     </span>
+     <span class="partner-badge">
+       <img src="{% static 'main/img/aws.webp' %}" alt="AWS Academy">
+     </span>
+     <span class="partner-badge">
+       <img src="{% static 'main/img/huw.webp' %}" alt="Huawei">
+     </span>
+   </div>
+ </div>
+
+  <div class="foot-links">
+   <span class="social-label">Social</span>
+   <div class="social-icons">
+     <button type="button" class="social-btn">
+       <img src="{% static 'studentdashboard/img/discord.svg' %}" alt="Discord">
+     </button>
+     <button type="button" class="social-btn">
+       <img src="{% static 'studentdashboard/img/x.svg' %}" alt="X">
+     </button>
+   </div>
+ </div>
   <div>&copy; 2026</div>
 </footer>
   
@@ -821,5 +978,68 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const track = document.getElementById('railTrack');
+  const cards = document.querySelectorAll('.course-card');
+  const count = cards.length;
+
+  cards.forEach((card, i) => {
+    ...
+  });
+
+  document.querySelectorAll('.rail-node').forEach(node => {
+    ...
+  });
+});
+</script>
+
+<script>
+  const profileData = {
+    name: JSON.parse(document.getElementById('student-name').textContent),
+    email: JSON.parse(document.getElementById('student-email').textContent),
+    track: JSON.parse(document.getElementById('student-track').textContent),
+    phone: JSON.parse(document.getElementById('student-phone').textContent),
+    since: JSON.parse(document.getElementById('student-since').textContent),
+    dob:   JSON.parse(document.getElementById('student-dob').textContent)
+  };
+
+  function getInitials(name){
+    if(!name) return "TB";
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+  }
+
+  const profileModal = document.getElementById('profileModal');
+  const studentChip = document.querySelector('.student-chip');
+  const closeProfile = document.getElementById('closeProfile');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  studentChip.addEventListener('click', (e) => {
+    if (e.target.closest('.logout-form')) return;
+
+    document.getElementById('profileAvatar').textContent = getInitials(profileData.name);
+    document.getElementById('profileName').textContent = profileData.name;
+    document.getElementById('profileTrack').textContent = profileData.track;
+    document.getElementById('profileEmail').textContent = profileData.email;
+    document.getElementById('profilePhone').textContent = profileData.phone;
+    document.getElementById('profileDob').textContent = profileData.dob;
+
+    profileModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  function closeModal(){
+    profileModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  closeProfile.addEventListener('click', closeModal);
+  profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeModal(); });
+
+  logoutBtn.addEventListener('click', () => {
+    document.querySelector('.logout-form').submit();
+  });
+</script>
+</body>
+</html>
 </body>
 </html>

@@ -265,56 +265,7 @@
 
 <script src="{% static 'studentdashboard/js/course-data.js' %}"></script>
 <script>
-  const STORAGE_KEY = 'techbridge_current_user';
-  const params = new URLSearchParams(window.location.search);
-  const courseId = params.get("course");
-  const root = document.getElementById("certRoot");
-
-  let currentUser = null;
-  try { currentUser = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { currentUser = null; }
-
-  const course = getCourse(courseId);
-
-  if (!course) {
-    root.innerHTML = `
-      <div class="not-ready">
-        <h1 style="font-family:var(--display);">Course not found</h1>
-        <p>We couldn't find "${courseId || '(no course)'}" in the catalog.</p>
-        <a href="{% url 'studentdashboard' %}" class="btn">Back to dashboard</a>
-      </div>`;
-  } else if (!isCourseComplete(courseId)) {
-    const current = getCurrentLesson(courseId);
-    root.innerHTML = `
-      <div class="not-ready">
-        <h1 style="font-family:var(--display);">Not quite there yet</h1>
-        <p>You still have lessons left in <b>${course.title}</b> — finish those first and your certificate will generate automatically.</p>
-        <a class="btn" href="{% url 'lesson' %}?course=${courseId}&lesson=${current.id}">Continue course &rarr;</a>
-      </div>`;
-  } else {
-    const cert = issueCertificate(courseId);
-    const studentName = (currentUser && currentUser.name) || "Student";
-    const issuedDate = new Date(cert.issuedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-
-    root.innerHTML = `
-      <div class="cert">
-        <div class="seal">&#127942;</div>
-        <div class="eyebrow">Certificate of Completion</div>
-        <h1>This certifies that<br><span class="student-name">${studentName}</span></h1>
-        <p class="line">has successfully completed all lessons, quizzes, and assignments in</p>
-        <span class="course-name">${course.title}</span>
-        <p class="line">on the TechBridge learning platform.</p>
-        <div class="cert-meta">
-          <div>Instructor<b>${course.instructor}</b></div>
-          <div>Lessons completed<b>${course.lessons.length} / ${course.lessons.length}</b></div>
-          <div>Issued<b>${issuedDate}</b></div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="window.print()">&#128424; Print / Save as PDF</button>
-        <a class="btn btn-ghost" href="{% url 'studentdashboard' %}">Back to dashboard</a>
-      </div>
-    `;
-  }
+  const currentUser = { name: JSON.parse(document.getElementById('student-name').textContent) };
 </script>
 
 </body>
