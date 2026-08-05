@@ -545,6 +545,22 @@ nav a:hover::after, nav a.active::after{ width:100%; }
 .student-chip:hover .chip-caret{
   transform: translateY(1px);
 }
+.add-course-card{ border-style:dashed; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  text-align:center; 
+  min-height:120px; }
+
+body.modal-open header{
+  z-index: 0;
+}
+.profile-modal{
+  z-index: 99999; /* bump well clear of anything else */
+}
+.profile-card{
+  margin-top: 24px; /* keeps the heading off the very top edge on tall content */
+}
 </style>
 </head>
 <body>
@@ -608,19 +624,19 @@ nav a:hover::after, nav a.active::after{ width:100%; }
 
 <div class="stats">
   <div class="stat-card">
-    <div class="num">3 <span class="unit">/ 6</span></div>
+    <div class="num">total number <span class="unit">/ all</span></div>
     <div class="label">Courses in progress</div>
   </div>
   <div class="stat-card">
-    <div class="num">12.5<span class="unit">hrs</span></div>
+    <div class="num">nil<span class="unit">hrs</span></div>
     <div class="label">This week</div>
   </div>
   <div class="stat-card">
-    <div class="num">68<span class="unit">%</span></div>
+    <div class="num">nil<span class="unit">%</span></div>
     <div class="label">Avg. completion</div>
   </div>
   <div class="stat-card">
-    <div class="num">2</div>
+    <div class="num">nil</div>
     <div class="label">Certificates earned</div>
   </div>
 </div>
@@ -652,151 +668,34 @@ nav a:hover::after, nav a.active::after{ width:100%; }
   </div>
 
   <div class="courses">
-  {% with enrolled=student.track %}
-    {% if enrolled == "AI & Machine Learning" %}
-    <article class="course-card" data-status="progress" data-course="ai">
-      <div class="course-top"><span class="course-cat">01 · AI and Machine Learning</span><span class="course-badge done">In progress</span></div>
-      <h3>AI and Machine Learning Fundamentals</h3>
-      <p class="course-instructor">with Instructor Wale Bello</p>
-      <div class="bar-row"><span>Progress</span><span>10%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=ai">Continue →</a>
-    </article>
-    {% elif enrolled == "Cybersecurity" %}
-    <article class="course-card" data-status="progress" data-course="cyber">
-      <div class="course-top"><span class="course-cat">01 · Cybersecurity</span><span class="course-badge done">In progress</span></div>
-      <h3>Cybersecurity Essentials</h3>
-      <p class="course-instructor">with Instructor Wale Bello</p>
-      <div class="bar-row"><span>Progress</span><span>10%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=cyber">Continue →</a>
-    </article>
-     {% elif enrolled == "IoT" %}
-    <article class="course-card" data-status="progress" data-course="iot">
-      <div class="course-top"><span class="course-cat">02 · IoT</span><span class="course-badge">In progress</span></div>
-      <h3>Internet of Things Studio</h3>
-      <p class="course-instructor">with Instructor Ngozi Eze</p>
-      <div class="bar-row"><span>Progress</span><span>15%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
-      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=iot">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Software Development" %}
-    <article class="course-card" data-status="progress" data-course="swdev">
-      <div class="course-top"><span class="course-cat">03 · Software Dev</span><span class="course-badge">In progress</span></div>
-      <h3>Software Development Track</h3>
-      <p class="course-instructor">with Instructor Tunde Salako</p>
-      <div class="bar-row"><span>Progress</span><span>60%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
-      <p class="course-next">Next: <b>API design exercise</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=swdev">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Startup Incubation" %}
-    <article class="course-card" data-status="progress" data-course="startup">
-      <div class="course-top"><span class="course-cat">04 · Startup Incubation</span><span class="course-badge">In progress</span></div>
-      <h3>Startup Incubation Sprint</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>10%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="10"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=startup">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "UI/UX Design" %}
-    <article class="course-card" data-status="progress" data-course="uiux">
-      <div class="course-top"><span class="course-cat">05 · UI/UX Design</span><span class="course-badge">In progress</span></div>
-      <h3>UI/UX Design Fundamentals</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>60%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=uiux">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Data Science" %}
-    <article class="course-card" data-status="progress" data-course="datasci">
-      <div class="course-top"><span class="course-cat">06 · Data Science & Analytics</span><span class="course-badge">In progress</span></div>
-      <h3>Data Science Fundamentals</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>60%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="60"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=datasci">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Mobile Dev" %}
-    <article class="course-card" data-status="progress" data-course="mobiledev">
-      <div class="course-top"><span class="course-cat">07 · Mobile App Development</span><span class="course-badge">In progress</span></div>
-      <h3>Mobile App Development Fundamentals</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>100%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=mobiledev">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Cloud Computing" %}
-    <article class="course-card done" data-status="done" data-course="cloud">
-      <div class="course-top"><span class="course-cat">08 · Cloud Computing Essentials</span><span class="course-badge">Completed</span></div>
-      <h3>Cloud Computing Fundamentals</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>100%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=cloud">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Game Development Lab" %}
-    <article class="course-card done" data-status="done" data-course="gamedev">
-      <div class="course-top"><span class="course-cat">09 · Game Development Lab</span><span class="course-badge">Completed</span></div>
-      <h3>Game Development Fundamentals</h3>
-      <p class="course-instructor">with Instructor Zainab Yusuf</p>
-      <div class="bar-row"><span>Progress</span><span>100%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="100"></div></div>
-      <p class="course-next">Certificate issued — view it below</p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=gamedev">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Digital Marketing & Growth" %}
-    <article class="course-card" data-status="progress" data-course="growth">
-      <div class="course-top"><span class="course-cat">10 ·Digital Marketing</span><span class="course-badge">In progress</span></div>
-      <h3>Digital Marketing & Growth</h3>
-      <p class="course-instructor">with Instructor Ngozi Eze</p>
-      <div class="bar-row"><span>Progress</span><span>15%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
-      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=growth">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "Product Management Foundations" %}
-    <article class="course-card" data-status="progress" data-course="productmgmt">
-      <div class="course-top"><span class="course-cat">11 · Product Management</span><span class="course-badge">In progress</span></div>
-      <h3>Product Management Fundamentals</h3>
-      <p class="course-instructor">with Instructor Ngozi Eze</p>
-      <div class="bar-row"><span>Progress</span><span>15%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
-      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=productmgmt">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "DevOps & Site Reliability" %}
-    <article class="course-card" data-status="progress" data-course="devops">
-      <div class="course-top"><span class="course-cat">12 · DevOps</span><span class="course-badge">In progress</span></div>
-      <h3>DevOps Fundamentals</h3>
-      <p class="course-instructor">with Instructor Ngozi Eze</p>
-      <div class="bar-row"><span>Progress</span><span>15%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
-      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=devops">Continue &rarr;</a>
-    </article>
-    {% elif enrolled == "AR/VR & Immersive Tech" %}
-    <article class="course-card" data-status="progress" data-course="arvr">
-      <div class="course-top"><span class="course-cat">13 · AR/VR Development</span><span class="course-badge">In progress</span></div>
-      <h3>Augmented Reality & Virtual Reality</h3>
-      <p class="course-instructor">with Instructor Ngozi Eze</p>
-      <div class="bar-row"><span>Progress</span><span>15%</span></div>
-      <div class="bar-track"><div class="bar-fill" data-p="15"></div></div>
-      <p class="course-next">Next: <b>Sensor wiring intro</b></p>
-      <a class="course-cta" href="{% url 'lesson' %}?course=arvr">Continue &rarr;</a>
-    </article>
-    {% endif %}
-  {% endwith %}
+    {% for c in enrolled_courses %}
+    <article class="course-card{% if c.progress == 100 %} done{% endif %}"
+           data-status="{% if c.progress == 100 %}done{% else %}progress{% endif %}"
+           data-course="{{ c.key }}">
+      <div class="course-top">
+        <span class="course-cat">{{ c.num }} · {{ c.track }}</span>
+        <span class="course-badge{% if c.progress == 100 %} done{% endif %}">
+          {% if c.progress == 100 %}Completed{% else %}In progress{% endif %}
+        </span>
+      </div>
+      <h3>{{ c.title }}</h3>
+      <p class="course-instructor">with Instructor {{ c.instructor }}</p>
+      <div class="bar-row"><span>Progress</span><span>{{ c.progress }}%</span></div>
+      <div class="bar-track"><div class="bar-fill" data-p="{{ c.progress }}"></div></div>
+      <p class="course-next">Next: <b>{{ c.next }}</b></p>
+      <a class="course-cta" href="{% url 'lesson' %}?course={{ c.key }}">Continue &rarr;</a>
+   </article>
+   {% endfor %}
 
-  </div>
+   <article class="course-card add-course-card" id="addCourseCard">
+     <div class="course-top">
+       <span class="course-cat">+ New</span>
+     </div>
+     <h3>Add a Course</h3>
+     <p class="course-instructor">Browse tracks you haven't started yet</p>
+     <button class="course-cta" id="openAddCourseModal" type="button">Browse courses →</button>
+   </article>
+</div>
 </section>
 
 <section class="section" id="schedule">
@@ -900,7 +799,24 @@ nav a:hover::after, nav a.active::after{ width:100%; }
 </div>
   </div>
 </div>
-
+<div class="profile-modal" id="addCourseModal">
+  <div class="profile-card">
+    <button class="profile-close" id="closeAddCourseModal">&times;</button>
+    <h2 style="font-family:var(--display); margin-bottom:1.2rem;">Available Courses</h2>
+    <div class="profile-info">
+      {% for c in available_courses %}
+      <form method="POST" action="{% url 'add_course' %}" class="info-row" style="align-items:center;">
+        {% csrf_token %}
+        <input type="hidden" name="track" value="{{ c.track }}">
+        <span><b>{{ c.title }}</b><br><span style="font-family:var(--mono); font-size:.7rem; color:var(--ink-soft);">{{ c.track }}</span></span>
+        <button type="submit" class="course-cta" style="padding:8px 16px;">Enroll</button>
+      </form>
+      {% empty %}
+      <p>You're enrolled in every course already — nice.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 <script>
   // scroll progress bar
   const progress = document.getElementById('progress');
@@ -940,6 +856,7 @@ nav a:hover::after, nav a.active::after{ width:100%; }
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
+
 </script> 
 
 <script>
@@ -1009,6 +926,17 @@ window.addEventListener('DOMContentLoaded', () => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
   }
 
+  function openModal(modal){
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(modal){
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = 'auto';
+  }
+
   const profileModal = document.getElementById('profileModal');
   const studentChip = document.querySelector('.student-chip');
   const closeProfile = document.getElementById('closeProfile');
@@ -1024,22 +952,20 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profilePhone').textContent = profileData.phone;
     document.getElementById('profileDob').textContent = profileData.dob;
 
-    profileModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    openModal(profileModal);
   });
 
-  function closeModal(){
-    profileModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-  }
-  closeProfile.addEventListener('click', closeModal);
-  profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeModal(); });
+  closeProfile.addEventListener('click', () => closeModal(profileModal));
+  profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeModal(profileModal); });
 
   logoutBtn.addEventListener('click', () => {
     document.querySelector('.logout-form').submit();
   });
+
+  const addCourseModal = document.getElementById('addCourseModal');
+  document.getElementById('openAddCourseModal').addEventListener('click', () => openModal(addCourseModal));
+  document.getElementById('closeAddCourseModal').addEventListener('click', () => closeModal(addCourseModal));
+  addCourseModal.addEventListener('click', (e) => { if (e.target === addCourseModal) closeModal(addCourseModal); });
 </script>
-</body>
-</html>
 </body>
 </html>

@@ -1,0 +1,16 @@
+COURSE_CATALOG = {
+    "ai":         {"track": "AI & Machine Learning", "num": "01", "title": "AI and Machine Learning Fundamentals", "instructor": "Wale Bello", "progress": 10, "next": "Certificate issued — view it below"},
+    "cyber":      {"track": "Cybersecurity", "num": "02", "title": "Cybersecurity Essentials", "instructor": "Wale Bello", "progress": 10, "next": "Certificate issued — view it below"},
+    "iot":        {"track": "IoT", "num": "03", "title": "Internet of Things Studio", "instructor": "Ngozi Eze", "progress": 15, "next": "Sensor wiring intro"},
+    "swdev":      {"track": "Software Development", "num": "04", "title": "Software Development Track", "instructor": "Tunde Salako", "progress": 60, "next": "API design exercise"},
+    "startup":    {"track": "Startup Incubation", "num": "05", "title": "Startup Incubation Sprint", "instructor": "Zainab Yusuf", "progress": 10, "next": "Certificate issued — view it below"},
+    "uiux":       {"track": "UI/UX Design", "num": "06", "title": "UI/UX Design Fundamentals", "instructor": "Zainab Yusuf", "progress": 60, "next": "Certificate issued — view it below"},
+    "datasci":    {"track": "Data Science", "num": "07", "title": "Data Science Fundamentals", "instructor": "Zainab Yusuf", "progress": 60, "next": "Certificate issued — view it below"},
+    "mobiledev":  {"track": "Mobile Dev", "num": "08", "title": "Mobile App Development Fundamentals", "instructor": "Zainab Yusuf", "progress": 100, "next": "Certificate issued — view it below"},
+    "cloud":      {"track": "Cloud Computing", "num": "09", "title": "Cloud Computing Fundamentals", "instructor": "Zainab Yusuf", "progress": 100, "next": "Certificate issued — view it below"},
+    "gamedev":    {"track": "Game Development Lab", "num": "10", "title": "Game Development Fundamentals", "instructor": "Zainab Yusuf", "progress": 100, "next": "Certificate issued — view it below"},
+    "growth":     {"track": "Digital Marketing & Growth", "num": "11", "title": "Digital Marketing & Growth", "instructor": "Ngozi Eze", "progress": 15, "next": "Sensor wiring intro"},
+    "productmgmt":{"track": "Product Management Foundations", "num": "12", "title": "Product Management Fundamentals", "instructor": "Ngozi Eze", "progress": 15, "next": "Sensor wiring intro"},
+    "devops":     {"track": "DevOps & Site Reliability", "num": "13", "title": "DevOps Fundamentals", "instructor": "Ngozi Eze", "progress": 15, "next": "Sensor wiring intro"},
+    "arvr":       {"track": "AR/VR & Immersive Tech", "num": "14", "title": "Augmented Reality & Virtual Reality", "instructor": "Ngozi Eze", "progress": 15, "next": "Sensor wiring intro"},
+}
