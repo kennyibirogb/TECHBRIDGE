@@ -1,13 +1,11 @@
 from django.conf import settings
 from django.db import models
+from core.constants import TRACK_CHOICES
 
 
 class Instructor(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='instructor_profile'
-    )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_profile')
+    track = models.CharField(max_length=50, choices=TRACK_CHOICES)
     bio = models.TextField(blank=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -17,7 +15,11 @@ class Instructor(models.Model):
     
     
 class Course(models.Model):
-    instructor = models.OneToOneField(Instructor, on_delete=models.CASCADE, related_name='course')
+    instructor = models.ForeignKey(
+        Instructor,
+        on_delete=models.CASCADE,
+        related_name='courses'
+    )
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
     description = models.TextField(blank=True)

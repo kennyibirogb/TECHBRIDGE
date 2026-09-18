@@ -1,0 +1,115 @@
+```html
+{% extends "admin/base.html" %}
+
+{% block title %}Assignments | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Assignments
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <span class="eyebrow">ACADEMY MANAGEMENT</span>
+
+        <h2>Assignments</h2>
+
+        <p>
+            Monitor assignments and student submissions.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Assignment</th>
+                    <th>Course</th>
+                    <th>Lesson</th>
+                    <th>Submission Type</th>
+                    <th>Submissions</th>
+                    <th>Updated</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for assignment in assignments %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            {{ assignment.title }}
+                        </strong>
+
+                    </td>
+
+                    <td>
+                        {{ assignment.lesson.course.title }}
+                    </td>
+
+                    <td>
+                        {{ assignment.lesson.title }}
+                    </td>
+
+                    <td>
+                        {{ assignment.get_submission_type_display }}
+                    </td>
+
+                    <td>
+
+                        <span class="status active">
+                            {{ assignment.submission_count }}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        {{ assignment.updated_at|date:"M d, Y" }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="empty-state">
+                            <h3>No assignments</h3>
+                            <p>
+                                No assignments have been created yet.
+                            </p>
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpg" href="{% static 'instructor/img/techbridge-logo.jpg' %}"/>
+<title>Students | TechBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* copy the same :root and base styles from instructor-dashboard.html */
+  :root{
+    --ink: #3A3226; --ink-soft: #7D7259; --navy: #FAF3E4;
+    --navy-card: rgba(255, 252, 244, 0.75); --navy-card-solid: #FFFBF2;
+    --line: rgba(58, 50, 38, 0.14);
+    --cyan: #C17A54; --mint: #7C9473; --amber: #D3A24C; --danger: #9C5B3C;
+    --display: 'Fraunces', serif; --body: 'Work Sans', sans-serif; --mono: 'Space Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--navy);color:var(--ink);font-family:var(--body);min-height:100vh}
+  header{position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:16px 5vw;background:rgba(250,244,232,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .mark{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .mark img{width:40px;height:40px;object-fit:cover;border-radius:8px}
+  .mark-text .main-name{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink)}
+  .mark-text .sub-name{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+  .nav-links{display:flex;gap:1.2rem;font-family:var(--mono);font-size:.74rem;text-transform:uppercase}
+  .nav-links a{color:var(--ink-soft);text-decoration:none}
+  .nav-links a:hover,.nav-links a.active{color:var(--ink)}
+  main{padding:2.4rem 6vw 4rem}
+  .page-title{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:.4rem}
+  .page-sub{color:var(--ink-soft);margin-bottom:2rem}
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.2rem}
+  .stat-card{background:var(--navy-card);border:1px solid var(--line);border-radius:14px;padding:1.3rem 1.4rem}
+  .stat-card .num{font-family:var(--display);font-size:1.8rem;font-weight:600}
+  .stat-card .label{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;color:var(--ink-soft);margin-top:.3rem}
+  .student-card{background:var(--navy-card);border:1px solid var(--line);border-radius:16px;padding:1.5rem 1.6rem;margin-bottom:1.2rem}
+  .student-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem}
+  .student-name{font-family:var(--display);font-weight:600;font-size:1.15rem}
+  .student-email{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
+  .progress-bar{height:8px;background:rgba(58,50,38,.08);border-radius:999px;overflow:hidden;margin:1rem 0 .5rem}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));border-radius:999px}
+  .meta{font-family:var(--mono);font-size:.7rem;color:var(--ink-soft)}
+  .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-family:var(--mono);font-size:.68rem;text-transform:uppercase}
+  .badge.ok{background:rgba(124,148,115,.15);color:var(--mint);border:1px solid rgba(124,148,115,.4)}
+  .badge.warn{background:rgba(211,162,76,.12);color:var(--amber);border:1px solid rgba(211,162,76,.35)}
+  .details{margin-top:1.2rem;border-top:1px dashed var(--line);padding-top:1rem}
+  .details h4{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.6rem}
+  .sub-item,.quiz-item{font-size:.88rem;padding:.4rem 0;border-bottom:1px dashed var(--line)}
+  .sub-item:last-child,.quiz-item:last-child{border-bottom:none}
+  .btn{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;text-decoration:none;color:var(--ink)}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn.primary{background:linear-gradient(90deg,var(--amber),var(--cyan));color:#2A2118;border:none;font-weight:700}
+  .empty{text-align:center;padding:3rem;color:var(--ink-soft);font-family:var(--mono)}
+  @media(max-width:700px){.stat-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a href="{% url 'instructor_dashboard' %}" class="mark">
+    <img src="{% static 'instructor/img/techbridge-logo.jpg' %}" alt="TechBridge">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">Students</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="{% url 'instructor_dashboard' %}">Dashboard</a>
+    <a href="{% url 'instructor_students' %}" class="active">Students</a>
+    <a href="{% url 'instructor_logout' %}">Log out</a>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">Your students</h1>
+  <p class="page-sub">{{ course.title }} · {{ total_enrolled }} enrolled</p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="num">{{ total_enrolled }}</div>
+      <div class="label">Enrolled</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ students_data|length }}</div>
+      <div class="label">Active records</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ course.lessons.count }}</div>
+      <div class="label">Total lessons</div>
+    </div>
+  </div>
+
+  {% if students_data %}
+    {% for item in students_data %}
+      <div class="student-card">
+        <div class="student-top">
+          <div>
+            <div class="student-name">{{ item.student.full_name|default:item.student.email }}</div>
+            <div class="student-email">{{ item.student.email }}</div>
+          </div>
+          <div>
+            {% if item.qualified %}
+              <span class="badge ok">Qualified</span>
+            {% else %}
+              <span class="badge warn">In progress</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:{{ item.progress_pct }}%"></div>
+        </div>
+        <div class="meta">
+          {{ item.lessons_done }} / {{ item.total_lessons }} lessons · {{ item.progress_pct }}%
+          {% if item.last_activity %} · last activity {{ item.last_activity|timesince }} ago{% endif %}
+        </div>
+
+        <div class="details">
+          <h4>Quiz results</h4>
+          {% if item.quiz_attempts %}
+            {% for qa in item.quiz_attempts %}
+              <div class="quiz-item">
+                {{ qa.lesson.title }} — {{ qa.correct }}/{{ qa.total }}
+                {% if qa.passed %}<span class="badge ok">Passed</span>{% else %}<span class="badge warn">Failed</span>{% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="meta">No quiz attempts yet</div>
+          {% endif %}
+
+          <h4 style="margin-top:1rem">Assignment submissions</h4>
+          {% if item.submissions %}
+            {% for sub in item.submissions %}
+              <div class="sub-item">
+                <strong>{{ sub.assignment.lesson.title }}</strong> — {{ sub.assignment.title }}
+                <div class="meta">
+                  submitted {{ sub.submitted_at|timesince }} ago
+                  {% if sub.file %} · <a href="{{ sub.file.url }}" target="_blank">Download file</a>{% endif %}
+                  {% if sub.text %} · <em>{{ sub.text|truncatechars:80 }}</em>{% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="meta">No submissions yet</div>
+          {% endif %}
+        </div>
+
+        {% if not item.qualified %}
+          <form method="post" action="{% url 'mark_qualified' item.student.id %}" style="margin-top:1rem">
+            {% csrf_token %}
+            <button type="submit" class="btn primary">Mark as qualified</button>
+          </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">No students have enrolled in your course yet.</div>
+  {% endif %}
+</main>
+</body>
+</html>

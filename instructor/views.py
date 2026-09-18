@@ -3,6 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q, Max
+from .models import Enrollment, LessonProgress, QuizAttempt, AssignmentSubmission, Qualification
+
+from core.constants import TRACK_CHOICES
 from .forms import (
     InstructorSignupForm, InstructorLoginForm, CourseForm, LessonForm,
     MaterialUploadForm, AssignmentForm,
@@ -230,14 +234,20 @@ def create_course(request):
         if form.is_valid():
             course = form.save(commit=False)
             course.instructor = instructor
+            course.category = instructor.track
+            # Auto-generate a sensible title from the track
+            course.title = dict(TRACK_CHOICES).get(instructor.track, instructor.track)
             course.save()
             messages.success(request, 'Course created — now add your first lesson.')
             return redirect('instructor_dashboard')
     else:
         form = CourseForm()
 
-    return render(request, 'instructor/create-course.html', {'form': form})
-
+    return render(request, 'instructor/create-course.html', {
+        'form': form,
+        'instructor': instructor,
+        'track_name': dict(TRACK_CHOICES).get(instructor.track, instructor.track),
+    })
 
 
 
@@ -272,3 +282,92 @@ def delete_lesson(request, lesson_id):
         lesson.delete()
         messages.success(request, 'Lesson removed.')
     return redirect('instructor_dashboard')
+
+
+@login_required(login_url='instructor_login')
+def instructor_students(request):
+    if not _is_instructor(request.user):
+        auth_logout(request)
+        return redirect('instructor_login')
+
+    instructor = request.user.instructor_profile
+    course = getattr(instructor, 'course', None)
+    if course is None:
+        return redirect('create_course')
+
+    enrollments = (
+        Enrollment.objects
+        .filter(course=course)
+        .select_related('student')
+        .annotate(
+            lessons_done=Count('student__lesson_progress',
+                               filter=Q(student__lesson_progress__lesson__course=course)),
+            last_activity=Max('student__lesson_progress__completed_at'),
+        )
+        .order_by('-enrolled_at')
+    )
+
+    total_lessons = course.lessons.count()
+
+    students_data = []
+    for enr in enrollments:
+        student = enr.student
+        progress_pct = int((enr.lessons_done / total_lessons * 100)) if total_lessons else 0
+
+        # latest quiz attempts for this course
+        quiz_attempts = (
+            QuizAttempt.objects
+            .filter(student=student, lesson__course=course)
+            .select_related('lesson')
+            .order_by('-attempted_at')
+        )
+
+        # assignment submissions
+        submissions = (
+            AssignmentSubmission.objects
+            .filter(student=student, assignment__lesson__course=course)
+            .select_related('assignment', 'assignment__lesson')
+            .order_by('-submitted_at')
+        )
+
+        qualified = Qualification.objects.filter(course=course, student=student).exists()
+
+        students_data.append({
+            'enrollment': enr,
+            'student': student,
+            'progress_pct': progress_pct,
+            'lessons_done': enr.lessons_done,
+            'total_lessons': total_lessons,
+            'last_activity': enr.last_activity,
+            'quiz_attempts': quiz_attempts,
+            'submissions': submissions,
+            'qualified': qualified,
+        })
+
+    return render(request, 'instructor/instructor-students.html', {
+        'instructor': instructor,
+        'course': course,
+        'students_data': students_data,
+        'total_enrolled': enrollments.count(),
+    })
+
+
+@login_required(login_url='instructor_login')
+@require_POST
+def mark_qualified(request, student_id):
+    instructor = request.user.instructor_profile
+    course = getattr(instructor, 'course', None)
+    student = get_object_or_404(User, id=student_id)
+
+    # only if student is enrolled
+    if not Enrollment.objects.filter(course=course, student=student).exists():
+        messages.error(request, 'Student is not enrolled in your course.')
+        return redirect('instructor_students')
+
+    Qualification.objects.get_or_create(
+        course=course,
+        student=student,
+        defaults={'qualified_by': request.user}
+    )
+    messages.success(request, f'{student.full_name or student.email} marked as qualified.')
+    return redirect('instructor_students')

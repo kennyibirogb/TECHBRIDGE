@@ -1,0 +1,330 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Admin Dashboard | TechBridge{% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'admin/css/admin.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body>
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="sidebar-logo">
+
+            <h2>
+                TechBridge
+            </h2>
+
+            <span>
+                ADMIN PANEL
+            </span>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="{% url 'admin_dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"
+            >
+
+                <span>▦</span>
+
+                Dashboard
+
+            </a>
+
+
+            <!-- USERS -->
+
+            <div class="nav-section">
+
+                <small>
+                    USERS
+                </small>
+
+
+                <a
+                    href="{% url 'admin_students' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_students' %}active{% endif %}"
+                >
+
+                    <span>♙</span>
+
+                    Students
+
+                </a>
+
+
+                <a
+                    href="{% url 'admin_instructors' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_instructors' %}active{% endif %}"
+                >
+
+                    <span>♙</span>
+
+                    Instructors
+
+                </a>
+
+            </div>
+
+
+            <!-- ACADEMY -->
+
+            <div class="nav-section">
+
+                <small>
+                    ACADEMY
+                </small>
+
+
+                <a
+                    href="{% url 'admin_courses' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_courses' or request.resolver_match.url_name == 'admin_course_detail' %}active{% endif %}"
+                >
+
+                    <span>▤</span>
+
+                    Courses
+
+                </a>
+
+
+                <a
+                    href="{% url 'admin_enrollments' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_enrollments' %}active{% endif %}"
+                >
+
+                    <span>＋</span>
+
+                    Enrollments
+
+                </a>
+
+
+                <a
+                    href="{% url 'admin_assignments' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_assignments' %}active{% endif %}"
+                >
+
+                    <span>✓</span>
+
+                    Assignments
+
+                </a>
+
+
+                <a
+                    href="{% url 'admin_submissions' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_submissions' %}active{% endif %}"
+                >
+
+                    <span>□</span>
+
+                    Submissions
+
+                </a>
+
+
+                <a
+                    href="{% url 'admin_quizzes' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_quizzes' %}active{% endif %}"
+                >
+
+                    <span>?</span>
+
+                    Quizzes
+
+                </a>
+
+            </div>
+
+
+            <!-- SYSTEM -->
+
+            <div class="nav-section">
+
+                <small>
+                    SYSTEM
+                </small>
+
+
+                <a
+                    href="{% url 'admin_settings' %}"
+                    class="{% if request.resolver_match.url_name == 'admin_settings' %}active{% endif %}"
+                >
+
+                    <span>⚙</span>
+
+                    Settings
+
+                </a>
+
+            </div>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout-link"
+            >
+
+                <span>↪</span>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+
+            <!-- PAGE TITLE -->
+
+            <div>
+
+                <p class="topbar-label">
+                    ADMINISTRATION
+                </p>
+
+                <h1>
+                    {% block page_title %}
+                        Dashboard
+                    {% endblock %}
+                </h1>
+
+            </div>
+
+
+            <!-- ADMIN PROFILE -->
+
+            <div class="admin-profile">
+
+
+                <div class="admin-avatar">
+
+                    {{ request.user.username|first|upper }}
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+
+                        {{ request.user.full_name|default:request.user.username }}
+
+                    </strong>
+
+                    <small>
+                        Administrator
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="content">
+
+
+            <!-- DJANGO MESSAGES -->
+
+            {% if messages %}
+
+                <div class="message-container">
+
+                    {% for message in messages %}
+
+                        <div class="alert {{ message.tags }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- CHILD PAGE -->
+
+            {% block content %}
+
+            {% endblock %}
+
+
+        </section>
+
+    </main>
+
+</div>
+
+
+</body>
+
+</html>

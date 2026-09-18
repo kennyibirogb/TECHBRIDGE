@@ -1,0 +1,567 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Enrollments | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Enrollments
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       PAGE
+    ========================================= */
+
+    .enrollments-page {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+
+    /* =========================================
+       PAGE HEADING
+    ========================================= */
+
+    .page-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .page-heading h2 {
+        margin: 6px 0 7px;
+        color: #17283b;
+        font-size: 30px;
+        line-height: 1.15;
+        letter-spacing: -0.7px;
+    }
+
+    .page-heading p {
+        margin: 0;
+        color: #7d8582;
+        font-size: 14px;
+    }
+
+    .eyebrow {
+        display: block;
+        color: #9b7830;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+    }
+
+
+    /* =========================================
+       SEARCH
+    ========================================= */
+
+    .filter-bar {
+        background: white;
+        border: 1px solid #e9e5db;
+        border-radius: 18px;
+        padding: 15px;
+        box-shadow: 0 6px 20px rgba(23, 40, 59, 0.04);
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-form input {
+        flex: 1;
+        min-width: 0;
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid #dedbd2;
+        border-radius: 10px;
+        outline: none;
+        color: #17283b;
+        background: #faf9f6;
+        font-family: inherit;
+        font-size: 13px;
+        transition: 0.2s ease;
+    }
+
+    .search-form input::placeholder {
+        color: #a1a6a3;
+    }
+
+    .search-form input:focus {
+        border-color: #b99a55;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(215, 180, 90, 0.12);
+    }
+
+    .search-form button {
+        height: 44px;
+        padding: 0 20px;
+        border: 0;
+        border-radius: 10px;
+        background: #17283b;
+        color: white;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .search-form button:hover {
+        background: #243b53;
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       TABLE CARD
+    ========================================= */
+
+    .table-card {
+        overflow: hidden;
+        background: white;
+        border: 1px solid #e9e5db;
+        border-radius: 20px;
+        box-shadow: 0 6px 20px rgba(23, 40, 59, 0.04);
+    }
+
+    .table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 24px;
+        border-bottom: 1px solid #eeeae1;
+    }
+
+    .table-header h3 {
+        margin: 5px 0 0;
+        color: #17283b;
+        font-size: 19px;
+        line-height: 1.2;
+    }
+
+
+    /* =========================================
+       TABLE
+    ========================================= */
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        min-width: 800px;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #faf9f6;
+    }
+
+    th {
+        padding: 13px 20px;
+        border-bottom: 1px solid #eeeae1;
+        color: #7d8582;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0ede6;
+        color: #555e5b;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+        background: #fcfbf8;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+
+    /* =========================================
+       STUDENT
+    ========================================= */
+
+    .table-user {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-width: 190px;
+    }
+
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #17283b;
+        color: #d7b45a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .table-user strong {
+        color: #17283b;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       EMAIL
+    ========================================= */
+
+    .student-email {
+        color: #737c78;
+    }
+
+
+    /* =========================================
+       COURSE
+    ========================================= */
+
+    .course-name {
+        color: #17283b;
+        font-weight: 700;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #f4f0e6;
+        color: #806326;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       DATE
+    ========================================= */
+
+    .enrolled-date {
+        color: #737c78;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    .empty-state {
+        padding: 55px 25px;
+        text-align: center;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 7px;
+        color: #17283b;
+        font-size: 17px;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #858d89;
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 700px) {
+
+        .page-heading {
+            align-items: flex-start;
+        }
+
+        .page-heading h2 {
+            font-size: 26px;
+        }
+
+        .search-form {
+            flex-direction: column;
+        }
+
+        .search-form input,
+        .search-form button {
+            width: 100%;
+        }
+
+        .table-header {
+            padding: 19px;
+        }
+
+        th,
+        td {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+    }
+
+</style>
+
+
+<div class="enrollments-page">
+
+
+    <!-- =========================================
+         PAGE HEADING
+    ========================================== -->
+
+    <div class="page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                ACADEMY MANAGEMENT
+            </span>
+
+            <h2>
+                Enrollments
+            </h2>
+
+            <p>
+                Monitor student enrollment across all courses.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         SEARCH
+    ========================================== -->
+
+    <div class="filter-bar">
+
+        <form method="GET" class="search-form">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search student or course..."
+                aria-label="Search student or course"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================================
+         ENROLLMENTS TABLE
+    ========================================== -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    ALL ENROLLMENTS
+                </span>
+
+                <h3>
+                    {{ enrollments.count }} Enrollment{{ enrollments.count|pluralize }}
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Course
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Enrolled
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for enrollment in enrollments %}
+
+                    <tr>
+
+
+                        <!-- STUDENT -->
+
+                        <td>
+
+                            <div class="table-user">
+
+                                <div class="user-avatar">
+
+                                    {{ enrollment.student.full_name|first|upper }}
+
+                                </div>
+
+                                <strong>
+
+                                    {{ enrollment.student.full_name }}
+
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMAIL -->
+
+                        <td>
+
+                            <span class="student-email">
+
+                                {{ enrollment.student.email }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- COURSE -->
+
+                        <td>
+
+                            <span class="course-name">
+
+                                {{ enrollment.course.title }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            <span class="category-badge">
+
+                                {{ enrollment.course.category }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <span class="enrolled-date">
+
+                                {{ enrollment.enrolled_at|date:"M d, Y H:i" }}
+
+                            </span>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5">
+
+                            <div class="empty-state">
+
+                                <h3>
+                                    No enrollments
+                                </h3>
+
+                                <p>
+                                    No students have enrolled in a course yet.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

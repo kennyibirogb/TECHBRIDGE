@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — {{ lesson.title }} | TechBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2A2420;--ink-soft:#7A6F62;--navy:#FAF6EE;--line:rgba(42,36,32,.12);
+    --cyan:#D9B24C;--blue:#8FA876;--display:'Fraunces',serif;--body:'Work Sans',sans-serif;--mono:'Space Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--navy);color:var(--ink);font-family:var(--body);min-height:100vh}
+  .bg-overlay{
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(143,168,118,0.16), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(217,178,76,0.12), transparent 50%),
+      linear-gradient(180deg, rgba(250,246,238,1) 0%, rgba(244,237,222,1) 45%, rgba(250,246,238,1) 100%);
+    pointer-events:none;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 5vw 3rem}
+  h1{font-family:var(--display);font-size:1.6rem;margin-bottom:.3rem}
+  .meta{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);margin-bottom:2rem}
+  .q-card{
+    background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:12px;
+    padding:1.3rem 1.4rem;margin-bottom:1.2rem;backdrop-filter:blur(6px);
+  }
+  .q-text{font-weight:600;margin-bottom:.9rem}
+  .opt{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+  .opt input{accent-color:var(--cyan)}
+  .submit{
+    margin-top:1.5rem;font-family:var(--mono);font-size:.8rem;text-transform:uppercase;
+    background:linear-gradient(90deg,var(--blue),var(--cyan));color:#2A2420;
+    font-weight:700;border:none;padding:12px 22px;border-radius:999px;cursor:pointer;
+  }
+  a.back{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);text-decoration:none;display:inline-block;margin-bottom:1.5rem}
+</style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="wrap">
+    <a href="{% url 'course_detail' lesson.course.id %}" class="back">← Back to course</a>
+    <h1>Quiz: {{ lesson.title }}</h1>
+    <p class="meta">{{ questions|length }} question{{ questions|length|pluralize }} · 60% to pass</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {% for q in questions %}
+      <div class="q-card">
+        <div class="q-text">{{ forloop.counter }}. {{ q.text }}</div>
+        {% for opt in q.options %}
+          <label class="opt">
+            <input type="radio" name="q_{{ q.id }}" value="{{ forloop.counter0 }}" required>
+            {{ opt }}
+          </label>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="submit">Submit quiz</button>
+  </form>
+</body>
+</html>

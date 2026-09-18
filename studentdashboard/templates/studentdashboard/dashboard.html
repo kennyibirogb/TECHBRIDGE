@@ -478,6 +478,52 @@
     .stat-card, .course-card, .welcome-card{ animation:none !important; }
     .bar-fill, .wg-fill{ transition:none !important; }
   }
+  .search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem;
+  background: var(--navy-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+}
+.result-row:hover {
+  border-color: rgba(217, 178, 76, 0.35);
+}
+.result-title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.result-meta {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.result-meta .course-cat {
+  font-size: 0.6rem;
+  padding: 3px 8px;
+}
+@media (max-width: 560px) {
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 </style>
 </head>
 <body>
@@ -533,7 +579,13 @@
   <div class="welcome-grid">
     <div class="welcome-card">
       <h1>Welcome back, <em>{{ student.full_name|default:"Student" }}</em>.</h1>
-      <p>Add a course below and your first milestone will show up here.</p>
+      <p>
+        {% if courses_data %}
+          You’re enrolled in {{ courses_data|length }} course{{ courses_data|length|pluralize }}. Keep the momentum going.
+        {% else %}
+          You’re not enrolled in any courses yet. Once you join one, your progress will appear here.
+        {% endif %}
+      </p>
       <div class="streak-line">
         <span class="bolt">&#9889;</span> <span>0-day streak</span>
         <span class="days">
@@ -544,11 +596,28 @@
 
     <div class="signal-panel">
       <p class="lead">"Progress isn't a straight line — it's a signal you keep sending until it's received."
-        <span>This week's focus: pick your first course</span>
+        <span>
+          {% if courses_data %}
+            This week’s focus: finish the next lesson
+          {% else %}
+            This week’s focus: pick your first course
+          {% endif %}
+        </span>
       </p>
       <div class="weekly-goal">
-        <div class="wg-top"><span>Weekly goal</span><b>0 / 0 hrs</b></div>
-        <div class="wg-track"><div class="wg-fill" style="width:0%"></div></div>
+        <div class="wg-top">
+          <span>Weekly goal</span>
+          <b>
+            {% if courses_data %}
+              {{ courses_data.0.lessons_done }} / {{ courses_data.0.total_lessons }} lessons
+            {% else %}
+              0 / 0 hrs
+            {% endif %}
+          </b>
+        </div>
+        <div class="wg-track">
+          <div class="wg-fill" style="width:{% if courses_data %}{{ courses_data.0.progress_pct }}{% else %}0{% endif %}%"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -556,22 +625,79 @@
 
 <div class="stats">
   <div class="stat-card">
-    <div class="num">0 <span class="unit">/ 0</span></div>
-    <div class="label">Courses in progress</div>
+    <div class="num">{{ courses_data|length }}</div>
+    <div class="label">Courses enrolled</div>
   </div>
+
   <div class="stat-card">
-    <div class="num">0<span class="unit">hrs</span></div>
-    <div class="label">Hours completed</div>
-  </div>
-  <div class="stat-card">
-    <div class="num">0<span class="unit">%</span></div>
+    <div class="num">{{ avg_progress|default:0 }}<span class="unit">%</span></div>
     <div class="label">Avg. completion</div>
   </div>
+
+  <div class="stat-card">
+    <div class="num">{{ completed_count|default:0 }}</div>
+    <div class="label">Completed</div>
+  </div>
+
   <div class="stat-card">
     <div class="num">0</div>
     <div class="label">Certificates earned</div>
   </div>
 </div>
+<!-- ── Browse / join other courses ── -->
+<section class="section" id="browse">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Discover</span>
+      <h2>Join another course</h2>
+    </div>
+  </div>
+
+  <form method="get" action="{% url 'studentdashboard' %}" style="display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:1.6rem;">
+    <input
+      type="text"
+      name="q"
+      value="{{ q }}"
+      placeholder="Search by course, track or instructor…"
+      style="flex:1; min-width:200px; padding:.75rem 1rem; border:1px solid var(--line); border-radius:999px; font-family:var(--body);"
+    >
+    <select name="track" style="padding:.75rem 1rem; border:1px solid var(--line); border-radius:999px; font-family:var(--body);">
+      <option value="">All tracks</option>
+      {% for value, label in all_tracks %}
+        <option value="{{ value }}" {% if track_filter == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="course-cta" style="border:none;">Search</button>
+  </form>
+
+  {% if show_results %}
+    <div class="search-results">
+      {% for course in available_courses %}
+        <div class="result-row">
+          <div class="result-info">
+            <div class="result-title">{{ course.title }}</div>
+            <div class="result-meta">
+              <span class="course-cat">{{ course.category }}</span>
+              · {{ course.instructor.user.full_name|default:course.instructor.user.email }}
+            </div>
+          </div>
+          <form method="post" action="{% url 'enroll_in_course' course.id %}">
+            {% csrf_token %}
+            <button type="submit" class="course-cta" style="padding:8px 16px; font-size:.7rem;">
+              Join
+            </button>
+          </form>
+        </div>
+      {% empty %}
+        <p class="empty-panel-note">No courses matched your search.</p>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-panel-note">
+      Use the search above to find courses in other tracks or from other instructors.
+    </p>
+  {% endif %}
+</section>
 
 <section class="section" id="courses">
   <div class="section-head">
@@ -587,9 +713,48 @@
   </div>
 
   <div class="courses">
-    <div class="empty-courses">
-      You're not enrolled in any courses yet. Course enrollment is coming soon — check back shortly!
-    </div>
+    {% if courses_data %}
+      {% for item in courses_data %}
+        <div class="course-card {% if item.progress_pct == 100 %}done{% endif %}"
+     data-status="{% if item.progress_pct == 100 %}done{% else %}progress{% endif %}">
+  <div class="course-top">
+    <span class="course-cat">{{ item.course.category }}</span>
+    <span class="course-badge {% if item.progress_pct == 100 %}done{% endif %}">
+      {% if item.progress_pct == 100 %}Completed{% else %}In progress{% endif %}
+    </span>
+  </div>
+  <h3>{{ item.course.title }}</h3>
+  <p class="course-instructor">
+    Instructor: {{ item.course.instructor.user.full_name|default:item.course.instructor.user.email }}
+  </p>
+  <div class="bar-row">
+    <span>{{ item.lessons_done }} / {{ item.total_lessons }} lessons</span>
+    <span>{{ item.progress_pct }}%</span>
+  </div>
+  <div class="bar-track">
+    <div class="bar-fill" style="width:{{ item.progress_pct }}%"></div>
+  </div>
+
+  <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.4rem;">
+    <a href="{% url 'course_detail' item.course.id %}" class="course-cta">
+      {% if item.progress_pct == 100 %}Review course{% else %}Continue learning{% endif %}
+    </a>
+
+    <form method="post"
+          action="{% url 'unenroll_course' item.course.id %}"
+          onsubmit="return confirm('Leave “{{ item.course.title }}”?');"
+          style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="course-cta ghost">Leave course</button>
+    </form>
+  </div>
+</div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-courses">
+        You’re not enrolled in any courses yet.
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -597,13 +762,19 @@
   <div class="grid-2">
     <div class="panel">
       <h2>Upcoming deadlines</h2>
-      <p class="empty-panel-note">No upcoming deadlines — enroll in a course to see one here.</p>
+      <p class="empty-panel-note">
+        {% if courses_data %}
+          Deadlines will appear here once your instructor adds assignments.
+        {% else %}
+          No upcoming deadlines — enroll in a course to see one here.
+        {% endif %}
+      </p>
     </div>
 
     <div class="panel" id="achievements">
       <h2>Achievements</h2>
       <div class="badges">
-        <div class="badge locked">
+        <div class="badge {% if not courses_data %}locked{% endif %}">
           <div class="icon">&#127942;</div>
           <span>First course</span>
         </div>
@@ -614,11 +785,17 @@
 
 <footer>
   <div class="mark-text"><span class="main-name" style="font-size:1rem;">TechBridge</span></div>
-  <div>Add a course to get started.</div>
+  <div>
+    {% if courses_data %}
+      Keep learning.
+    {% else %}
+      Add a course to get started.
+    {% endif %}
+  </div>
   <div>&copy; 2026</div>
 </footer>
 
-<!-- Profile modal -->
+<!-- Profile modal (unchanged) -->
 <div class="profile-modal" id="profileModal">
   <div class="profile-card">
     <button class="profile-close" id="closeProfile">&times;</button>
@@ -690,6 +867,22 @@
   }
   closeProfile.addEventListener('click', closeModal);
   profileModal.addEventListener('click', (e) => { if(e.target === profileModal) closeModal(); });
+
+  // Simple course filter tabs
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.course-card').forEach(card => {
+        if (filter === 'all' || card.dataset.status === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
 </script>
 
 </body>

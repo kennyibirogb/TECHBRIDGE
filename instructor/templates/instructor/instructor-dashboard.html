@@ -242,6 +242,7 @@
       <span class="sub-name">Instructor dashboard</span>
     </div>
   </a>
+  <a href="{% url 'instructor_students' %}">Students</a>
   <div class="instructor-chip" id="instructorChip">
     <span class="avatar">{{ instructor.user.full_name|slice:":1"|upper }}</span>
     <span>{{ instructor.user.full_name }}</span>

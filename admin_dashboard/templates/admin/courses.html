@@ -1,0 +1,1003 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Courses | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Courses
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================
+       COURSES PAGE
+    ========================================= */
+
+    .courses-page {
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+
+    /* ---------- PAGE HEADING ---------- */
+
+    .page-heading {
+        margin-bottom: 26px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+    }
+
+    .page-heading .eyebrow {
+        display: block;
+        color: #a18135;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+    }
+
+    .page-heading h2 {
+        margin: 0;
+        color: #172536;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -0.6px;
+    }
+
+    .page-heading p {
+        margin: 8px 0 0;
+        color: #7d8588;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+
+    /* ---------- CREATE BUTTON ---------- */
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px 17px;
+        border-radius: 10px;
+        background: #17283b;
+        color: #fff;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 750;
+        white-space: nowrap;
+        transition: 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: #a18135;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+
+    /* ---------- OVERVIEW ---------- */
+
+    .course-overview {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .overview-card {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 18px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .overview-icon {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: #f4f0e6;
+        color: #17283b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .overview-card:nth-child(2) .overview-icon {
+        background: #edf6ef;
+    }
+
+    .overview-card:nth-child(3) .overview-icon {
+        background: #f7eee8;
+    }
+
+    .overview-info span {
+        display: block;
+        color: #858b8b;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .overview-info strong {
+        display: block;
+        color: #172536;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+
+    /* ---------- FILTER BAR ---------- */
+
+    .filter-bar {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .search-form input,
+    .search-form select {
+        height: 43px;
+        padding: 0 13px;
+        border: 1px solid #deddd8;
+        border-radius: 9px;
+        outline: none;
+        background: #fcfcfa;
+        color: #243343;
+        font-size: 12px;
+        transition: 0.2s ease;
+    }
+
+    .search-form input {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .search-form select {
+        width: 150px;
+        cursor: pointer;
+    }
+
+    .search-form input:focus,
+    .search-form select:focus {
+        border-color: #b9a56e;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(161, 129, 53, 0.08);
+    }
+
+    .search-form input::placeholder {
+        color: #a1a5a4;
+    }
+
+    .filter-button {
+        height: 43px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 9px;
+        background: #17283b;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .filter-button:hover {
+        background: #a18135;
+    }
+
+
+    /* ---------- TABLE CARD ---------- */
+
+    .table-card {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #efeee9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .table-header .eyebrow {
+        display: block;
+        color: #a18135;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        margin-bottom: 5px;
+    }
+
+    .table-header h3 {
+        margin: 0;
+        color: #172536;
+        font-size: 18px;
+        letter-spacing: -0.2px;
+    }
+
+    .table-count {
+        color: #8a8f91;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* ---------- TABLE ---------- */
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    thead {
+        background: #fafaf8;
+    }
+
+    th {
+        padding: 13px 22px;
+        text-align: left;
+        color: #858b8b;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        white-space: nowrap;
+        border-bottom: 1px solid #ebeae5;
+    }
+
+    td {
+        padding: 15px 22px;
+        color: #59636a;
+        font-size: 12px;
+        border-bottom: 1px solid #f0efeb;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+        background: #fcfcfa;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    /* ---------- COURSE INFO ---------- */
+
+    .course-table-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 240px;
+    }
+
+    .course-thumbnail {
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #17283b;
+        color: #d7b45a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .course-name {
+        min-width: 0;
+    }
+
+    .course-name strong {
+        display: block;
+        color: #243343;
+        font-size: 12px;
+        font-weight: 750;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+    }
+
+    .course-name small {
+        display: block;
+        color: #929796;
+        font-size: 10px;
+        line-height: 1.4;
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ---------- TRACK ---------- */
+
+    .track-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #f4f0e6;
+        color: #806727;
+        font-size: 10px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+
+    /* ---------- INSTRUCTOR ---------- */
+
+    .instructor-info {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 150px;
+    }
+
+    .instructor-avatar {
+        width: 31px;
+        height: 31px;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: #edf2ee;
+        color: #41684d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .instructor-details strong {
+        display: block;
+        color: #35434d;
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+
+    .instructor-details small {
+        display: block;
+        color: #969b9b;
+        font-size: 9px;
+    }
+
+    .muted {
+        color: #a1a5a4;
+        font-size: 11px;
+    }
+
+
+    /* ---------- NUMBERS ---------- */
+
+    .table-number {
+        color: #394852;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .table-number-label {
+        display: block;
+        color: #9a9e9e;
+        font-size: 9px;
+        margin-top: 2px;
+    }
+
+
+    /* ---------- STATUS ---------- */
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 10px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .status::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+    }
+
+    .status.active {
+        background: #edf6ef;
+        color: #367148;
+    }
+
+    .status.active::before {
+        background: #4b9a63;
+    }
+
+    .status.inactive {
+        background: #f4f2ef;
+        color: #77746f;
+    }
+
+    .status.inactive::before {
+        background: #99958d;
+    }
+
+
+    /* ---------- ACTIONS ---------- */
+
+    .table-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .table-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 31px;
+        padding: 0 11px;
+        border: 1px solid #deddd8;
+        border-radius: 8px;
+        background: #fff;
+        color: #263646;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .table-action:hover {
+        background: #17283b;
+        border-color: #17283b;
+        color: #fff;
+    }
+
+    .table-action.more {
+        width: 31px;
+        padding: 0;
+        font-size: 15px;
+    }
+
+
+    /* ---------- EMPTY ---------- */
+
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-state-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 14px;
+        border-radius: 14px;
+        background: #f4f0e6;
+        color: #a18135;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 5px;
+        color: #243343;
+        font-size: 15px;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #929796;
+        font-size: 11px;
+    }
+
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 950px) {
+
+        .course-overview {
+            grid-template-columns: 1fr;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .search-form {
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            width: 100%;
+            flex-basis: 100%;
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .page-heading h2 {
+            font-size: 25px;
+        }
+
+        .page-heading .btn-primary {
+            width: 100%;
+        }
+
+        .table-header {
+            padding: 19px;
+        }
+
+        th,
+        td {
+            padding-left: 17px;
+            padding-right: 17px;
+        }
+
+    }
+</style>
+
+
+<div class="courses-page">
+
+
+    <!-- =========================================
+         PAGE HEADING
+    ========================================== -->
+
+    <div class="page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                ACADEMY MANAGEMENT
+            </span>
+
+            <h2>
+                Courses
+            </h2>
+
+            <p>
+                Manage courses, instructors, lessons and student enrollment.
+            </p>
+
+        </div>
+
+
+        <a href="#" class="btn-primary">
+            + Create Course
+        </a>
+
+    </div>
+
+
+    <!-- =========================================
+         COURSE OVERVIEW
+    ========================================== -->
+
+    <div class="course-overview">
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon">
+                ▦
+            </div>
+
+            <div class="overview-info">
+
+                <span>
+                    Total Courses
+                </span>
+
+                <strong>
+                    {{ courses.count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon">
+                ✓
+            </div>
+
+            <div class="overview-info">
+
+                <span>
+                    Published Courses
+                </span>
+
+                <strong>
+                    {{ published_courses_count|default:"0" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon">
+                ◷
+            </div>
+
+            <div class="overview-info">
+
+                <span>
+                    Draft Courses
+                </span>
+
+                <strong>
+                    {{ draft_courses_count|default:"0" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================
+         FILTER BAR
+    ========================================== -->
+
+    <div class="filter-bar">
+
+        <form method="GET" class="search-form">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search by course title, category or instructor..."
+                autocomplete="off"
+            >
+
+
+            <select name="status">
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="published"
+                    {% if status == "published" %}selected{% endif %}
+                >
+                    Published
+                </option>
+
+                <option
+                    value="draft"
+                    {% if status == "draft" %}selected{% endif %}
+                >
+                    Draft
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="filter-button"
+            >
+                Filter
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================================
+         COURSE TABLE
+    ========================================== -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    COURSE CATALOG
+                </span>
+
+                <h3>
+                    {{ courses.count }}
+                    Course{{ courses.count|pluralize }}
+                </h3>
+
+            </div>
+
+            <span class="table-count">
+                Manage your academy content
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Course</th>
+                        <th>Track</th>
+                        <th>Instructor</th>
+                        <th>Lessons</th>
+                        <th>Students</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for course in courses %}
+
+                        <tr>
+
+
+                            <!-- COURSE -->
+
+                            <td>
+
+                                <div class="course-table-info">
+
+                                    <div class="course-thumbnail">
+                                        {{ course.title|first|upper }}
+                                    </div>
+
+
+                                    <div class="course-name">
+
+                                        <strong>
+                                            {{ course.title }}
+                                        </strong>
+
+                                        <small>
+                                            {{ course.description|truncatewords:8 }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- TRACK -->
+
+                            <td>
+
+                                <span class="track-badge">
+
+                                    {{ course.track|default:course.category }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- INSTRUCTOR -->
+
+                            <td>
+
+                                {% if course.instructor %}
+
+                                    <div class="instructor-info">
+
+                                        <div class="instructor-avatar">
+
+                                            {% if course.instructor.user.full_name %}
+                                                {{ course.instructor.user.full_name|first|upper }}
+                                            {% else %}
+                                                {{ course.instructor.user.username|first|upper }}
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="instructor-details">
+
+                                            <strong>
+
+                                                {% if course.instructor.user.full_name %}
+                                                    {{ course.instructor.user.full_name }}
+                                                {% else %}
+                                                    {{ course.instructor.user.username }}
+                                                {% endif %}
+
+                                            </strong>
+
+                                            <small>
+                                                Instructor
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <span class="muted">
+                                        Not assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- LESSONS -->
+
+                            <td>
+
+                                <span class="table-number">
+                                    {{ course.lessons.count }}
+                                </span>
+
+                                <span class="table-number-label">
+                                    lessons
+                                </span>
+
+                            </td>
+
+
+                            <!-- STUDENTS -->
+
+                            <td>
+
+                                <span class="table-number">
+                                    {{ course.enrollments.count }}
+                                </span>
+
+                                <span class="table-number-label">
+                                    students
+                                </span>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if course.is_published %}
+
+                                    <span class="status active">
+                                        Published
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status inactive">
+                                        Draft
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                                <div class="table-actions">
+
+                                    <a
+                                        href="{% url 'admin_course_detail' course.id %}"
+                                        class="table-action"
+                                    >
+                                        Manage
+                                    </a>
+
+                                    <button
+                                        type="button"
+                                        class="table-action more"
+                                    >
+                                        ⋮
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="7">
+
+                                <div class="empty-state">
+
+                                    <div class="empty-state-icon">
+                                        ▦
+                                    </div>
+
+                                    <h3>
+                                        No courses found
+                                    </h3>
+
+                                    <p>
+                                        Create your first course to start building the TechBridge academy.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
+

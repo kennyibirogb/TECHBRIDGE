@@ -1,0 +1,474 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Settings
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       PAGE
+    ========================================= */
+
+    .settings-page {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+
+    /* =========================================
+       PAGE HEADING
+    ========================================= */
+
+    .page-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    .page-heading h2 {
+        margin: 6px 0 7px;
+        color: #17283b;
+        font-size: 30px;
+        line-height: 1.15;
+        letter-spacing: -0.7px;
+    }
+
+    .page-heading p {
+        margin: 0;
+        color: #7d8582;
+        font-size: 14px;
+    }
+
+    .eyebrow {
+        display: block;
+        color: #9b7830;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+    }
+
+
+    /* =========================================
+       SETTINGS CARD
+    ========================================= */
+
+    .settings-card {
+        background: white;
+        border: 1px solid #e9e5db;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(23, 40, 59, 0.05);
+    }
+
+
+    /* =========================================
+       SETTINGS SECTION
+    ========================================= */
+
+    .settings-section {
+        padding: 28px;
+        border-bottom: 1px solid #eeeae1;
+    }
+
+    .settings-section h3 {
+        margin: 7px 0 22px;
+        color: #17283b;
+        font-size: 19px;
+        letter-spacing: -0.2px;
+    }
+
+
+    /* =========================================
+       FORM
+    ========================================= */
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #17283b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ddd9d0;
+        border-radius: 11px;
+        background: #faf9f6;
+        color: #17283b;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .form-group input {
+        height: 46px;
+        padding: 0 14px;
+    }
+
+    .form-group textarea {
+        min-height: 110px;
+        padding: 13px 14px;
+        line-height: 1.6;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: #b99a55;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(215, 180, 90, 0.12);
+    }
+
+
+    /* =========================================
+       TOGGLES
+    ========================================= */
+
+    .setting-toggle {
+        min-height: 70px;
+        padding: 0 0 18px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 1px solid #f0ede6;
+        cursor: pointer;
+    }
+
+    .setting-toggle:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .setting-toggle strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #17283b;
+        font-size: 14px;
+    }
+
+    .setting-toggle small {
+        display: block;
+        color: #858d89;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================
+       CUSTOM CHECKBOX
+    ========================================= */
+
+    .setting-toggle input {
+        appearance: none;
+        -webkit-appearance: none;
+
+        width: 46px;
+        height: 25px;
+
+        margin: 0;
+        flex-shrink: 0;
+
+        position: relative;
+
+        border-radius: 999px;
+        border: 0;
+
+        background: #d8d8d4;
+
+        cursor: pointer;
+
+        transition: 0.2s ease;
+    }
+
+    .setting-toggle input::before {
+        content: "";
+
+        position: absolute;
+
+        width: 19px;
+        height: 19px;
+
+        top: 3px;
+        left: 3px;
+
+        border-radius: 50%;
+
+        background: white;
+
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+        transition: 0.2s ease;
+    }
+
+    .setting-toggle input:checked {
+        background: #17283b;
+    }
+
+    .setting-toggle input:checked::before {
+        transform: translateX(21px);
+    }
+
+    .setting-toggle input:focus-visible {
+        outline: 3px solid rgba(215, 180, 90, 0.3);
+        outline-offset: 3px;
+    }
+
+
+    /* =========================================
+       ACTIONS
+    ========================================= */
+
+    .settings-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 20px 28px;
+        background: #faf9f6;
+    }
+
+    .btn-primary {
+        min-height: 44px;
+        padding: 0 21px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 0;
+        border-radius: 10px;
+
+        background: #17283b;
+        color: white;
+
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: #243b53;
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 700px) {
+
+        .page-heading h2 {
+            font-size: 26px;
+        }
+
+        .settings-section {
+            padding: 22px 19px;
+        }
+
+        .settings-actions {
+            padding: 17px 19px;
+        }
+
+        .settings-actions .btn-primary {
+            width: 100%;
+        }
+
+        .setting-toggle {
+            align-items: flex-start;
+        }
+
+    }
+
+</style>
+
+
+<div class="settings-page">
+
+
+    <!-- =========================================
+         PAGE HEADING
+    ========================================== -->
+
+    <div class="page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                SYSTEM
+            </span>
+
+            <h2>
+                Platform Settings
+            </h2>
+
+            <p>
+                Configure the TechBridge learning platform.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         SETTINGS
+    ========================================== -->
+
+    <div class="settings-card">
+
+
+        <!-- GENERAL -->
+
+        <div class="settings-section">
+
+            <span class="eyebrow">
+                GENERAL
+            </span>
+
+            <h3>
+                Platform Information
+            </h3>
+
+
+            <div class="form-group">
+
+                <label for="platform-name">
+                    Platform Name
+                </label>
+
+                <input
+                    id="platform-name"
+                    type="text"
+                    name="platform_name"
+                    value="TechBridge"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="platform-description">
+                    Platform Description
+                </label>
+
+                <textarea
+                    id="platform-description"
+                    name="platform_description"
+                    rows="4"
+                >Technology education and training platform.</textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- REGISTRATION -->
+
+        <div class="settings-section">
+
+            <span class="eyebrow">
+                REGISTRATION
+            </span>
+
+            <h3>
+                Account Settings
+            </h3>
+
+
+            <!-- STUDENT REGISTRATION -->
+
+            <label class="setting-toggle">
+
+                <div>
+
+                    <strong>
+                        Student Registration
+                    </strong>
+
+                    <small>
+                        Allow new students to create accounts.
+                    </small>
+
+                </div>
+
+                <input
+                    type="checkbox"
+                    name="student_registration"
+                    checked
+                >
+
+            </label>
+
+
+            <!-- INSTRUCTOR REGISTRATION -->
+
+            <label class="setting-toggle">
+
+                <div>
+
+                    <strong>
+                        Instructor Registration
+                    </strong>
+
+                    <small>
+                        Allow instructors to apply for an account.
+                    </small>
+
+                </div>
+
+                <input
+                    type="checkbox"
+                    name="instructor_registration"
+                    checked
+                >
+
+            </label>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="settings-actions">
+
+            <button
+                type="button"
+                class="btn-primary"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

@@ -63,6 +63,24 @@
   .field input:focus, .field textarea:focus{ border-color: var(--amber); box-shadow: 0 0 0 3px rgba(233,196,106,.14); }
   .field .hint{ font-family: var(--mono); font-size:.66rem; color: var(--ink-soft); margin-top:.45rem; }
   .field .hint.error{ color: var(--danger); }
+  .track-chip{
+    display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px;
+    border: 1px solid rgba(233,196,106,.4); background: rgba(233,196,106,.08);
+    font-family: var(--mono); font-size:.74rem; color: var(--ink); margin-bottom: 1.6rem;
+  }
+  .track-chip b{ color: var(--cyan); }
+  .course-title-preview{
+    text-align:center;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+    padding: 0.6rem 1rem;
+    background: rgba(233,196,106,0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(233,196,106,0.25);
+  }
   .submit-btn{
     width:100%; font-family: var(--mono); font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
     background: linear-gradient(90deg, var(--amber), var(--cyan)); color:#2A2118; font-weight:700; border:none;
@@ -100,7 +118,16 @@
     <span class="step-eyebrow">Step 1 of 2 — course details</span>
     <div class="form-card">
       <h2>Set up your course</h2>
-      <p class="sub">Give it a title and category. You'll add lessons one at a time right after this.</p>
+      <p class="sub">Your course is based on the track you chose. Just add a short description, then you’ll start adding lessons.</p>
+
+      <div style="text-align:center;">
+        <div class="track-chip">&#127891; Track: <b>{{ instructor.track }}</b></div>
+      </div>
+
+      <!-- Auto title from track -->
+      <div class="course-title-preview">
+        {{ track_name|default:instructor.track }}
+      </div>
 
       {% if messages %}
         {% for message in messages %}
@@ -115,17 +142,7 @@
       <form method="post" novalidate>
         {% csrf_token %}
 
-        <div class="field">
-          <label for="{{ form.title.id_for_label }}">Course title</label>
-          {{ form.title }}
-          {% if form.title.errors %}<div class="hint error">{{ form.title.errors.0 }}</div>{% endif %}
-        </div>
-
-        <div class="field">
-          <label for="{{ form.category.id_for_label }}">Category</label>
-          {{ form.category }}
-          {% if form.category.errors %}<div class="hint error">{{ form.category.errors.0 }}</div>{% endif %}
-        </div>
+        <!-- Title field removed – it is now auto-set from the track -->
 
         <div class="field">
           <label for="{{ form.description.id_for_label }}">Description <span style="text-transform:none; letter-spacing:0;">(optional)</span></label>

@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, get_user_model
+from django.db import IntegrityError
+from core.constants import TRACK_CHOICES
 from .models import Instructor, Course, Lesson, Material, Assignment
+
 
 User = get_user_model()
 
@@ -14,10 +17,14 @@ class InstructorSignupForm(UserCreationForm):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'placeholder': 'you@lasustech.edu.ng', 'id': 'id_email'})
     )
+    track = forms.ChoiceField(
+        choices=TRACK_CHOICES,
+        widget=forms.Select(attrs={'id': 'id_track'})
+    )
 
     class Meta:
         model = User
-        fields = ('full_name', 'email', 'password1', 'password2')
+        fields = ('full_name', 'email', 'track', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,9 +47,14 @@ class InstructorSignupForm(UserCreationForm):
         name_parts = self.cleaned_data['full_name'].strip().split(' ', 1)
         user.first_name = name_parts[0]
         user.last_name = name_parts[1] if len(name_parts) > 1 else ''
+        user.track = self.cleaned_data['track']
+
         if commit:
-            user.save()
-            Instructor.objects.create(user=user)
+            try:
+                user.save()
+                Instructor.objects.create(user=user, track=self.cleaned_data['track'])
+            except IntegrityError:
+                raise forms.ValidationError('An account with this email already exists.')
         return user
 
 
@@ -70,11 +82,12 @@ class InstructorLoginForm(forms.Form):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'category', 'description']
+        fields = ['description']          # remove 'title'
         widgets = {
-            'title': forms.TextInput(attrs={'placeholder': 'e.g. Intro to Cloud Computing'}),
-            'category': forms.TextInput(attrs={'placeholder': 'e.g. Cloud Engineering'}),
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'description': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Briefly describe what students will learn in this track...'
+            }),
         }
 
 

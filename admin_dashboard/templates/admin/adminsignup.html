@@ -1,0 +1,335 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Signup | TechBridge</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: linear-gradient(
+        135deg,
+        #0f1c2e 0%,
+        #1B2A4A 100%
+      );
+
+      padding: 20px;
+    }
+
+    .signup-box {
+      width: 100%;
+      max-width: 420px;
+
+      padding: 40px 36px;
+
+      background: #ffffff;
+      border-radius: 16px;
+
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .signup-box h1 {
+      font-size: 24px;
+      color: #1B2A4A;
+      margin-bottom: 6px;
+    }
+
+    .signup-box > p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    /* =========================
+       MESSAGES
+    ========================== */
+
+    .messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .messages li {
+      padding: 10px 12px;
+      border-radius: 7px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .messages .msg-error {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .messages .msg-success {
+      color: #15803d;
+      background: #dcfce7;
+    }
+
+    /* =========================
+       FORM
+    ========================== */
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+
+      font-size: 13px;
+      font-weight: 500;
+
+      color: #1B2A4A;
+
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+
+      padding: 12px 14px;
+
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+
+      font-size: 14px;
+
+      outline: none;
+
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #1B2A4A;
+
+      box-shadow:
+        0 0 0 3px rgba(27, 42, 74, 0.08);
+    }
+
+    /* =========================
+       BUTTON
+    ========================== */
+
+    .signup-btn {
+      width: 100%;
+
+      padding: 13px;
+
+      margin-top: 4px;
+
+      background: #1B2A4A;
+      color: #ffffff;
+
+      border: none;
+      border-radius: 8px;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition:
+        background 0.2s,
+        transform 0.1s;
+    }
+
+    .signup-btn:hover {
+      background: #2c3e6b;
+    }
+
+    .signup-btn:active {
+      transform: scale(0.99);
+    }
+
+    /* =========================
+       LOGIN LINK
+    ========================== */
+
+    .login-link {
+      text-align: center;
+
+      margin-top: 22px;
+
+      font-size: 14px;
+
+      color: #64748b;
+    }
+
+    .login-link a {
+      color: #1B2A4A;
+
+      font-weight: 600;
+
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="signup-box">
+
+```
+<h1>Admin Signup</h1>
+
+<p>
+  Create an administrator account
+</p>
+
+
+<!-- =========================
+     DJANGO MESSAGES
+========================== -->
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="msg-{{ message.tags }}">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+
+<!-- =========================
+     SIGNUP FORM
+========================== -->
+
+<form method="POST">
+
+  {% csrf_token %}
+
+
+  <div class="form-group">
+    <label for="full_name">
+      Full name
+    </label>
+
+    <input
+      type="text"
+      id="full_name"
+      name="full_name"
+      placeholder="Enter your full name"
+      autocomplete="name"
+      required
+    >
+  </div>
+
+
+  <div class="form-group">
+    <label for="username">
+      Username
+    </label>
+
+    <input
+      type="text"
+      id="username"
+      name="username"
+      placeholder="Choose a username"
+      autocomplete="username"
+      required
+    >
+  </div>
+
+
+  <div class="form-group">
+    <label for="email">
+      Email
+    </label>
+
+    <input
+      type="email"
+      id="email"
+      name="email"
+      placeholder="Enter your email"
+      autocomplete="email"
+      required
+    >
+  </div>
+
+
+  <div class="form-group">
+    <label for="password">
+      Password
+    </label>
+
+    <input
+      type="password"
+      id="password"
+      name="password"
+      placeholder="Create a password"
+      autocomplete="new-password"
+      required
+    >
+  </div>
+
+
+  <div class="form-group">
+    <label for="confirm_password">
+      Confirm password
+    </label>
+
+    <input
+      type="password"
+      id="confirm_password"
+      name="confirm_password"
+      placeholder="Confirm your password"
+      autocomplete="new-password"
+      required
+    >
+  </div>
+
+
+  <button
+    type="submit"
+    class="signup-btn"
+  >
+    Create Admin Account
+  </button>
+
+</form>
+
+
+<!-- =========================
+     LOGIN LINK
+========================== -->
+
+<div class="login-link">
+  Already have an account?
+
+  <a href="{% url 'admin_login' %}">
+    Login
+  </a>
+</div>
+
+  </div>
+
+</body>
+</html>

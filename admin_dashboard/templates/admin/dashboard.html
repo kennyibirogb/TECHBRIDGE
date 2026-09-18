@@ -1,0 +1,1012 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================
+       DASHBOARD
+    ========================================= */
+
+    .dashboard {
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    /* ---------- HERO ---------- */
+
+    .dashboard-hero {
+        background: linear-gradient(135deg, #101c2c 0%, #1b3046 100%);
+        border-radius: 24px;
+        padding: 34px 38px;
+        margin-bottom: 28px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(15, 29, 45, 0.12);
+    }
+
+    .dashboard-hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 50%;
+        right: -70px;
+        top: -110px;
+    }
+
+    .dashboard-hero::before {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 50%;
+        right: 40px;
+        bottom: -110px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #d7b45a;
+        margin-bottom: 10px;
+    }
+
+    .hero-label::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #d7b45a;
+    }
+
+    .dashboard-hero h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.7px;
+    }
+
+    .dashboard-hero p {
+        margin: 9px 0 0;
+        max-width: 650px;
+        color: rgba(255,255,255,0.72);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+    /* ---------- STATS ---------- */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 18px;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(20, 30, 40, 0.07);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f0e4;
+        color: #18283b;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: #edf2ee;
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: #eef1f6;
+    }
+
+    .stat-card:nth-child(4) .stat-icon {
+        background: #f7eee8;
+    }
+
+    .stat-info {
+        min-width: 0;
+    }
+
+    .stat-label {
+        display: block;
+        color: #7c817f;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        display: block;
+        color: #172536;
+        font-size: 26px;
+        line-height: 1;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+
+    /* ---------- SECTION GRID ---------- */
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .dashboard-card {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #efeee9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .section-label {
+        display: block;
+        font-size: 10px;
+        letter-spacing: 1.4px;
+        font-weight: 800;
+        color: #a18135;
+        margin-bottom: 5px;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #172536;
+        letter-spacing: -0.2px;
+    }
+
+    .card-header > a {
+        color: #526273;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .card-header > a:hover {
+        color: #a18135;
+    }
+
+
+    /* ---------- USERS ---------- */
+
+    .user-list {
+        padding: 6px 24px;
+    }
+
+    .user-row {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0efeb;
+    }
+
+    .user-row:last-child {
+        border-bottom: none;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #17283b;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .user-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .user-info strong {
+        display: block;
+        color: #202d3a;
+        font-size: 13px;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-info span {
+        display: block;
+        color: #8a8f91;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ---------- STATUS ---------- */
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 10px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .status::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+    }
+
+    .status.active {
+        background: #edf6ef;
+        color: #367148;
+    }
+
+    .status.active::before {
+        background: #4b9a63;
+    }
+
+    .status.inactive {
+        background: #f4f2ef;
+        color: #77746f;
+    }
+
+    .status.inactive::before {
+        background: #99958d;
+    }
+
+
+    /* ---------- VERIFY BUTTON ---------- */
+
+    .btn-small {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 12px;
+        border-radius: 8px;
+        background: #17283b;
+        color: #fff;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .btn-small:hover {
+        background: #a18135;
+        color: #fff;
+    }
+
+
+    /* ---------- EMPTY STATE ---------- */
+
+    .empty-state {
+        padding: 38px 24px;
+        text-align: center;
+        color: #949895;
+        font-size: 13px;
+    }
+
+    .empty-state p {
+        margin: 0;
+    }
+
+
+    /* ---------- COURSES ---------- */
+
+    .full-width {
+        margin-bottom: 22px;
+    }
+
+    .course-grid {
+        padding: 22px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .course-card {
+        border: 1px solid #ebe9e3;
+        border-radius: 16px;
+        padding: 19px;
+        background: #fcfcfa;
+        transition: 0.2s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(20, 30, 40, 0.06);
+    }
+
+    .course-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .course-track {
+        color: #a18135;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .course-card h4 {
+        margin: 0 0 8px;
+        color: #1b2a39;
+        font-size: 16px;
+    }
+
+    .course-card > p {
+        color: #7e8585;
+        font-size: 12px;
+        line-height: 1.65;
+        min-height: 40px;
+        margin: 0 0 18px;
+    }
+
+    .course-footer {
+        padding-top: 14px;
+        border-top: 1px solid #ebe9e3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .course-footer span {
+        color: #7e8585;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .course-footer a {
+        color: #17283b;
+        font-size: 11px;
+        font-weight: 750;
+        text-decoration: none;
+    }
+
+    .course-footer a:hover {
+        color: #a18135;
+    }
+
+
+    /* ---------- QUICK ACTIONS ---------- */
+
+    .quick-actions {
+        margin-bottom: 30px;
+    }
+
+    .quick-actions-title {
+        margin: 0 0 14px;
+        color: #172536;
+        font-size: 18px;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .action-card {
+        background: #fff;
+        border: 1px solid #e9e7e1;
+        border-radius: 16px;
+        padding: 19px;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .action-card:hover {
+        border-color: #d7c59a;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(20, 30, 40, 0.06);
+    }
+
+    .action-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #f4f0e6;
+        color: #17283b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 13px;
+    }
+
+    .action-card strong {
+        display: block;
+        color: #243343;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .action-card small {
+        display: block;
+        color: #8a8f91;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 1100px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .course-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .action-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 800px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-hero {
+            padding: 28px;
+        }
+
+        .dashboard-hero h2 {
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .stats-grid,
+        .course-grid,
+        .action-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-hero {
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .card-header {
+            padding: 19px;
+        }
+
+        .user-list {
+            padding: 5px 19px;
+        }
+
+        .course-grid {
+            padding: 16px;
+        }
+    }
+</style>
+
+
+<div class="dashboard">
+
+
+    <!-- =========================================
+         WELCOME
+    ========================================== -->
+
+    <section class="dashboard-hero">
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                ADMIN OVERVIEW
+            </span>
+
+            <h2>
+                Welcome back,
+                {{ request.user.full_name|default:request.user.username }}.
+            </h2>
+
+            <p>
+                Here's what's happening across the TechBridge learning platform.
+                Manage your students, instructors, courses and academic activity
+                from one place.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STATISTICS
+    ========================================== -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div class="stat-info">
+                <span class="stat-label">
+                    Total Students
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_students }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ◉
+            </div>
+
+            <div class="stat-info">
+                <span class="stat-label">
+                    Instructors
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_instructors }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ▦
+            </div>
+
+            <div class="stat-info">
+                <span class="stat-label">
+                    Courses
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_courses }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ↗
+            </div>
+
+            <div class="stat-info">
+                <span class="stat-label">
+                    Enrollments
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_enrollments }}
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STUDENTS + INSTRUCTORS
+    ========================================== -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- RECENT STUDENTS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="section-label">
+                        USERS
+                    </span>
+
+                    <h3>
+                        Recent Students
+                    </h3>
+                </div>
+
+                <a href="{% url 'admin_students' %}">
+                    View all →
+                </a>
+
+            </div>
+
+
+            {% if recent_students %}
+
+                <div class="user-list">
+
+                    {% for student in recent_students %}
+
+                        <div class="user-row">
+
+                            <div class="user-avatar">
+                                {{ student.full_name|first|upper }}
+                            </div>
+
+                            <div class="user-info">
+
+                                <strong>
+                                    {{ student.full_name }}
+                                </strong>
+
+                                <span>
+                                    {{ student.email }}
+                                </span>
+
+                            </div>
+
+                            <span class="status active">
+                                Active
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>No students registered yet.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- PENDING INSTRUCTORS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="section-label">
+                        APPROVALS
+                    </span>
+
+                    <h3>
+                        Pending Instructors
+                    </h3>
+                </div>
+
+                <a href="{% url 'admin_instructors' %}">
+                    View all →
+                </a>
+
+            </div>
+
+
+            {% if pending_instructor_list %}
+
+                <div class="user-list">
+
+                    {% for instructor in pending_instructor_list %}
+
+                        <div class="user-row">
+
+                            <div class="user-avatar">
+                                {{ instructor.user.full_name|first|upper }}
+                            </div>
+
+                            <div class="user-info">
+
+                                <strong>
+                                    {{ instructor.user.full_name }}
+                                </strong>
+
+                                <span>
+                                    {{ instructor.user.email }}
+                                </span>
+
+                            </div>
+
+                            <a
+                                href="{% url 'verify_instructor' instructor.id %}"
+                                class="btn-small"
+                            >
+                                Verify
+                            </a>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>No pending instructor approvals.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         COURSES
+    ========================================== -->
+
+    <section class="dashboard-card full-width">
+
+        <div class="card-header">
+
+            <div>
+                <span class="section-label">
+                    ACADEMY
+                </span>
+
+                <h3>
+                    Courses
+                </h3>
+            </div>
+
+            <a href="{% url 'admin_courses' %}">
+                Manage courses →
+            </a>
+
+        </div>
+
+
+        <div class="course-grid">
+
+            {% for course in recent_courses %}
+
+                <div class="course-card">
+
+                    <div class="course-top">
+
+                        <span class="course-track">
+                            {{ course.track|default:course.category }}
+                        </span>
+
+                        {% if course.is_published %}
+
+                            <span class="status active">
+                                Published
+                            </span>
+
+                        {% else %}
+
+                            <span class="status inactive">
+                                Draft
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h4>
+                        {{ course.title }}
+                    </h4>
+
+
+                    <p>
+                        {{ course.description|truncatewords:15 }}
+                    </p>
+
+
+                    <div class="course-footer">
+
+                        <span>
+                            {{ course.enrollments.count }} students
+                        </span>
+
+                        <a href="{% url 'admin_course_detail' course.id %}">
+                            Manage →
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-state">
+                    <p>No courses have been created yet.</p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         QUICK ACTIONS
+    ========================================== -->
+
+    <section class="quick-actions">
+
+        <h3 class="quick-actions-title">
+            Quick Actions
+        </h3>
+
+
+        <div class="action-grid">
+
+
+            <a
+                href="{% url 'admin_students' %}"
+                class="action-card"
+            >
+
+                <div class="action-icon">
+                    👥
+                </div>
+
+                <strong>
+                    Manage Students
+                </strong>
+
+                <small>
+                    View and manage student accounts
+                </small>
+
+            </a>
+
+
+            <a
+                href="{% url 'admin_instructors' %}"
+                class="action-card"
+            >
+
+                <div class="action-icon">
+                    ◉
+                </div>
+
+                <strong>
+                    Manage Instructors
+                </strong>
+
+                <small>
+                    Review and verify instructors
+                </small>
+
+            </a>
+
+
+            <a
+                href="{% url 'admin_courses' %}"
+                class="action-card"
+            >
+
+                <div class="action-icon">
+                    ▦
+                </div>
+
+                <strong>
+                    Manage Courses
+                </strong>
+
+                <small>
+                    Create and organize courses
+                </small>
+
+            </a>
+
+
+            <a
+                href="{% url 'admin_enrollments' %}"
+                class="action-card"
+            >
+
+                <div class="action-icon">
+                    ↗
+                </div>
+
+                <strong>
+                    Enrollments
+                </strong>
+
+                <small>
+                    Monitor student enrollments
+                </small>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}
+

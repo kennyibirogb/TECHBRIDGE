@@ -7,7 +7,7 @@ from core.constants import TRACK_CHOICES
 class Student(AbstractUser):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=150)
-    track = models.CharField(max_length=100, choices=TRACK_CHOICES)
+    track = models.CharField(max_length=50, choices=TRACK_CHOICES, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

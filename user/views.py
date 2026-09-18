@@ -4,6 +4,8 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from .forms import StudentSignupForm, StudentLoginForm
 
 
+
+
 def _is_instructor(user):
     return hasattr(user, 'instructor_profile')
 

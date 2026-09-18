@@ -1,0 +1,145 @@
+```html
+{% extends "admin/base.html" %}
+
+{% block title %}Submissions | TechBridge Admin{% endblock %}
+
+{% block page_title %}
+Submissions
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <span class="eyebrow">STUDENT WORK</span>
+
+        <h2>Submissions</h2>
+
+        <p>
+            View student assignment submissions across the platform.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Student</th>
+                    <th>Assignment</th>
+                    <th>Course</th>
+                    <th>Submission</th>
+                    <th>Submitted</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for submission in submissions %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="table-user">
+
+                            <div class="user-avatar">
+                                {{ submission.student.full_name|first|upper }}
+                            </div>
+
+                            <strong>
+                                {{ submission.student.full_name }}
+                            </strong>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        {{ submission.assignment.title }}
+                    </td>
+
+
+                    <td>
+                        {{ submission.assignment.lesson.course.title }}
+                    </td>
+
+
+                    <td>
+
+                        {% if submission.file %}
+
+                            📎 File uploaded
+
+                        {% elif submission.text %}
+
+                            📝 Text response
+
+                        {% else %}
+
+                            Empty
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        {{ submission.submitted_at|date:"M d, Y H:i" }}
+                    </td>
+
+
+                    <td>
+
+                        <a href="#" class="table-action">
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="empty-state">
+
+                            <h3>No submissions</h3>
+
+                            <p>
+                                Students have not submitted any assignments yet.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```
