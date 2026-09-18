@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/jpg" href="{% static 'instructor/img/techbridge-logo.jpg' %}"/>
+<title>Instructor log in | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #3A3226; --ink-soft: #7D7259; --navy: #FAF3E4;
+    --navy-card: rgba(255, 252, 244, 0.75); --navy-card-solid: #FFFBF2;
+    --line: rgba(58, 50, 38, 0.14);
+    --cyan: #C17A54; --blue: #A8613F; --mint: #7C9473; --amber: #D3A24C; --danger: #9C5B3C;
+    --display: 'Fraunces', serif; --body: 'Work Sans', sans-serif; --mono: 'Space Mono', monospace;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+  body{ background: var(--navy); color: var(--ink); font-family: var(--body); min-height:100vh; overflow-x:hidden; }
+  .bg-overlay{
+    position: fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(233,196,106,0.14), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(193,122,84,0.08), transparent 50%),
+      linear-gradient(180deg, rgba(250,244,232,1) 0%, rgba(245,236,219,1) 45%, rgba(250,244,232,1) 100%);
+    pointer-events:none;
+  }
+  #progress{ position: fixed; top:0; left:0; height:3px; width:0%; background: linear-gradient(90deg, var(--amber), var(--cyan)); z-index: 10000; transition: width .1s linear; }
+  header{
+    display:flex; align-items:center; justify-content:space-between; padding: 16px 5vw;
+    border-bottom: 1px solid var(--line); background: rgba(250,244,232,.85); backdrop-filter: blur(10px);
+    position: fixed; width: 100%; z-index: 2;
+  }
+  .mark{ display:flex; align-items:center; gap:12px; }
+  .mark img{ width: 34px; height: auto; flex-shrink: 0; }
+  .mark-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .mark-text .main-name{ font-family: var(--display); font-weight:600; font-size:1.25rem; color: var(--ink); }
+  .mark-text .sub-name{ font-family: var(--mono); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color: var(--amber); margin-top:2px; }
+  .header-link{ font-family: var(--mono); font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; color: var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .header-link span{ color: var(--amber); }
+  .header-link:hover{ color: var(--ink); }
+  main{ display:grid; grid-template-columns: 1.05fr .95fr; min-height: calc(100vh - 73px); }
+  .brand-panel{ position:relative; padding: 4rem 4vw; display:flex; flex-direction:column; justify-content:center; border-right: 1px solid var(--line); }
+  .brand-panel .eyebrow{ font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color: var(--amber); margin-bottom:1.1rem; display:block; }
+  .brand-panel h1{ font-family: var(--display); font-weight:600; font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height:1.08; color: var(--ink); max-width: 12ch; }
+  .brand-panel h1 em{ font-style: italic; font-weight:500; color: var(--cyan); }
+  .brand-panel p{ color: var(--ink-soft); font-size: 1rem; line-height:1.7; max-width: 42ch; margin-top: 1.4rem; }
+  .brand-points{ margin-top: 2.6rem; display:grid; gap: 1.2rem; }
+  .brand-point{ display:flex; gap: .9rem; align-items:flex-start; }
+  .brand-point .bp-icon{ width: 36px; height:36px; border-radius: 10px; flex-shrink:0; background: rgba(233,196,106,.12); border: 1px solid var(--line); display:grid; place-items:center; color: var(--amber); font-family: var(--mono); font-size:.85rem; }
+  .brand-point b{ display:block; font-size:.94rem; color: var(--ink); }
+  .brand-point span{ display:block; font-size:.85rem; color: var(--ink-soft); margin-top:2px; }
+  .brand-panel::after{ content:""; position:absolute; left: 4vw; right: 4vw; bottom: 2.6rem; height:1px; background: var(--line); }
+  .brand-foot{ position:absolute; left:4vw; bottom: 1.1rem; font-family: var(--mono); font-size:.68rem; color: var(--ink-soft); letter-spacing:.04em; text-transform:uppercase; }
+  .form-panel{ display:flex; align-items:center; justify-content:center; padding: 3rem 4vw; }
+  .form-card{
+    width:100%; max-width: 440px; background: var(--navy-card); border: 1px solid var(--line);
+    border-radius: 18px 60px 18px 18px; padding: 2.6rem 2.2rem; backdrop-filter: blur(6px);
+    box-shadow: 8px 8px 0 rgba(233,196,106,0.08); animation: rise .8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{ from{ opacity:0; transform: translateY(18px); } to{ opacity:1; transform: translateY(0); } }
+  .form-card h2{ font-family: var(--display); font-weight:600; font-size: 1.7rem; color: var(--ink); }
+  .form-card .sub{ color: var(--ink-soft); font-size:.92rem; margin-top:.5rem; margin-bottom: 1.9rem; }
+  .field{ margin-bottom: 1.15rem; }
+  .field label{ display:block; font-family: var(--mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.08em; color: var(--ink-soft); margin-bottom:.5rem; }
+  .field input{
+    width:100%; padding: .82rem .95rem; font-family: var(--body); font-size:.94rem; color: var(--ink);
+    background: rgba(58,50,38,.05); border: 1px solid var(--line); border-radius: 9px; outline:none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .field input::placeholder{ color: rgba(58,50,38,.32); }
+  .field input:focus{ border-color: var(--amber); box-shadow: 0 0 0 3px rgba(233,196,106,.14); }
+  .field .hint{ font-family: var(--mono); font-size:.66rem; color: var(--ink-soft); margin-top:.45rem; }
+  .field .hint.error{ color: var(--danger); }
+  .row-between{ display:flex; align-items:center; justify-content:space-between; margin: -.3rem 0 1.5rem; font-family: var(--mono); font-size:.72rem; color: var(--ink-soft); }
+  .remember{ display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+  .remember input{ width:15px; height:15px; accent-color: var(--amber); cursor:pointer; }
+  .row-between a{ color: var(--amber); text-decoration:none; }
+  .row-between a:hover{ text-decoration: underline; }
+  .submit-btn{
+    width:100%; font-family: var(--mono); font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    background: linear-gradient(90deg, var(--amber), var(--cyan)); color:#2A2118; font-weight:700; border:none;
+    padding: 13px 20px; border-radius:999px; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .submit-btn:hover{ transform: translateY(-2px); box-shadow: 0 8px 22px rgba(233,196,106,.3); }
+  .submit-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
+  .form-foot{ text-align:center; margin-top: 1.4rem; font-family: var(--mono); font-size:.78rem; color: var(--ink-soft); }
+  .form-foot a{ color: var(--amber); text-decoration:none; }
+  .form-foot a:hover{ text-decoration: underline; }
+  .banner{ display:none; align-items:center; gap:10px; padding: .8rem 1rem; border-radius:10px; font-family: var(--mono); font-size:.76rem; margin-bottom: 1.3rem; }
+  .banner.show{ display:flex; }
+  .banner.ok{ background: rgba(124,148,115,.1); border: 1px solid rgba(124,148,115,.4); color: var(--mint); }
+  .banner.bad{ background: rgba(156,91,60,.1); border: 1px solid rgba(156,91,60,.4); color: var(--danger); }
+  a:focus-visible, button:focus-visible, input:focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+  @media (max-width: 980px){
+    main{ grid-template-columns: 1fr; }
+    .brand-panel{ border-right:none; border-bottom: 1px solid var(--line); padding: 3rem 6vw 2.4rem; }
+    .brand-panel::after, .brand-foot{ display:none; }
+    .brand-points{ display:none; }
+    .form-panel{ padding: 2.6rem 6vw 3.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="{% url 'main' %}" style="text-decoration: none;">
+    <div class="mark">
+      <img src="{% static 'instructor/img/techbridge-logo.jpg' %}" alt="TechBridge logo">
+      <div class="mark-text">
+        <span class="main-name">TechBridge</span>
+        <span class="sub-name">Instructor log in</span>
+      </div>
+    </div>
+  </a>
+  <a class="header-link" href="{% url 'instructor_signup' %}"><span style="color: var(--ink-soft);">New instructor? </span><span style="white-space: nowrap;">Create account &rarr;</span></a>
+</header>
+
+<main>
+  <section class="brand-panel">
+    <span class="eyebrow">Instructor login</span>
+    <h1>Back to your <em>course</em>.</h1>
+    <p>Sign back in to keep building out your lessons.</p>
+
+    <div class="brand-points">
+      <div class="brand-point">
+        <div class="bp-icon">01</div>
+        <div><b>One account, one login</b><span>Your instructor profile is tied straight to your TechBridge account.</span></div>
+      </div>
+      <div class="brand-point">
+        <div class="bp-icon">02</div>
+        <div><b>Course tools coming soon</b><span>Materials, quizzes, and assignments are on the way.</span></div>
+      </div>
+      <div class="brand-point">
+        <div class="bp-icon">03</div>
+        <div><b>New to TechBridge?</b><span>Create an instructor account in under a minute.</span></div>
+      </div>
+    </div>
+
+    <div class="brand-foot">TechBridge · LASUSTECH · 2026</div>
+  </section>
+
+  <section class="form-panel">
+    <div class="form-card">
+      <h2>Welcome back</h2>
+      <p class="sub">Log in to your instructor account.</p>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="banner show {% if message.tags == 'error' %}bad{% else %}ok{% endif %}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      {% if form.non_field_errors %}
+        <div class="banner show bad">{{ form.non_field_errors.0 }}</div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="id_email">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="hint error">{{ form.email.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="field">
+          <label for="id_password">Password</label>
+          {{ form.password }}
+          {% if form.password.errors %}<div class="hint error">{{ form.password.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="row-between">
+          <label class="remember">
+            {{ form.remember }}
+            Remember my email
+          </label>
+          <a href="#" id="forgotLink">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Log in</button>
+      </form>
+
+      <p class="form-foot">Don't have an instructor account? <a href="{% url 'instructor_signup' %}">Sign up</a></p>
+    </div>
+  </section>
+</main>
+
+<script>
+  const progressBar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight || 1) * 100;
+    progressBar.style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>

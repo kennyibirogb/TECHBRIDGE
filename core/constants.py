@@ -1,0 +1,18 @@
+TRACK_CHOICES = [
+    ('AI & Machine Learning', 'AI & Machine Learning'),
+    ('Robotics', 'Robotics'),
+    ('Cybersecurity', 'Cybersecurity'),
+    ('Internet of Things', 'Internet of Things'),
+    ('Software Development', 'Software Development'),
+    ('Startup Incubation', 'Startup Incubation'),
+    ('UI/UX Design', 'UI/UX Design'),
+    ('Data Science & Analytics', 'Data Science & Analytics'),
+    ('Mobile App Development', 'Mobile App Development'),
+    ('Cloud Computing', 'Cloud Computing'),
+    ('Blockchain & Web3', 'Blockchain & Web3'),
+    ('Game Development', 'Game Development'),
+    ('Digital Marketing & Growth', 'Digital Marketing & Growth'),
+    ('Product Management', 'Product Management'),
+    ('DevOps & Site Reliability', 'DevOps & Site Reliability'),
+    ('AR/VR & Immersive Tech', 'AR/VR & Immersive Tech'),
+]

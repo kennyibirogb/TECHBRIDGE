@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/jpg" href="techbridge-logo.jpg"/>
+<title>Teach with TechBridge | LASUSTECH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #2A2420;
+    --ink-soft: #7A6F62;
+    --navy: #FAF6EE;
+    --navy-card: rgba(255,255,255,0.6);
+    --navy-card-solid: #FFFFFF;
+    --line: rgba(42, 36, 32, 0.12);
+    --cyan: #D9B24C;
+    --blue: #8FA876;
+    --display: 'Fraunces', serif;
+    --body: 'Work Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--navy);
+    color: var(--ink);
+    font-family: var(--body);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .bg-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(217,178,76,0.14), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(143,168,118,0.10), transparent 50%),
+      linear-gradient(180deg, rgba(250,246,238,1) 0%, rgba(244,237,222,1) 45%, rgba(250,246,238,1) 100%);
+    pointer-events: none;
+  }
+
+  #progress{
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    z-index: 10000;
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  /* ── Header ── */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 5vw;
+    background: var(--blue);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .mark{ display: flex; align-items: center; gap: 12px; }
+  .mark img{ width: 34px; height: auto; flex-shrink: 0; }
+  .mark-text{ display: flex; flex-direction: column; line-height: 1.1; }
+  .mark-text .main-name{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .mark-text .sub-name{
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2A2420;
+    margin-top: 2px;
+  }
+
+  nav ul{
+    list-style: none;
+    display: flex;
+    gap: 2.2rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  nav a{
+    color: var(--navy);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.2s ease;
+  }
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:2px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width 0.25s ease;
+  }
+  nav a:hover{ color: var(--ink); }
+  nav a:hover::after{ width: 100%; }
+
+  .nav-right{ display: flex; align-items: center; gap: 1.1rem; }
+  .nav-enroll{
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--cyan);
+    color: #2A2420;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .nav-enroll:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(42, 36, 32, 0.1);
+  }
+
+  .burger{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    z-index: 1001;
+  }
+  .burger span{ width: 24px; height: 2px; background: var(--ink); transition: transform 0.25s ease, opacity 0.25s ease; }
+  .burger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity: 0; }
+  .burger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── Hero ── */
+  .hero{
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    background: rgba(250, 246, 238, 0.6);
+  }
+  .hero-inner{
+    display: grid;
+    grid-template-columns: minmax(480px, 640px) 1fr;
+    gap: 4vw;
+    align-items: center;
+    width: 100%;
+    padding: 4rem 6vw;
+  }
+  .about-card{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 18px 60px 18px 18px;
+    padding: 2.8rem 2.4rem;
+    box-shadow: 8px 8px 0 #D9B24C;
+    animation: rise 0.8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{ from{ opacity: 0; transform: translateY(18px); } to{ opacity: 1; transform: translateY(0); } }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .about-card h1{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(2.6rem, 7.5vw, 5.6rem);
+    line-height: 0.98;
+    color: var(--ink);
+  }
+  .about-card h1 .word2{ color: var(--cyan); }
+  .about-card h1 .word3{ color: var(--blue); }
+  .about-card p{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 1.5rem 0 1.8rem;
+    max-width: 46ch;
+  }
+  .about-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--cyan);
+    padding-bottom: 3px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .about-cta:hover{ gap: 13px; color: var(--cyan); }
+
+  .hero-right{ padding: 2rem; }
+  .hero-right h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.3rem, 2.2vw, 2rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .hero-right span{
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-top: 1rem;
+  }
+  .stat-row{ display: flex; gap: 2.4rem; margin-top: 2.4rem; flex-wrap: wrap; }
+  .stat-row div{ display: flex; flex-direction: column; }
+  .stat-row .num{ font-family: var(--display); font-size: 2.1rem; font-weight: 600; color: var(--cyan); }
+  .stat-row .label{ font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ── Mobile nav drawer ── */
+  #mySidenav{
+    position: fixed;
+    top: 0; right: 0;
+    height: 100%;
+    width: 0;
+    background: rgba(250, 246, 238, 0.97);
+    border-left: 1px solid var(--line);
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    padding-top: 80px;
+    will-change: width;
+  }
+  #mySidenav nav ul{ flex-direction: column; gap: 1.8rem; font-size: 1rem; padding: 0 2.5rem; }
+  #mySidenav .nav-link{
+    color: black;
+  }
+  .closebtn{ position: absolute; top: 22px; right: 22px; font-size: 30px; background: none; border: none; color: var(--ink); cursor: pointer; }
+
+  /* ── Shared section chrome ── */
+  .section{
+    position: relative;
+    z-index: 2;
+    padding: 6rem 6vw;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 900px;
+  }
+  .veil{ background: rgba(250, 246, 238, 0.7); }
+  .veil-soft{ background: rgba(250, 246, 238, 0.5); }
+
+  .section-heading{ max-width: 720px; margin: 0 auto 3rem; text-align: center; }
+  .section-heading h2{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin-top: 0.6rem;
+  }
+  .section-heading p{ color: var(--ink-soft); font-size: 1rem; line-height: 1.7; margin-top: 1.1rem; }
+  .section .eyebrow{ text-align: center; }
+
+  /* ── Why teach (pillars) ── */
+  .about-body{ max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+  .about-pillar{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.8rem 1.6rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .about-pillar:hover{ transform: translateY(-4px); border-color: var(--blue); box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1); }
+  .about-pillar .num{ font-family: var(--mono); font-size: 0.75rem; color: var(--cyan); letter-spacing: 0.1em; }
+  .about-pillar h3{ font-family: var(--display); font-weight: 600; font-size: 1.2rem; margin: 0.6rem 0 0.6rem; color: var(--ink); }
+  .about-pillar p{ color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; }
+
+  /* ── What we look for (cards) ── */
+  .cards{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.6rem; max-width: 1200px; margin: 0 auto; }
+  .card{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.9rem 1.7rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .card:hover{ transform: translateY(-4px); border-color: var(--blue); box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1); }
+  .card .tag{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--cyan);
+    padding: 5px 10px;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .card h3{ font-family: var(--display); font-weight: 600; font-size: 1.25rem; color: var(--ink); margin-bottom: 0.65rem; }
+  .card p{ color: var(--ink-soft); font-size: 0.92rem; line-height: 1.65; }
+
+  /* ── How it works (a real ordered process — numbers earn their place) ── */
+  .timeline{ max-width: 900px; margin: 0 auto; display: grid; gap: 0; }
+  .tl-step{
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 1.6rem;
+    padding: 1.9rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-step:last-child{ border-bottom: none; }
+  .tl-num{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .tl-body h3{ font-family: var(--display); font-weight: 600; font-size: 1.25rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .tl-body p{ color: var(--ink-soft); font-size: 0.95rem; line-height: 1.65; max-width: 58ch; }
+  .tl-body .tl-meta{
+    display: inline-block;
+    margin-top: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  /* ── Quote ── */
+  .quote-wrap{ max-width: 780px; margin: 0 auto; text-align: center; }
+  .quote-wrap blockquote{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .quote-wrap cite{
+    display: block;
+    margin-top: 1.4rem;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ── Apply (form) ── */
+  .contact-wrap{ max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.15fr; gap: 3.5rem; align-items: start; }
+  .contact-info .contact-item{ margin-bottom: 1.6rem; }
+  .contact-info .contact-label{
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 0.4rem;
+  }
+  .contact-info a, .contact-info span{ color: var(--ink); text-decoration: none; font-size: 0.98rem; line-height: 1.5; }
+  .contact-info a:hover{ color: var(--cyan); }
+  .contact-info ul{ list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+  .contact-info ul li{ color: var(--ink); font-size: 0.95rem; padding-left: 1.1rem; position: relative; }
+  .contact-info ul li::before{ content: "—"; position: absolute; left: 0; color: var(--cyan); }
+
+  .contact-form{ display: grid; gap: 1.1rem; background: var(--navy-card-solid); border: 1px solid var(--line); border-radius: 16px; padding: 2rem 1.9rem; }
+  .contact-form label{ display: block; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.4rem; }
+  .contact-form input, .contact-form select, .contact-form textarea{
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: var(--body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: rgba(42, 36, 32, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder{ color: rgba(42, 36, 32, 0.3); }
+  .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus{
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(217, 178, 76, 0.18);
+  }
+  .contact-form textarea{ resize: vertical; min-height: 110px; }
+  .form-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+
+  .contact-btn{
+    justify-self: start;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--cyan);
+    color: #2A2420;
+    font-weight: 700;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .contact-btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1); }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 2rem 6vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    position: relative;
+    z-index: 2;
+    background-color: var(--navy-card);
+  }
+  .footer-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .affiliates{ display: flex; align-items: center; flex-wrap: wrap; gap: 1.4rem; }
+  .affiliates-label{ font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-soft); margin-right: 0.4rem; }
+  .affiliates-logos{ display: flex; align-items: center; flex-wrap: wrap; gap: 0.9rem; }
+  .affiliates-logos img{ height: 40px; width: auto; border-radius: 8px; opacity: 0.9; transition: opacity 0.2s ease, transform 0.2s ease; }
+  .affiliates-logos img:hover{ opacity: 1; transform: translateY(-2px); }
+  .affiliates-logos img.on-light{ background: #fff; padding: 4px; }
+
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+  @media (max-width: 860px){
+    header{ padding: 14px 5vw; }
+    header > nav{ display: none; }
+    .burger{ display: flex; }
+
+    .hero{ min-height: auto; padding-top: 1rem; }
+    .hero-inner{ grid-template-columns: 1fr; padding: 2.5rem 6vw 3.5rem; gap: 2rem; }
+    .hero-right{ padding: 0 0.4rem; order: 2; }
+    .hero-right h2{ font-size: 1.1rem; }
+    .about-card{ order: 1; border-radius: 18px 40px 18px 18px; padding: 2rem 1.6rem; }
+    .stat-row{ gap: 1.6rem; }
+
+    .section{ padding: 4rem 6vw; }
+    .about-body{ grid-template-columns: 1fr; }
+    .contact-wrap{ grid-template-columns: 1fr; gap: 2.2rem; }
+    .form-row{ grid-template-columns: 1fr; }
+    .tl-step{ grid-template-columns: 48px 1fr; gap: 1rem; }
+    .tl-num{ font-size: 1.5rem; }
+
+    .footer-row{ flex-direction: column; text-align: center; justify-content: center; }
+    .affiliates{ flex-direction: column; }
+  }
+
+  @media (max-width: 420px){
+    .about-card h1{ font-size: 2.1rem; }
+    .mark-text .main-name{ font-size: 1.1rem; }
+    .nav-enroll{ font-size: 0.68rem; padding: 5px 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    .about-card{ animation: none; }
+    .card, .about-pillar, .nav-enroll, .contact-btn{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="bg-overlay"></div>
+
+<header>
+  <div class="mark">
+    <img src="techbridge-logo.jpg" alt="TechBridge logo">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">LASUSTECH</span>
+    </div>
+  </div>
+
+  <nav id="nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#why" class="nav-link">Why teach</a></li>
+      <li><a href="#how" class="nav-link">How it works</a></li>
+      <li><a href="#apply" class="nav-link">Apply</a></li>
+    </ul>
+  </nav>
+
+  <div class="nav-right">
+    <a href="#apply" class="nav-enroll">Apply to teach</a>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false" onclick="openNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div id="mySidenav">
+  <button class="closebtn" onclick="closeNav()">&times;</button>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#why" class="nav-link">Why teach</a></li>
+      <li><a href="#how" class="nav-link">How it works</a></li>
+      <li><a href="#apply" class="nav-link" style="color:var(--cyan)">Apply &rarr;</a></li>
+    </ul>
+  </nav>
+</div>
+
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="about-card">
+      <span class="eyebrow">For instructors &amp; mentors</span>
+      <h1>
+        <span class="word1">TEACH.</span><br>
+        <span class="word2">GUIDE.</span><br>
+        <span class="word3">BUILD.</span>
+      </h1>
+      <p>You already know how to ship. TechBridge gives you a small cohort of LASUSTECH students who want to learn it from someone who's actually done it — not a textbook.</p>
+      <a class="about-cta" href="#how">See how it works &rarr;</a>
+    </div>
+
+    <div class="hero-right">
+      <h2>Every instructor here was a practitioner first. Teaching is the second job, not the whole job.</h2>
+      <span>Flexible hours, real syllabi support, a stipend for your time</span>
+
+      <div class="stat-row">
+        <div>
+          <span class="num">40+</span>
+          <span class="label">Instructors &amp; mentors</span>
+        </div>
+        <div>
+          <span class="num">6</span>
+          <span class="label">Cohorts a year</span>
+        </div>
+        <div>
+          <span class="num">3–5 hrs</span>
+          <span class="label">Typical weekly commitment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY TEACH ══════════ -->
+<section class="section veil" id="why">
+  <span class="eyebrow">Why teach here</span>
+  <div class="section-heading">
+    <h2>Built so teaching doesn't eat your calendar.</h2>
+    <p>You bring the expertise. We handle the logistics, the classroom, and the students who actually show up ready to build.</p>
+  </div>
+
+  <div class="about-body">
+    <div class="about-pillar">
+      <span class="num">01</span>
+      <h3>Small, committed cohorts</h3>
+      <p>Groups of 8–15 students who applied to be there, not a lecture hall of 200 you'll never get to know.</p>
+    </div>
+    <div class="about-pillar">
+      <span class="num">02</span>
+      <h3>We handle the admin</h3>
+      <p>Scheduling, room bookings, and student comms are on us. You focus on the syllabus and the sessions.</p>
+    </div>
+    <div class="about-pillar">
+      <span class="num">03</span>
+      <h3>Paid, not volunteer</h3>
+      <p>Every instructor is compensated per cohort — this is a real engagement, not a favor you're doing us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHAT WE LOOK FOR ══════════ -->
+<section class="section veil-soft">
+  <span class="eyebrow">What we look for</span>
+  <div class="section-heading">
+    <h2>Practitioners over credentials.</h2>
+  </div>
+
+  <div class="cards">
+    <article class="card">
+      <span class="tag">Experience</span>
+      <h3>Shipped work</h3>
+      <p>You've built and shipped something real — a product, a codebase, a design system, a dataset in production.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Craft</span>
+      <h3>Any of our tracks</h3>
+      <p>Web development, product design, AI &amp; data science, IoT, or robotics — depth in one beats breadth across five.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Teaching</span>
+      <h3>Can explain, not just do</h3>
+      <p>No teaching certificate required. What matters is being able to break down how you think, out loud, patiently.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Time</span>
+      <h3>Room in your week</h3>
+      <p>Most instructors run one 2-hour session a week plus async Q&amp;A, for the length of a single cohort.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section class="section veil" id="how">
+  <span class="eyebrow">How it works</span>
+  <div class="section-heading">
+    <h2>From application to your first session.</h2>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step">
+      <span class="tl-num">01</span>
+      <div class="tl-body">
+        <h3>Apply</h3>
+        <p>Tell us what you'd teach and show us something you've built. Five minutes, no essay required.</p>
+        <span class="tl-meta">~5 min</span>
+      </div>
+    </div>
+    <div class="tl-step">
+      <span class="tl-num">02</span>
+      <div class="tl-body">
+        <h3>Conversation, not an interrogation</h3>
+        <p>A 20-minute call with our program lead to talk through your track, your availability, and what a good cohort looks like for you.</p>
+        <span class="tl-meta">Within 1 week</span>
+      </div>
+    </div>
+    <div class="tl-step">
+      <span class="tl-num">03</span>
+      <div class="tl-body">
+        <h3>Shape the syllabus together</h3>
+        <p>We share what past cohorts covered and where students got stuck. You decide what the sessions actually look like.</p>
+        <span class="tl-meta">2–3 weeks before cohort start</span>
+      </div>
+    </div>
+    <div class="tl-step">
+      <span class="tl-num">04</span>
+      <div class="tl-body">
+        <h3>Teach the cohort</h3>
+        <p>Weekly sessions, real project reviews, and a group of students who'll cite you as "the person who taught me" long after.</p>
+        <span class="tl-meta">6–8 weeks</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ QUOTE ══════════ -->
+<section class="section veil-soft">
+  <div class="quote-wrap">
+    <blockquote>"I came in to teach for one cohort. Four cohorts later, some of my former students are now building the thing I originally pitched them as a class project."</blockquote>
+    <cite>Instructor, Web Development track</cite>
+  </div>
+</section>
+
+<!-- ══════════ APPLY ══════════ -->
+<section class="section veil" id="apply">
+  <span class="eyebrow">Apply</span>
+  <div class="section-heading">
+    <h2>Ready to teach a cohort?</h2>
+  </div>
+
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <div class="contact-item">
+        <span class="contact-label">Email</span>
+        <a href="mailto:instructors@techbridge.lasustech.edu.ng">instructors@techbridge.lasustech.edu.ng</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">Commitment</span>
+        <span>One 2-hour session a week for a 6–8 week cohort, plus async Q&amp;A.</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">You'll get</span>
+        <ul>
+          <li>A per-cohort stipend</li>
+          <li>Syllabus and scheduling support</li>
+          <li>A cohort of students who applied to be there</li>
+        </ul>
+      </div>
+    </div>
+
+    <form class="contact-form" onsubmit="return handleApply(event)">
+      <div class="form-row">
+        <div>
+          <label for="a-name">Name</label>
+          <input type="text" id="a-name" placeholder="Your name" required>
+        </div>
+        <div>
+          <label for="a-email">Email</label>
+          <input type="email" id="a-email" placeholder="you@example.com" required>
+        </div>
+      </div>
+      <div>
+        <label for="a-track">Track</label>
+        <select id="a-track" required>
+          <option value="" disabled selected>Choose a track</option>
+          <option value="AI &amp; Machine Learning">AI &amp; Machine Learning</option>
+            <option value="Robotics">Robotics</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="Internet of Things">Internet of Things</option>
+            <option value="Software Development">Software Development</option>
+            <option value="Startup Incubation">Startup Incubation</option>
+            <option value="UI/UX Design">UI/UX Design</option>
+            <option value="Data Science &amp; Analytics">Data Science &amp; Analytics</option>
+            <option value="Mobile App Development">Mobile App Development</option>
+            <option value="Cloud Computing">Cloud Computing</option>
+            <option value="Blockchain &amp; Web3">Blockchain &amp; Web3</option>
+            <option value="Game Development">Game Development</option>
+            <option value="Digital Marketing &amp; Growth">Digital Marketing &amp; Growth</option>
+            <option value="Product Management">Product Management</option>
+            <option value="DevOps &amp; Site Reliability">DevOps &amp; Site Reliability</option>
+            <option value="AR/VR &amp; Immersive Tech">AR/VR &amp; Immersive Tech</option>
+        </select>
+      </div>
+      <div>
+        <label for="a-link">Portfolio, GitHub, or LinkedIn</label>
+        <input type="url" id="a-link" placeholder="https://">
+      </div>
+      <div>
+        <label for="a-message">What would you teach, and what have you built?</label>
+        <textarea id="a-message" rows="4" placeholder="A couple sentences is plenty" required></textarea>
+      </div>
+      <button type="submit" class="contact-btn">Submit application</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="affiliates">
+    <span class="affiliates-label">TechBridge affiliates</span>
+    <div class="affiliates-logos">
+      <a href="https://aws.amazon.com/training/awsacademy/"><img src="aws.jpg" alt="AWS Academy"></a>
+      <a href="https://www.netacad.com/"><img src="cisco.png" alt="Cisco Networking Academy Partner"></a>
+      <a href="https://e.huawei.com/en/talent/ict-academy/"><img src="huawei.jpg" alt="Huawei ICT Academy" class="on-light"></a>
+    </div>
+  </div>
+  <div class="footer-row">
+    <div class="mark-text"><span class="main-name" style="font-size:1rem;">TechBridge</span></div>
+    <div>&copy; 2026 TechBridge LASUSTECH. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "280px";
+    document.getElementById("burger").classList.add("open");
+    document.getElementById("burger").setAttribute("aria-expanded", true);
+  }
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("burger").classList.remove("open");
+    document.getElementById("burger").setAttribute("aria-expanded", false);
+  }
+  document.querySelectorAll('#mySidenav .nav-link').forEach(a => {
+    a.addEventListener('click', closeNav);
+  });
+
+  let touchStartX = 0, touchEndX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX < 30 && touchEndX - touchStartX > 50) openNav();
+  }, { passive: true });
+
+  const progress = document.getElementById('progress');
+  const docEl = document.documentElement;
+  let scrollTicking = false;
+  function updateProgress() {
+    const scrollable = docEl.scrollHeight - docEl.clientHeight;
+    const pct = scrollable > 0 ? (docEl.scrollTop / scrollable) : 0;
+    progress.style.transform = `scaleX(${pct})`;
+    scrollTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(updateProgress);
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  function handleApply(e) {
+    e.preventDefault();
+    alert('Application sent (demo). We\'ll be in touch soon.');
+    e.target.reset();
+    return false;
+  }
+</script>
+
+</body>
+</html>

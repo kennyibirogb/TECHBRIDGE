@@ -1,0 +1,412 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/jpg" href="{% static 'instructor/img/techbridge-logo.jpg' %}"/>
+<title>Manage lesson — {{ lesson.title }} | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #3A3226; --ink-soft: #7D7259; --navy: #FAF3E4;
+    --navy-card: rgba(255, 252, 244, 0.75); --navy-card-solid: #FFFBF2;
+    --line: rgba(58, 50, 38, 0.14);
+    --cyan: #C17A54; --blue: #A8613F; --mint: #7C9473; --amber: #D3A24C; --gold: #C9973E; --danger: #9C5B3C;
+    --display: 'Fraunces', serif; --body: 'Work Sans', sans-serif; --mono: 'Space Mono', monospace;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background: var(--navy); color: var(--ink); font-family: var(--body); min-height:100vh; }
+  .bg-overlay{
+    position: fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(233,196,106,0.14), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(193,122,84,0.08), transparent 50%),
+      linear-gradient(180deg, rgba(250,244,232,1) 0%, rgba(245,236,219,1) 45%, rgba(250,244,232,1) 100%);
+    pointer-events:none;
+  }
+  header{
+    position: sticky; top:0; z-index:999; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw; background: rgba(250,244,232,.85); backdrop-filter: blur(10px); border-bottom:1px solid var(--line);
+  }
+  .mark{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .mark img{ width: 38px; height: 38px; object-fit: cover; border-radius: 8px; }
+  .mark-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .mark-text .main-name{ font-family: var(--display); font-weight:600; font-size:1.2rem; color: var(--ink); }
+  .mark-text .sub-name{ font-family: var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color: var(--amber); margin-top:2px; }
+  .back-link{ font-family: var(--mono); font-size:.74rem; text-transform:uppercase; letter-spacing:.03em; color: var(--ink-soft); text-decoration:none; }
+  .back-link:hover{ color: var(--ink); }
+
+  .lesson-head{ padding: 2.4rem 6vw 1.6rem; }
+  .eyebrow{ font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color: var(--amber); display:block; margin-bottom:.5rem; }
+  .lesson-head h1{ font-family: var(--display); font-weight:600; font-size: clamp(1.6rem, 3vw, 2.1rem); color: var(--ink); }
+  .lesson-head .sub{ color: var(--ink-soft); font-size:.9rem; margin-top:.4rem; }
+
+  .banner{ max-width:900px; margin:0 6vw 1.2rem; padding: .8rem 1.2rem; border-radius:10px; font-family: var(--mono); font-size:.78rem;
+    background: rgba(124,148,115,.1); border: 1px solid rgba(124,148,115,.4); color: var(--mint); }
+  .banner.bad{ background: rgba(156,91,60,.1); border-color: rgba(156,91,60,.4); color: var(--danger); }
+
+  .section{ padding: 1rem 6vw 3rem; }
+  .panel{ background: var(--navy-card); border:1px solid var(--line); border-radius:18px; padding:1.8rem 1.9rem; margin-bottom:1.6rem; }
+  .panel h2{ font-family: var(--display); font-weight:600; font-size:1.25rem; margin-bottom:.4rem; color: var(--ink); }
+  .panel .panel-sub{ color: var(--ink-soft); font-size:.86rem; margin-bottom:1.4rem; line-height:1.6; max-width:70ch; }
+
+  /* ── Materials ── */
+  .resources{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1rem; }
+  .resource-slot{
+    border: 1px dashed var(--line); border-radius:12px; padding:1rem 1.1rem;
+    display:flex; flex-direction:column; gap:.6rem;
+  }
+  .resource-slot.has-file{ border-style:solid; border-color: rgba(124,148,115,.35); background: rgba(124,148,115,.04); }
+  .resource-slot .rs-head{ display:flex; align-items:center; gap:.5rem; font-family: var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft); }
+  .resource-slot.has-file .rs-head{ color: var(--mint); }
+  .rs-file{ font-size:.84rem; color: var(--ink); word-break:break-word; line-height:1.4; }
+  .rs-file .rs-sub{ display:block; font-family: var(--mono); font-size:.64rem; color: var(--ink-soft); margin-top:2px; }
+  .rs-empty{ font-size:.8rem; color: var(--ink-soft); }
+  .rs-actions{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:auto; }
+  .rs-btn{
+    font-family: var(--mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.03em;
+    padding: 7px 12px; border-radius:999px; cursor:pointer; border:1px solid var(--line);
+    background: transparent; color: var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .rs-btn:hover{ border-color: var(--amber); color: var(--amber); }
+  .rs-btn.primary{ background: linear-gradient(90deg, var(--amber), var(--cyan)); color:#2A2118; border:none; font-weight:700; }
+  .rs-btn.danger{ border-color: rgba(156,91,60,.4); color: var(--danger); }
+  .rs-btn.danger:hover{ border-color: var(--danger); }
+  input[type="file"]{ display:none; }
+
+  /* ── Quiz builder ── */
+  .qm-advice{
+    font-size:.82rem; line-height:1.55; color: var(--ink-soft);
+    background: rgba(233,196,106,.07); border:1px solid rgba(233,196,106,.25); border-radius:10px; padding:.7rem .9rem;
+    margin-bottom:1rem;
+  }
+  .qm-advice b{ color: var(--gold); }
+  .qm-count-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; gap:1rem; flex-wrap:wrap; }
+  .qm-count{ font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft); }
+  .qm-count b{ color: var(--cyan); }
+  .qm-body{ display:flex; flex-direction:column; gap:1.1rem; }
+  .qm-question{ border:1px solid var(--line); border-radius:14px; padding:1.1rem 1.2rem; background: rgba(58,50,38,.02); }
+  .qm-question.is-invalid{ border-color: rgba(156,91,60,.55); background: rgba(156,91,60,.05); }
+  .qm-q-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:.8rem; margin-bottom:.7rem; }
+  .qm-q-top .qm-q-num{ font-family: var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; color: var(--cyan); flex-shrink:0; padding-top:.5rem; }
+  .qm-q-text{
+    flex:1; background: rgba(58,50,38,.05); border:1px solid var(--line); border-radius:10px; color: var(--ink);
+    font-family: var(--body); font-size:.9rem; padding:.6rem .8rem; resize: vertical; min-height:44px;
+  }
+  .qm-q-text:focus{ outline:none; border-color: var(--cyan); }
+  .qm-q-remove{
+    flex-shrink:0; background:none; border:1px solid rgba(156,91,60,.4); color: var(--danger); border-radius:8px;
+    width:32px; height:32px; cursor:pointer; font-size:1rem; line-height:1;
+  }
+  .qm-q-remove:hover{ background: rgba(156,91,60,.12); }
+  .qm-options{ display:flex; flex-direction:column; gap:.5rem; margin-left: 3.6rem; }
+  .qm-option{ display:flex; align-items:center; gap:.6rem; }
+  .qm-correct-toggle{ display:inline-flex; flex-shrink:0; cursor:pointer; }
+  .qm-correct-toggle input{ position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
+  .qm-correct-pill{
+    display:inline-flex; align-items:center; gap:.3rem; white-space:nowrap;
+    font-family: var(--mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.03em; font-weight:700;
+    padding:.42rem .7rem; border-radius:999px; border:1px solid var(--line); color: var(--ink-soft);
+    transition: all .15s ease;
+  }
+  .qm-correct-pill::before{ content:"○"; font-size:.7rem; line-height:1; }
+  .qm-correct-toggle:hover .qm-correct-pill{ border-color: rgba(124,148,115,.4); color: var(--ink); }
+  .qm-correct-toggle input:checked + .qm-correct-pill{ background: rgba(124,148,115,.14); border-color: var(--mint); color: var(--mint); }
+  .qm-correct-toggle input:checked + .qm-correct-pill::before{ content:"✓"; }
+  .qm-option input[type="text"]{
+    flex:1; background: rgba(58,50,38,.05); border:1px solid var(--line); border-radius:8px; color: var(--ink);
+    font-family: var(--body); font-size:.85rem; padding:.5rem .7rem;
+  }
+  .qm-option input[type="text"]:focus{ outline:none; border-color: var(--mint); }
+  .qm-option .qm-opt-remove{ flex-shrink:0; background:none; border:none; color: var(--ink-soft); cursor:pointer; font-size:.95rem; width:22px; }
+  .qm-option .qm-opt-remove:hover{ color: var(--danger); }
+  .qm-opt-add{
+    margin-left: 3.6rem; align-self:flex-start; font-family: var(--mono); font-size:.66rem; text-transform:uppercase;
+    letter-spacing:.04em; color: var(--ink-soft); background:none; border:1px dashed var(--line); border-radius:8px;
+    padding:.4rem .7rem; cursor:pointer;
+  }
+  .qm-opt-add:hover:not(:disabled){ color: var(--mint); border-color: rgba(124,148,115,.4); }
+  .qm-opt-add:disabled{ opacity:.4; cursor:not-allowed; }
+  .qm-add-question{
+    align-self:flex-start; font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;
+    color: var(--ink); background: transparent; border:1px dashed rgba(193,122,84,.4); border-radius:999px;
+    padding:.65rem 1.3rem; cursor:pointer; margin-top:1.1rem;
+  }
+  .qm-add-question:hover:not(:disabled){ border-color: var(--cyan); color: var(--cyan); }
+  .qm-empty{ font-family: var(--mono); font-size:.8rem; color: var(--ink-soft); text-align:center; padding: 2rem 0; }
+  .qm-footer{ margin-top:1.4rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+  .qm-error{ font-family: var(--mono); font-size:.72rem; color: var(--danger); flex:1; min-width:200px; }
+  .qm-footer-actions{ display:flex; gap:.7rem; flex-wrap:wrap; }
+
+  /* ── Assignment form ── */
+  .am-field{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.1rem; }
+  .am-field label{ font-family: var(--mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft); }
+  .am-field input[type="text"], .am-field textarea, .am-field select{
+    background: rgba(58,50,38,.05); border:1px solid var(--line); border-radius:10px; color: var(--ink);
+    font-family: var(--body); font-size:.9rem; padding:.65rem .8rem;
+  }
+  .am-field textarea{ resize: vertical; min-height:90px; }
+  .am-field input:focus, .am-field textarea:focus, .am-field select:focus{ outline:none; border-color: var(--gold); }
+  .am-type-hint{ font-family: var(--mono); font-size:.68rem; color: var(--ink-soft); margin-top:.3rem; line-height:1.5; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{ outline: 2px solid var(--amber); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="{% url 'main' %}" class="mark">
+    <img src="{% static 'instructor/img/techbridge-logo.jpg' %}" alt="TechBridge logo">
+    <div class="mark-text"><span class="main-name">TechBridge</span><span class="sub-name">Lesson manager</span></div>
+  </a>
+  <a href="{% url 'instructor_dashboard' %}" class="back-link">&larr; Back to dashboard</a>
+</header>
+
+<div class="lesson-head">
+  <span class="eyebrow">{{ course.title }}</span>
+  <h1>{{ lesson.title }}</h1>
+  <p class="sub">{{ lesson.duration_minutes }} min &middot; manage materials, quiz, and assignment for this lesson</p>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="banner {% if message.tags == 'error' %}bad{% endif %}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="section">
+
+    <!-- ── Materials ─────────────────────────────────────────────────── -->
+  <div class="panel">
+    <h2>Materials</h2>
+    <p class="panel-sub">Upload a video, lesson notes (PDF), and slides (PDF). Uploading replaces whatever students currently see for this lesson.</p>
+    <div class="resources">
+      {% for kind, label, accept, material in materials_list %}
+        <div class="resource-slot {% if material %}has-file{% endif %}">
+          <div class="rs-head">{{ label }}{% if material %} &middot; uploaded{% endif %}</div>
+          {% if material %}
+            <div class="rs-file">
+              {{ material.file.name|cut:"materials/" }}
+              <span class="rs-sub">Updated {{ material.uploaded_at|date:"M j, Y" }}</span>
+            </div>
+          {% else %}
+            <div class="rs-empty">Nothing uploaded yet.</div>
+          {% endif %}
+          <div class="rs-actions">
+            <form method="post" action="{% url 'upload_material' lesson.id %}" enctype="multipart/form-data" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="kind" value="{{ kind }}">
+              <label class="rs-btn primary">
+                {% if material %}Replace{% else %}Upload{% endif %}
+                <input type="file" name="file" accept="{{ accept }}" onchange="this.form.submit()">
+              </label>
+            </form>
+            {% if material %}
+              <form method="post" action="{% url 'delete_material' lesson.id kind %}" style="display:inline;" onsubmit="return confirm('Remove this file?');">
+                {% csrf_token %}
+                <button type="submit" class="rs-btn danger">Remove</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ── Quiz builder ──────────────────────────────────────────────── -->
+  <div class="panel">
+    <h2>Lesson quiz</h2>
+    <p class="panel-sub">Set questions strictly from the material you've uploaded above — students should only be quizzed on what they were actually given.</p>
+    <div class="qm-advice"><b>Tip:</b> up to {{ max_quiz_questions }} questions, {{ min_quiz_options }}–{{ max_quiz_options }} options each, one correct answer marked per question.</div>
+    <div class="qm-count-row">
+      <div class="qm-count"><b id="qmCount">0</b> / {{ max_quiz_questions }} questions</div>
+      <button type="button" class="rs-btn" id="qmAddQuestion">+ Add question</button>
+    </div>
+    <div class="qm-body" id="qmBody"></div>
+    <button type="button" class="qm-add-question" id="qmAddQuestionBottom">+ Add question</button>
+    <div class="qm-footer">
+      <div class="qm-error" id="qmError"></div>
+      <div class="qm-footer-actions">
+        {% if quiz %}
+          <form method="post" action="{% url 'delete_quiz' lesson.id %}" onsubmit="return confirm('Remove your custom quiz? Students will see no quiz until you set one again.');">
+            {% csrf_token %}
+            <button type="submit" class="rs-btn danger">Remove custom quiz</button>
+          </form>
+        {% endif %}
+        <button type="button" class="rs-btn primary" id="qmSave">Save quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Assignment builder ───────────────────────────────────────── -->
+  <div class="panel">
+    <h2>Assignment</h2>
+    <p class="panel-sub">Match the submission format to the task — a short reflection works as text; a design, report, or demo is usually better as a file upload.</p>
+    <form method="post" action="{% url 'save_assignment' lesson.id %}">
+      {% csrf_token %}
+      <div class="am-field">
+        <label for="{{ assignment_form.title.id_for_label }}">Assignment title</label>
+        {{ assignment_form.title }}
+      </div>
+      <div class="am-field">
+        <label for="{{ assignment_form.brief.id_for_label }}">Question / task</label>
+        {{ assignment_form.brief }}
+      </div>
+      <div class="am-field">
+        <label for="{{ assignment_form.submission_type.id_for_label }}">How should students submit it?</label>
+        {{ assignment_form.submission_type }}
+      </div>
+      <div class="qm-footer">
+        <div></div>
+        <div class="qm-footer-actions">
+          {% if assignment %}
+            <button type="submit" formaction="{% url 'delete_assignment' lesson.id %}" class="rs-btn danger" onclick="return confirm('Remove this assignment?');">Remove assignment</button>
+          {% endif %}
+          <button type="submit" class="rs-btn primary">Save assignment</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  const CSRF_TOKEN = '{{ csrf_token }}';
+  const SAVE_QUIZ_URL = '{% url "save_quiz" lesson.id %}';
+  const MAX_QUESTIONS = {{ max_quiz_questions }};
+  const MIN_OPTIONS = {{ min_quiz_options }};
+  const MAX_OPTIONS = {{ max_quiz_options }};
+
+  let quizDraft = {{ questions_json|safe }};
+  if (!quizDraft.length) quizDraft = [blankQuestion()];
+
+  function blankQuestion(){ return { text: '', options: ['', ''], correct: 0 }; }
+
+  function escapeHtml(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function questionHTML(q, qi, invalid){
+    return `
+      <div class="qm-question${invalid ? ' is-invalid' : ''}" data-qi="${qi}">
+        <div class="qm-q-top">
+          <span class="qm-q-num">Q${qi + 1}</span>
+          <textarea class="qm-q-text" rows="2" data-qtext="${qi}" placeholder="Question text&hellip;">${escapeHtml(q.text)}</textarea>
+          <button type="button" class="qm-q-remove" data-remove-q="${qi}" aria-label="Remove question">&times;</button>
+        </div>
+        <div class="qm-options">
+          ${q.options.map((opt, oi) => `
+            <div class="qm-option">
+              <label class="qm-correct-toggle" title="Mark this option as the correct answer">
+                <input type="radio" name="qm-correct-${qi}" data-correct="${qi}:${oi}" ${oi === q.correct ? 'checked' : ''} aria-label="Mark option ${oi + 1} as correct">
+                <span class="qm-correct-pill">Correct</span>
+              </label>
+              <input type="text" data-opttext="${qi}:${oi}" value="${escapeHtml(opt)}" placeholder="Option ${oi + 1}&hellip;">
+              ${q.options.length > MIN_OPTIONS ? `<button type="button" class="qm-opt-remove" data-remove-opt="${qi}:${oi}" aria-label="Remove option">&times;</button>` : ''}
+            </div>
+          `).join('')}
+        </div>
+        <button type="button" class="qm-opt-add" data-add-opt="${qi}" ${q.options.length >= MAX_OPTIONS ? 'disabled' : ''}>+ Add option</button>
+      </div>`;
+  }
+
+  function renderQuizEditor(){
+    const body = document.getElementById('qmBody');
+    body.innerHTML = quizDraft.length
+      ? quizDraft.map((q, qi) => questionHTML(q, qi, false)).join('')
+      : '<div class="qm-empty">No questions yet — add your first one below.</div>';
+    document.getElementById('qmCount').textContent = quizDraft.length;
+    document.getElementById('qmAddQuestion').disabled = quizDraft.length >= MAX_QUESTIONS;
+    document.getElementById('qmAddQuestionBottom').disabled = quizDraft.length >= MAX_QUESTIONS;
+    document.getElementById('qmError').textContent = '';
+  }
+
+  function wireQuizBody(){
+    const body = document.getElementById('qmBody');
+
+    body.addEventListener('input', (e) => {
+      const qt = e.target.dataset.qtext;
+      if (qt !== undefined) { quizDraft[Number(qt)].text = e.target.value; return; }
+      const ot = e.target.dataset.opttext;
+      if (ot !== undefined) {
+        const [qi, oi] = ot.split(':').map(Number);
+        quizDraft[qi].options[oi] = e.target.value;
+      }
+    });
+
+    body.addEventListener('change', (e) => {
+      const c = e.target.dataset.correct;
+      if (c !== undefined) {
+        const [qi, oi] = c.split(':').map(Number);
+        quizDraft[qi].correct = oi;
+      }
+    });
+
+    body.addEventListener('click', (e) => {
+      const rq = e.target.closest('[data-remove-q]');
+      if (rq) { quizDraft.splice(Number(rq.dataset.removeQ), 1); renderQuizEditor(); return; }
+
+      const ao = e.target.closest('[data-add-opt]');
+      if (ao) {
+        const qi = Number(ao.dataset.addOpt);
+        if (quizDraft[qi].options.length < MAX_OPTIONS) quizDraft[qi].options.push('');
+        renderQuizEditor();
+        return;
+      }
+
+      const ro = e.target.closest('[data-remove-opt]');
+      if (ro) {
+        const [qi, oi] = ro.dataset.removeOpt.split(':').map(Number);
+        const q = quizDraft[qi];
+        if (q.options.length > MIN_OPTIONS) {
+          q.options.splice(oi, 1);
+          if (q.correct >= q.options.length) q.correct = q.options.length - 1;
+          else if (q.correct > oi) q.correct -= 1;
+        }
+        renderQuizEditor();
+      }
+    });
+  }
+
+  function addQuestion(){
+    if (quizDraft.length >= MAX_QUESTIONS) return;
+    quizDraft.push(blankQuestion());
+    renderQuizEditor();
+  }
+  document.getElementById('qmAddQuestion').addEventListener('click', addQuestion);
+  document.getElementById('qmAddQuestionBottom').addEventListener('click', addQuestion);
+
+  document.getElementById('qmSave').addEventListener('click', () => {
+    fetch(SAVE_QUIZ_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+      body: JSON.stringify({ questions: quizDraft })
+    })
+      .then(res => res.json().then(data => ({ status: res.status, data })))
+      .then(({ status, data }) => {
+        const errEl = document.getElementById('qmError');
+        if (!data.ok) {
+          errEl.textContent = data.error || 'Could not save quiz.';
+          if (typeof data.index === 'number') {
+            const el = document.querySelector(`.qm-question[data-qi="${data.index}"]`);
+            if (el) { el.classList.add('is-invalid'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          }
+          return;
+        }
+        errEl.textContent = '';
+        window.location.reload();
+      })
+      .catch(() => { document.getElementById('qmError').textContent = 'Network error — try again.'; });
+  });
+
+  wireQuizBody();
+  renderQuizEditor();
+</script>
+
+</body>
+</html>

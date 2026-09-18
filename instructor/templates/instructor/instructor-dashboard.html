@@ -1,0 +1,562 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/jpg" href="{% static 'instructor/img/techbridge-logo.jpg' %}"/>
+<title>Instructor dashboard | TechBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #3A3226; --ink-soft: #7D7259; --navy: #FAF3E4;
+    --navy-card: rgba(255, 252, 244, 0.75); --navy-card-solid: #FFFBF2;
+    --line: rgba(58, 50, 38, 0.14);
+    --cyan: #C17A54; --blue: #A8613F; --mint: #7C9473; --amber: #D3A24C; --gold: #C9973E; --danger: #9C5B3C;
+    --display: 'Fraunces', serif; --body: 'Work Sans', sans-serif; --mono: 'Space Mono', monospace;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+  body{ background: var(--navy); color: var(--ink); font-family: var(--body); overflow-x:hidden; min-height:100vh; }
+  .bg-overlay{
+    position: fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(233,196,106,0.14), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(193,122,84,0.08), transparent 50%),
+      linear-gradient(180deg, rgba(250,244,232,1) 0%, rgba(245,236,219,1) 45%, rgba(250,244,232,1) 100%);
+    pointer-events:none;
+  }
+  #progress{ position: fixed; top:0; left:0; height:3px; width:0%; background: linear-gradient(90deg, var(--amber), var(--cyan)); z-index: 10000; transition: width .1s linear; }
+  header{
+    position: sticky; top:0; z-index:999; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw; background: rgba(250,244,232,.85); backdrop-filter: blur(10px); border-bottom:1px solid var(--line);
+  }
+  .mark{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .mark img{ width: 40px; height: 40px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+  .mark-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .mark-text .main-name{ font-family: var(--display); font-weight:600; font-size:1.25rem; color: var(--ink); }
+  .mark-text .sub-name{ font-family: var(--mono); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color: var(--amber); margin-top:2px; }
+  .instructor-chip{
+    display:flex; align-items:center; gap:10px; font-family: var(--mono); font-size:.72rem;
+    background: var(--navy-card); border: 1px solid var(--line); padding: 6px 16px 6px 6px; border-radius:999px;
+    cursor:pointer; transition: border-color .2s ease, transform .15s ease;
+  }
+  .instructor-chip:hover{ border-color: rgba(233,196,106,.4); transform: translateY(-2px); }
+  .instructor-chip .avatar{
+    width:30px; height:30px; border-radius:50%; background: linear-gradient(135deg, var(--amber), var(--cyan));
+    color:#2A2118; display:grid; place-items:center; font-weight:700; font-size:.72rem; font-family: var(--body);
+  }
+  .welcome{ padding: 3rem 6vw 1.6rem; }
+  .eyebrow{ font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color: var(--amber); display:block; margin-bottom:.6rem; }
+  .welcome-card{
+    background: var(--navy-card); border:1px solid var(--line); border-radius:18px; padding:1.8rem 2rem;
+    backdrop-filter: blur(6px);
+  }
+  .welcome-card h1{ font-family: var(--display); font-weight:600; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--ink); }
+  .welcome-card h1 em{ font-style:italic; font-weight:500; color: var(--cyan); }
+  .welcome-card p{ color: var(--ink-soft); margin-top:.6rem; line-height:1.6; }
+  .course-pill{
+    display:inline-flex; align-items:center; gap:8px; margin-top:1rem; padding:8px 16px; border-radius:999px;
+    border: 1px solid rgba(233,196,106,.4); background: rgba(233,196,106,.08);
+    font-family: var(--mono); font-size:.74rem; color: var(--gold);
+  }
+  .stats{ display:grid; grid-template-columns: repeat(3,1fr); gap:1.2rem; padding: 1.6rem 6vw 2.6rem; }
+  .stat-card{
+    background: var(--navy-card); border:1px solid var(--line); border-radius:16px; padding:1.4rem 1.5rem;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .stat-card:hover{ transform: translateY(-4px); border-color: rgba(233,196,106,.4); box-shadow: 0 18px 40px rgba(233,196,106,.1); }
+  .stat-card .num{ font-family: var(--display); font-size:2rem; font-weight:600; color: var(--ink); }
+  .stat-card .label{ font-family: var(--mono); font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; color: var(--ink-soft); margin-top:.4rem; }
+  .section{ padding: 1rem 6vw 4.4rem; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.8rem; flex-wrap:wrap; gap:.9rem; }
+  .section-head h2{ font-family: var(--display); font-weight:600; font-size: clamp(1.4rem, 2.6vw, 1.9rem); color: var(--ink); }
+  .section-head p{ color: var(--ink-soft); font-size:.9rem; margin-top:.3rem; max-width:56ch; }
+  .add-lesson-btn{
+    font-family: var(--mono); font-size:.74rem; text-transform:uppercase; letter-spacing:.03em;
+    background: linear-gradient(90deg, var(--amber), var(--cyan)); color:#2A2118; font-weight:700; border:none;
+    padding:10px 18px; border-radius:999px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+    transition: transform .15s ease, box-shadow .15s ease; flex-shrink:0;
+  }
+  .add-lesson-btn:hover{ transform: translateY(-2px); box-shadow: 0 8px 22px rgba(233,196,106,.3); }
+  .empty-panel-note{
+    font-family: var(--mono); font-size:.8rem; color: var(--ink-soft); border: 1px dashed var(--line);
+    border-radius: 16px; padding: 2rem 1.6rem; text-align:center; margin-top:1.4rem; line-height:1.7;
+  }
+  .empty-panel-note a{ color: var(--gold); }
+  .lesson-cards{ display:grid; gap:1.2rem; }
+  .lesson-card{
+    background: var(--navy-card); border:1px solid var(--line); border-radius:16px; padding:1.5rem 1.6rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  }
+  .lc-left{ display:flex; align-items:baseline; gap:.9rem; }
+  .lc-num{ font-family: var(--mono); font-size:.72rem; color: var(--cyan); flex-shrink:0; }
+  .lc-title{ font-family: var(--display); font-weight:600; font-size:1.1rem; color: var(--ink); }
+  .lc-meta{ font-family: var(--mono); font-size:.68rem; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-top:.3rem; }
+  .lc-actions{ display:flex; gap:.6rem; flex-wrap:wrap; }
+  .rs-btn{
+    font-family: var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.03em;
+    padding: 8px 14px; border-radius:999px; cursor:pointer; border:1px solid var(--line);
+    background: transparent; color: var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .rs-btn:hover{ border-color: var(--amber); color: var(--amber); }
+  .rs-btn.danger{ border-color: rgba(156,91,60,.4); color: var(--danger); }
+  .rs-btn.danger:hover{ border-color: var(--danger); }
+  .placeholder-note{
+    font-family: var(--mono); font-size:.66rem; color: var(--ink-soft); background: rgba(233,196,106,.06);
+    border: 1px dashed rgba(233,196,106,.3); border-radius:8px; padding:.5rem .8rem; margin-top:.5rem; line-height:1.5;
+    width:100%;
+  }
+  .banner{ max-width:900px; margin:1rem auto 0; padding: .8rem 1.2rem; border-radius:10px; font-family: var(--mono); font-size:.78rem;
+    background: rgba(124,148,115,.1); border: 1px solid rgba(124,148,115,.4); color: var(--mint); }
+  .profile-modal{
+    position:fixed; inset:0; z-index:9999; background: rgba(58,50,38,.4); backdrop-filter: blur(8px);
+    display:none; place-items:center; padding:20px 16px; overflow-y:auto;
+  }
+  .profile-modal.active{ display:grid; }
+  .profile-card{
+    width:100%; max-width:520px; background: var(--navy-card-solid); border:1px solid var(--line);
+    border-radius: 22px 48px 22px 22px; box-shadow: 12px 12px 0 rgba(233,196,106,.1);
+    padding:2.4rem 2.1rem; position:relative; margin:auto; animation: rise .4s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{ from{ opacity:0; transform: translateY(18px); } to{ opacity:1; transform: translateY(0); } }
+  .profile-close{ position:absolute; top:16px; right:18px; background:none; border:0; font-size:1.8rem; color: var(--ink-soft); cursor:pointer; font-family: var(--mono); line-height:1; }
+  .profile-close:hover{ color: var(--ink); }
+  .profile-header{ display:flex; align-items:center; gap:1.1rem; margin-bottom:1.7rem; }
+  .profile-avatar-big{
+    width:72px; height:72px; border-radius:50%; background: linear-gradient(135deg, var(--amber), var(--cyan));
+    color:#2A2118; display:grid; place-items:center; font-weight:700; font-size:1.6rem; flex-shrink:0;
+  }
+  .profile-header h2{ font-family: var(--display); font-weight:600; font-size:1.4rem; color: var(--ink); }
+  .profile-info{ display:grid; gap:.9rem; margin-bottom:1.4rem; }
+  .info-row{ display:flex; justify-content:space-between; gap:1rem; border-bottom:1px dashed var(--line); padding-bottom:.7rem; }
+  .info-row label{ font-family: var(--mono); font-size:.66rem; text-transform:uppercase; color: var(--ink-soft); }
+  .info-row span{ font-weight:500; color: var(--ink); text-align:right; }
+  .profile-actions{ display:grid; gap:.8rem; margin-top:1.3rem; }
+  .btn-ghost, .btn-danger{
+    padding:13px 18px; border-radius:999px; font-family: var(--mono); font-size:.78rem;
+    text-transform:uppercase; letter-spacing:.03em; cursor:pointer; width:100%; transition: all .15s ease; border:none;
+  }
+  .btn-ghost{ background:transparent; color: var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color: var(--amber); color: var(--amber); }
+  .btn-danger{ background: rgba(156,91,60,.12); color: var(--danger); border:1px solid rgba(156,91,60,.4); }
+  .btn-danger:hover{ background: rgba(156,91,60,.2); }
+  footer{
+    border-top:1px solid var(--line); padding:2rem 6vw; display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--mono); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color: var(--ink-soft); flex-wrap:wrap; gap:1rem;
+  }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--amber); outline-offset:3px; }
+  @media (max-width: 980px){ .stats{ grid-template-columns: 1fr; } }
+
+  /* ---- Manage modal (materials / quiz / assignment) ---- */
+  .manage-modal{
+    position:fixed; inset:0; z-index:9999; background: rgba(58,50,38,.4); backdrop-filter: blur(8px);
+    display:none; place-items:center; padding:20px 16px; overflow-y:auto;
+  }
+  .manage-modal.active{ display:grid; }
+  .manage-card{
+    width:100%; max-width:640px; background: var(--navy-card-solid); border:1px solid var(--line);
+    border-radius:22px; box-shadow: 12px 12px 0 rgba(233,196,106,.1);
+    padding:2.2rem 2rem; position:relative; margin:auto; animation: rise .3s cubic-bezier(.2,.8,.2,1);
+    max-height:88vh; overflow-y:auto;
+  }
+  .manage-title{ font-family: var(--display); font-weight:600; font-size:1.3rem; margin-bottom:1.2rem; padding-right:2rem; }
+  .manage-tabs{ display:flex; gap:.6rem; margin-bottom:1.4rem; border-bottom:1px solid var(--line); padding-bottom:.8rem; flex-wrap:wrap; }
+  .tab-btn{
+    font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.03em;
+    background:transparent; border:1px solid var(--line); color: var(--ink-soft); padding:7px 14px;
+    border-radius:999px; cursor:pointer; transition: all .15s ease;
+  }
+  .tab-btn.active, .tab-btn:hover{ border-color: var(--amber); color: var(--amber); }
+
+  .material-row{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding:.9rem 0; border-bottom:1px dashed var(--line);
+  }
+  .material-row:last-child{ border-bottom:none; }
+  .material-info{ display:flex; flex-direction:column; gap:.2rem; }
+  .material-label{ font-weight:600; }
+  .material-link{ font-family: var(--mono); font-size:.7rem; color: var(--gold); }
+  .material-empty{ font-family: var(--mono); font-size:.7rem; color: var(--ink-soft); }
+  .material-actions{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  .material-upload-form{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+
+.material-upload-form input[type=file]{
+  font-family: var(--mono);
+  font-size:.7rem;
+  color: var(--ink-soft);
+  max-width:180px;
+}
+
+.material-upload-form input[type=file]::file-selector-button{
+  font-family: var(--mono);
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  padding:8px 14px;
+  margin-right:.6rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor:pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.material-upload-form input[type=file]::file-selector-button:hover{
+  border-color: var(--amber);
+  color: var(--amber);
+  background: rgba(233,196,106,.08);
+}
+
+  .quiz-question-card{
+    border:1px solid var(--line); border-radius:12px; padding:1rem; margin-bottom:1rem; background: rgba(255,255,255,.4);
+  }
+  .quiz-question-card input[type=text]{
+    width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); margin-bottom:.7rem; font-family: var(--body);
+  }
+  .quiz-option-row{ display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
+  .quiz-option-row input[type=text]{ flex:1; margin-bottom:0; padding:6px 10px; }
+  .quiz-question-controls{ display:flex; justify-content:space-between; margin-top:.6rem; flex-wrap:wrap; gap:.5rem; }
+  .quiz-controls{ display:flex; gap:.8rem; flex-wrap:wrap; margin-top:.6rem; }
+  .quiz-error{ color: var(--danger); font-family: var(--mono); font-size:.72rem; margin-top:.6rem; }
+
+  .assignment-form label{ display:block; font-family: var(--mono); font-size:.68rem; text-transform:uppercase; color: var(--ink-soft); margin:.8rem 0 .3rem; }
+  .assignment-form input[type=text], .assignment-form textarea, .assignment-form select{
+    width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--line); font-family: var(--body);
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="bg-overlay"></div>
+
+<header>
+  <a href="{% url 'main' %}" class="mark">
+    <img src="{% static 'instructor/img/techbridge-logo.jpg' %}" alt="TechBridge logo">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">Instructor dashboard</span>
+    </div>
+  </a>
+  <div class="instructor-chip" id="instructorChip">
+    <span class="avatar">{{ instructor.user.full_name|slice:":1"|upper }}</span>
+    <span>{{ instructor.user.full_name }}</span>
+  </div>
+</header>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="banner">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<section class="welcome">
+  <span class="eyebrow">Instructor dashboard</span>
+  <div class="welcome-card">
+    <h1>Welcome back, <em>{{ instructor.user.full_name|default:"Instructor" }}</em>.</h1>
+    <p>You're tutoring <strong>{{ course.title }}</strong>. Add lessons below, then set up materials, quizzes, and assignments for each one.</p>
+    <div class="course-pill">&#127891; {{ course.category }} &mdash; {{ course.title }}</div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="num">{{ lessons|length }}</div>
+    <div class="label">Lessons in course</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">{{ course.enrollments.count }}</div>
+    <div class="label">Students enrolled</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">{{ course.created_at|date:"M Y" }}</div>
+    <div class="label">Course created</div>
+  </div>
+</div>
+
+<section class="section" id="lessons">
+  <div class="section-head">
+    <div>
+      <h2>Your lessons</h2>
+      <p>Add each lesson your students will move through, then upload materials, build a quiz, and set an assignment for each one.</p>
+    </div>
+    <a href="{% url 'add_lesson' %}" class="add-lesson-btn">+ Add lesson</a>
+  </div>
+
+  {% if lessons %}
+    <div class="lesson-cards">
+      {% for lesson in lessons %}
+        <div class="lesson-card">
+          <div class="lc-left">
+            <span class="lc-num">{{ forloop.counter }}.</span>
+            <div>
+              <div class="lc-title">{{ lesson.title }}</div>
+              <div class="lc-meta">{{ lesson.duration_minutes }} min</div>
+            </div>
+          </div>
+          <div class="lc-actions">
+            <button type="button" class="rs-btn" onclick="openManage({{ lesson.id }})">Manage</button>
+            <form method="post" action="{% url 'delete_lesson' lesson.id %}" onsubmit="return confirm('Remove &quot;{{ lesson.title }}&quot;? This can\'t be undone.');" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="rs-btn danger">Delete</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Manage modal for this lesson -->
+        <div class="manage-modal" id="manageModal-{{ lesson.id }}">
+          <div class="manage-card">
+            <button class="profile-close" onclick="closeManage({{ lesson.id }})">&times;</button>
+            <h3 class="manage-title">{{ lesson.title }}</h3>
+
+            <div class="manage-tabs">
+              <button type="button" class="tab-btn active" onclick="switchTab({{ lesson.id }}, 'materials', this)">Materials</button>
+              <button type="button" class="tab-btn" onclick="switchTab({{ lesson.id }}, 'quiz', this)">Quiz</button>
+              <button type="button" class="tab-btn" onclick="switchTab({{ lesson.id }}, 'assignment', this)">Assignment</button>
+            </div>
+
+            <!-- Materials -->
+            <div class="tab-panel" data-lesson="{{ lesson.id }}" data-panel="materials">
+              {% for kind, label, accept, material in lesson.materials_list %}
+                <div class="material-row">
+                  <div class="material-info">
+                    <span class="material-label">{{ label }}</span>
+                    {% if material %}
+                      <a href="{{ material.file.url }}" target="_blank" rel="noopener" class="material-link">View current file</a>
+                    {% else %}
+                      <span class="material-empty">Not uploaded</span>
+                    {% endif %}
+                  </div>
+                  <div class="material-actions">
+                    <form method="post" action="{% url 'upload_material' lesson.id %}" enctype="multipart/form-data" class="material-upload-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="kind" value="{{ kind }}">
+                      <input type="file" name="file" accept="{{ accept }}" required>
+                      <button type="submit" class="rs-btn">Upload</button>
+                    </form>
+                    {% if material %}
+                      <form method="post" action="{% url 'delete_material' lesson.id kind %}" onsubmit="return confirm('Remove this file?');">
+                        {% csrf_token %}
+                        <button type="submit" class="rs-btn danger">Remove</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Quiz -->
+            <div class="tab-panel" data-lesson="{{ lesson.id }}" data-panel="quiz" style="display:none;">
+              <div class="quiz-questions" id="quizBuilder-{{ lesson.id }}"></div>
+              <div class="quiz-controls">
+                <button type="button" class="rs-btn" onclick="addQuestion({{ lesson.id }})">+ Add question</button>
+                <button type="button" class="add-lesson-btn" onclick="saveQuiz({{ lesson.id }})">Save quiz</button>
+              </div>
+              {% if lesson.has_quiz %}
+                <form method="post" action="{% url 'delete_quiz' lesson.id %}" onsubmit="return confirm('Delete this quiz?');" style="margin-top:.8rem;">
+                  {% csrf_token %}
+                  <button type="submit" class="rs-btn danger">Delete quiz</button>
+                </form>
+              {% endif %}
+              <div class="quiz-error" id="quizError-{{ lesson.id }}"></div>
+            </div>
+
+            <!-- Assignment -->
+            <div class="tab-panel" data-lesson="{{ lesson.id }}" data-panel="assignment" style="display:none;">
+              <form method="post" action="{% url 'save_assignment' lesson.id %}" class="assignment-form">
+                {% csrf_token %}
+                <label>Title</label>
+                <input type="text" name="title" value="{{ lesson.assignment_obj.title|default:'' }}" placeholder="e.g. Deploy a container to a VM" required>
+                <label>Brief</label>
+                <textarea name="brief" rows="4" placeholder="Describe what students need to submit...">{{ lesson.assignment_obj.brief|default:'' }}</textarea>
+                <label>Submission type</label>
+                <select name="submission_type">
+                  {% for value, slabel in submission_types %}
+                    <option value="{{ value }}" {% if lesson.assignment_obj.submission_type == value %}selected{% endif %}>{{ slabel }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="add-lesson-btn" style="margin-top:1rem;">Save assignment</button>
+              </form>
+              {% if lesson.assignment_obj %}
+                <form method="post" action="{% url 'delete_assignment' lesson.id %}" onsubmit="return confirm('Delete this assignment?');" style="margin-top:.6rem;">
+                  {% csrf_token %}
+                  <button type="submit" class="rs-btn danger">Delete assignment</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-panel-note">
+      You haven't added any lessons yet. <a href="{% url 'add_lesson' %}">Add your first lesson</a> to get started.
+    </p>
+  {% endif %}
+</section>
+
+<footer>
+  <div class="mark-text"><span class="main-name" style="font-size:1rem;">TechBridge</span></div>
+  <div>&copy; 2026</div>
+</footer>
+
+<!-- Profile modal -->
+<div class="profile-modal" id="profileModal">
+  <div class="profile-card">
+    <button class="profile-close" id="closeProfile">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar-big">{{ instructor.user.full_name|slice:":1"|upper }}</div>
+      <div>
+        <h2>{{ instructor.user.full_name }}</h2>
+      </div>
+    </div>
+    <div class="profile-info">
+      <div class="info-row"><label>Email</label><span>{{ instructor.user.email }}</span></div>
+      <div class="info-row"><label>Role</label><span>Instructor</span></div>
+      <div class="info-row"><label>Course</label><span>{{ course.title }}</span></div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-ghost" onclick="alert('Account settings coming soon')">Account settings</button>
+      <form method="post" action="{% url 'instructor_logout' %}">
+        {% csrf_token %}
+        <button class="btn-danger" type="submit" style="width:100%;">Log out</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const progressBar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight || 1) * 100;
+    progressBar.style.width = pct + '%';
+  });
+
+  const profileModal = document.getElementById('profileModal');
+  const instructorChip = document.getElementById('instructorChip');
+  const closeProfile = document.getElementById('closeProfile');
+
+  instructorChip.addEventListener('click', () => {
+    profileModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+  function closeModal(){
+    profileModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  closeProfile.addEventListener('click', closeModal);
+  profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeModal(); });
+
+  /* ---- Manage modal (materials / quiz / assignment) ---- */
+  const quizzesData = JSON.parse('{{ quizzes_json|escapejs }}');
+  const MIN_OPTIONS = {{ min_quiz_options }};
+  const MAX_OPTIONS = {{ max_quiz_options }};
+  const MAX_QUESTIONS = {{ max_quiz_questions }};
+  const quizState = {}; // lessonId -> [{text, options:[], correct}]
+
+  function getCookie(name){
+    const match = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return match ? match.pop() : '';
+  }
+
+  function openManage(lessonId){
+    document.getElementById('manageModal-' + lessonId).classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if(!quizState[lessonId]){
+      quizState[lessonId] = (quizzesData[lessonId] || []).map(q => ({...q, options:[...q.options]}));
+      if(quizState[lessonId].length === 0) quizState[lessonId].push(blankQuestion());
+      renderQuiz(lessonId);
+    }
+  }
+  function closeManage(lessonId){
+    document.getElementById('manageModal-' + lessonId).classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  function switchTab(lessonId, tab, btn){
+    const modal = document.getElementById('manageModal-' + lessonId);
+    modal.querySelectorAll('.tab-panel').forEach(p => p.style.display = (p.dataset.panel === tab ? 'block' : 'none'));
+    modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function blankQuestion(){ return { text:'', options:['',''], correct:0 }; }
+
+  function renderQuiz(lessonId){
+    const container = document.getElementById('quizBuilder-' + lessonId);
+    container.innerHTML = '';
+    quizState[lessonId].forEach((q, qi) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-question-card';
+
+      const textInput = document.createElement('input');
+      textInput.type = 'text'; textInput.placeholder = `Question ${qi+1}`; textInput.value = q.text;
+      textInput.oninput = e => q.text = e.target.value;
+      card.appendChild(textInput);
+
+      q.options.forEach((opt, oi) => {
+        const row = document.createElement('div'); row.className = 'quiz-option-row';
+        const radio = document.createElement('input'); radio.type = 'radio'; radio.name = `correct-${lessonId}-${qi}`;
+        radio.checked = q.correct === oi; radio.onchange = () => q.correct = oi;
+        const optInput = document.createElement('input'); optInput.type = 'text'; optInput.placeholder = `Option ${oi+1}`; optInput.value = opt;
+        optInput.oninput = e => q.options[oi] = e.target.value;
+        row.appendChild(radio); row.appendChild(optInput);
+        if(q.options.length > MIN_OPTIONS){
+          const rm = document.createElement('button'); rm.type='button'; rm.className='rs-btn danger'; rm.textContent='×';
+          rm.onclick = () => { q.options.splice(oi,1); if(q.correct >= q.options.length) q.correct = 0; renderQuiz(lessonId); };
+          row.appendChild(rm);
+        }
+        card.appendChild(row);
+      });
+
+      const controls = document.createElement('div'); controls.className = 'quiz-question-controls';
+      if(q.options.length < MAX_OPTIONS){
+        const addOpt = document.createElement('button'); addOpt.type='button'; addOpt.className='rs-btn'; addOpt.textContent='+ Option';
+        addOpt.onclick = () => { q.options.push(''); renderQuiz(lessonId); };
+        controls.appendChild(addOpt);
+      }
+      const rmQ = document.createElement('button'); rmQ.type='button'; rmQ.className='rs-btn danger'; rmQ.textContent='Remove question';
+      rmQ.onclick = () => { quizState[lessonId].splice(qi,1); renderQuiz(lessonId); };
+      controls.appendChild(rmQ);
+
+      card.appendChild(controls);
+      container.appendChild(card);
+    });
+  }
+
+  function addQuestion(lessonId){
+    if(quizState[lessonId].length >= MAX_QUESTIONS){
+      document.getElementById('quizError-' + lessonId).textContent = `A lesson quiz can have at most ${MAX_QUESTIONS} questions.`;
+      return;
+    }
+    quizState[lessonId].push(blankQuestion());
+    renderQuiz(lessonId);
+  }
+
+  async function saveQuiz(lessonId){
+    const errEl = document.getElementById('quizError-' + lessonId);
+    errEl.textContent = '';
+    try {
+      const res = await fetch(`/instructor/lesson/${lessonId}/quiz/save/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ questions: quizState[lessonId] })
+      });
+      const data = await res.json();
+      if(data.ok){
+        location.reload();
+      } else {
+        errEl.textContent = data.error || 'Could not save quiz.';
+      }
+    } catch(e){
+      errEl.textContent = 'Network error — please try again.';
+    }
+  }
+</script>
+
+</body>
+</html>

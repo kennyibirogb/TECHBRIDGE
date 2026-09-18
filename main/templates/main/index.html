@@ -4,981 +4,918 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TechBridge</title>
+<link rel="icon" type="image/jpg" href="{% static 'main/img/techbridge-logo.jpg' %}"/>
+<title>TechBridge | Innovating the Future</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'main/css/style.css' %}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ══════════ COURSES SECTION ══════════ */
-.courses-section{
-  position:relative;
-  width:100%;
-  padding:110px 24px 130px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 30%, rgba(201,151,63,.07) 0%, transparent 60%),
-    #252D36;
-}
-
-.courses-section::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:radial-gradient(rgba(201,151,63,.14) 1px, transparent 1px);
-  background-size:34px 34px;
-  mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, black 0%, transparent 75%);
-  -webkit-mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, black 0%, transparent 75%);
-  pointer-events:none;
-  z-index:0;
-}
-
-/* layered background: rings */
-.courses-section .ring{
-  position:absolute;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:0;
-  left:50%;
-  top:46%;
-  transform:translate(-50%,-50%);
-}
-.courses-section .ring.r1{width:1020px;height:1020px;border:1px solid rgba(201,151,63,.05);}
-.courses-section .ring.r2{width:820px;height:820px;border:1px solid rgba(124,152,133,.06);}
-.courses-section .ring.r3{width:640px;height:640px;border:1px solid rgba(201,151,63,.09);}
-.courses-section .ring.r4{width:460px;height:460px;border:1px solid rgba(244,241,234,.04);}
-
-/* soft color glows */
-.courses-section .glow{
-  position:absolute;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:0;
-  filter:blur(2px);
-}
-.courses-section .glow.g1{
-  width:420px;height:420px;
-  left:-140px;top:8%;
-  background:radial-gradient(circle, rgba(201,151,63,.10) 0%, transparent 70%);
-}
-.courses-section .glow.g2{
-  width:380px;height:380px;
-  right:-120px;bottom:6%;
-  background:radial-gradient(circle, rgba(124,152,133,.09) 0%, transparent 70%);
-}
-.courses-section .glow.g3{
-  width:260px;height:260px;
-  right:12%;top:2%;
-  background:radial-gradient(circle, rgba(27,42,74,.35) 0%, transparent 70%);
-}
-.courses-section .glow.g4{
-  width:300px;height:300px;
-  left:8%;bottom:2%;
-  background:radial-gradient(circle, rgba(201,151,63,.06) 0%, transparent 70%);
-}
-
-/* floating specks */
-.courses-section .speck{
-  position:absolute;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:1;
-}
-.courses-section .speck.gold{background:#C9973F;}
-.courses-section .speck.sage{background:#7C9885;}
-.courses-section .speck.cream{background:#F4F1EA;}
-
-.courses-section .speck.s1{top:10%;left:14%;width:4px;height:4px;opacity:.5;}
-.courses-section .speck.s2{top:18%;right:10%;width:3px;height:3px;opacity:.4;}
-.courses-section .speck.s3{top:42%;left:4%;width:5px;height:5px;opacity:.35;}
-.courses-section .speck.s4{bottom:22%;left:9%;width:3px;height:3px;opacity:.45;}
-.courses-section .speck.s5{bottom:14%;right:12%;width:4px;height:4px;opacity:.4;}
-.courses-section .speck.s6{top:30%;right:4%;width:3px;height:3px;opacity:.3;}
-.courses-section .speck.s7{bottom:36%;right:6%;width:2px;height:2px;opacity:.5;}
-.courses-section .speck.s8{top:6%;right:26%;width:3px;height:3px;opacity:.3;}
-.courses-section .speck.s9{bottom:8%;left:26%;width:4px;height:4px;opacity:.35;}
-.courses-section .speck.s10{top:54%;left:2%;width:3px;height:3px;opacity:.3;}
-.courses-section .speck.s11{top:4%;left:44%;width:2px;height:2px;opacity:.4;}
-.courses-section .speck.s12{bottom:4%;right:40%;width:3px;height:3px;opacity:.3;}
-
-/* drifting motion for a handful of specks */
-@media(prefers-reduced-motion: no-preference){
-  .courses-section .speck.drift{animation:speck-drift 9s ease-in-out infinite;}
-  .courses-section .speck.s2{animation-delay:-1.5s;}
-  .courses-section .speck.s4{animation-delay:-4s;}
-  .courses-section .speck.s6{animation-delay:-2.5s;}
-  .courses-section .speck.s9{animation-delay:-6s;}
-}
-@keyframes speck-drift{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-14px);}
-}
-
-/* faint diamond / plus marks for texture */
-.courses-section .mark-glyph{
-  position:absolute;
-  color:#C9973F;
-  font-size:11px;
-  opacity:.18;
-  pointer-events:none;
-  z-index:1;
-  user-select:none;
-  line-height:1;
-  font-family:'Space Mono',monospace;
-}
-.courses-section .mark-glyph.plus{color:#F4F1EA;opacity:.09;}
-.courses-section .mark-glyph.mg1{top:14%;left:22%;font-size:13px;}
-.courses-section .mark-glyph.mg2{top:24%;right:20%;}
-.courses-section .mark-glyph.mg3{bottom:20%;left:5%;font-size:12px;}
-.courses-section .mark-glyph.mg4{bottom:30%;right:3%;}
-.courses-section .mark-glyph.mg5{top:6%;left:6%;font-size:14px;}
-.courses-section .mark-glyph.mg6{top:36%;right:2%;font-size:10px;}
-.courses-section .mark-glyph.mg7{bottom:6%;left:36%;font-size:12px;}
-.courses-section .mark-glyph.mg8{top:46%;left:44%;font-size:9px;opacity:.12;}
-
-.courses-section .eyebrow{
-  position:relative;
-  z-index:2;
-}
-
-.courses-section .courses-heading{
-  font-family:'Fraunces',serif;
-  font-weight:500;
-  font-size:2.3rem;
-  color:#F4F1EA;
-  margin:14px 0 60px;
-  text-align:center;
-  letter-spacing:-.01em;
-  position:relative;
-  z-index:2;
-}
-.courses-section .courses-heading em{
-  color:#C9973F;
-  font-style:italic;
-  font-weight:500;
-}
-
-.cluster{
-  position:relative;
-  width:920px;
-  max-width:100%;
-  height:600px;
-  margin:0 auto;
-  z-index:2;
-}
-
-.connector{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:1;
-}
-
-.connector path{
-  fill:none;
-  stroke:#C9973F;
-  stroke-width:1.4;
-  stroke-dasharray:2 8;
-  stroke-linecap:round;
-  opacity:.32;
-}
-
-.connector .travel-dot{
-  fill:#C9973F;
-  filter:drop-shadow(0 0 4px rgba(201,151,63,.8));
-}
-
-.courses-section .card{
-  position:absolute;
-  left:var(--x);
-  top:var(--y);
-  width:var(--w);
-  min-height:var(--h);
-  border-radius:16px;
-  padding:26px 26px 24px;
-  background:#fdfbf7;
-  box-shadow:0 6px 30px rgba(0,0,0,.25);
-  text-decoration:none;
-  color:#1B2A4A;
-  display:flex;
-  flex-direction:column;
-  font-family:'Work Sans',sans-serif;
-  border:1px solid rgba(201,151,63,.15);
-  border-top:2.5px solid var(--accent, #C9973F);
-  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
-  z-index:3;
-}
-
-.courses-section .card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 16px 40px rgba(0,0,0,.35);
-}
-
-.courses-section .card--dark{
-  background:#1B2A4A;
-  color:#fff;
-}
-
-.courses-section .card__top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
-
-.courses-section .card__icon{
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(201,151,63,.12);
-  color:var(--accent, #C9973F);
-  flex-shrink:0;
-}
-.courses-section .card--dark .card__icon{
-  background:rgba(201,151,63,.18);
-}
-.courses-section .card__icon svg{width:18px;height:18px;}
-
-.courses-section .card__num{
-  font-family:'Space Mono',monospace;
-  font-size:.72rem;
-  color:#a89a78;
-  letter-spacing:.05em;
-  font-weight:700;
-}
-.courses-section .card--dark .card__num{color:#8492ad;}
-
-.courses-section .card h3{
-  font-family:'Fraunces',serif;
-  font-size:1.15rem;
-  margin-bottom:8px;
-  font-weight:600;
-  line-height:1.25;
-  letter-spacing:-.01em;
-}
-
-.courses-section .card p{
-  font-size:.87rem;
-  opacity:.68;
-  line-height:1.5;
-  font-weight:400;
-}
-.courses-section .card--dark p{opacity:.8;}
-
-.courses-section .card__arrow{
-  margin-top:auto;
-  padding-top:14px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-family:'Space Mono',monospace;
-  font-size:.75rem;
-  font-weight:700;
-  color:var(--accent,#C9973F);
-  opacity:0;
-  transform:translateX(-4px);
-  transition:opacity .2s ease, transform .2s ease;
-}
-.courses-section .card:hover .card__arrow{
-  opacity:1;
-  transform:translateX(0);
-}
-
-@media(max-width:760px){
-  .cluster{
-    height:auto;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-    width:100%;
+  :root{
+    --ink: #2A2420;
+    --ink-soft: #7A6F62;
+    --navy: #FAF6EE;
+    --navy-card: rgba(255,255,255,0.6);
+    --navy-card-solid: #FFFFFF;
+    --line: rgba(42, 36, 32, 0.12);
+    --cyan: #D9B24C;
+    --blue: #8FA876;
+    --display: 'Fraunces', serif;
+    --body: 'Work Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
   }
-  .connector{display:none;}
-  .courses-section .card{
-    position:static!important;
-    width:100%!important;
-  }
-  .courses-section .courses-heading{font-size:1.6rem;margin-bottom:40px;}
-  .courses-section{padding:60px 16px 80px;}
-  .courses-section .ring,
-  .courses-section .glow,
-  .courses-section .speck,
-  .courses-section .mark-glyph{display:none;}
-}
 
-  footer {
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--navy);
+    color: var(--ink);
+    font-family: var(--body);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+   
+
+  .bg-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(217,178,76,0.14), transparent 55%),
+      radial-gradient(ellipse at 85% 60%, rgba(143,168,118,0.10), transparent 50%),
+      linear-gradient(180deg, rgba(250,246,238,1) 0%, rgba(244,237,222,1) 45%, rgba(250,246,238,1) 100%);
+    pointer-events: none;
+  }
+
+  #progress{
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    z-index: 10000;
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  /* ── Header ── */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 999;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 2rem 2.5rem;
-    border-top: 1px solid rgba(27, 42, 74, 0.08);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
+    padding: 16px 5vw;
+    background: var(--blue);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    transform: translateZ(0);
+    will-change: transform;
   }
-  footer .mark { font-size: 0.95rem; }
-  .foot-links {
+
+  .mark{
     display: flex;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 12px;
   }
-  .foot-links a {
-    color: var(--muted);
+
+  .mark img{
+    width: 34px;
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .mark-text{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .mark-text .main-name{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .mark-text .sub-name{
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2A2420;
+    margin-top: 2px;
+  }
+
+  nav ul{
+    list-style: none;
+    display: flex;
+    gap: 2.2rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+
+  nav a{
+    color: var(--navy);
     text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.2s ease;
   }
-  .foot-links a:hover { color: var(--navy); }
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:2px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width 0.25s ease;
+  }
+  nav a:hover{ color: var(--ink); }
+  nav a:hover::after{ width: 100%; }
 
-  .foot-partners{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.foot-partners-label{
-  font-family: var(--mono);
-  font-size: .62rem;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--ink-soft);
-}
-.foot-partners-list{
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.partner-badge{
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--card);
-  border: 1px solid var(--paper-line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-}
-.partner-badge img{
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
+  .nav-right{ display: flex; align-items: center; gap: 1.1rem; }
 
-.foot-links{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .5rem;
-}
-.social-label{
-  font-family: var(--mono);
-  font-size: .85rem;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--ink-soft);
-}
-.social-icons{
-  display: flex;
-  gap: .7rem;
-}
+  .nav-enroll{
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--cyan);
+    color: #2A2420;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .nav-enroll:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(42, 36, 32, 0.1);
+  }
 
-.social-btn{
-  background: var(--card);
-  border: 1px solid var(--paper-line);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color .2s ease, transform .15s ease;
-}
-.social-btn:hover{
-  border-color: var(--gold-deep);
-  transform: translateY(-2px);
-}
-.social-btn img{
-  width: 18px;
-  height: 18px;
-  display: block;
-}
+  .burger{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    z-index: 1001;
+  }
+  .burger span{
+    width: 24px;
+    height: 2px;
+    background: var(--ink);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .burger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity: 0; }
+  .burger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── Hero ── */
+  .hero{
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    background: rgba(250, 246, 238, 0.6);
+  }
+
+  .hero-inner{
+    display: grid;
+    grid-template-columns: minmax(480px, 640px) 1fr;
+    gap: 4vw;
+    align-items: center;
+    width: 100%;
+    padding: 4rem 6vw;
+  }
+
+  .about-card{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 18px 60px 18px 18px;
+    padding: 2.8rem 2.4rem;
+    box-shadow: 8px 8px 0 #D9B24C;
+    animation: rise 0.8s cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  @keyframes rise{
+    from{ opacity: 0; transform: translateY(18px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .about-card h1{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(2.6rem, 7.5vw, 6rem);
+    line-height: 0.98;
+    color: var(--ink);
+  }
+  .about-card h1 .word2{ color: var(--cyan); }
+  .about-card h1 .word3{ color: var(--blue); }
+
+  .about-card p{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 1.5rem 0 1.8rem;
+    max-width: 46ch;
+  }
+
+  .about-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--cyan);
+    padding-bottom: 3px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .about-cta:hover{ gap: 13px; color: var(--cyan); }
+
+  .hero-right{ padding: 2rem; }
+  .hero-right h2{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.3rem, 2.2vw, 2rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .hero-right span{
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-top: 1rem;
+  }
+
+  .stat-row{
+    display: flex;
+    gap: 2.4rem;
+    margin-top: 2.4rem;
+    flex-wrap: wrap;
+  }
+  .stat-row div{ display: flex; flex-direction: column; }
+  .stat-row .num{
+    font-family: var(--display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    color: var(--cyan);
+  }
+  .stat-row .label{
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* ── Mobile nav drawer ── */
+  #mySidenav{
+    position: fixed;
+    top: 0; right: 0;
+    height: 100%;
+    width: 0;
+    background: rgba(250, 246, 238, 1.00);
+    border-left: 1px solid var(--line);
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    padding-top: 80px;
+    will-change: width;
+  }
+  #mySidenav nav ul{
+    flex-direction: column;
+    gap: 1.8rem;
+    font-size: 1rem;
+    padding: 0 2.5rem;
+  }
+
+
+  #mySidenav .nav-link{
+    color: black;
+  }
+
+
+  .closebtn{
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* ── Shared section chrome ──
+     content-visibility lets the browser skip layout/paint work for
+     sections that are off-screen, which is the single biggest win
+     for scroll smoothness on a long page like this. */
+  .section{
+    position: relative;
+    z-index: 2;
+    padding: 6rem 6vw;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 900px;
+  }
+  .veil{ background: rgba(250, 246, 238, 0.7); }
+  .veil-soft{ background: rgba(250, 246, 238, 0.5); }
+
+  .section-heading{
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    text-align: center;
+  }
+  .section-heading h2{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin-top: 0.6rem;
+  }
+  .section-heading p{
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 1.1rem;
+  }
+  .section .eyebrow{ text-align: center; }
+
+  /* ── About ── */
+  .about-body{
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .about-pillar{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.8rem 1.6rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .about-pillar:hover{
+    transform: translateY(-4px);
+    border-color: var(--blue);
+    box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1);
+  }
+  .about-pillar .num{
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+  }
+  .about-pillar h3{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0.6rem 0 0.6rem;
+    color: var(--ink);
+  }
+  .about-pillar p{
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* ── Services ── */
+  .cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card{
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.9rem 1.7rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    border-color: var(--blue);
+    box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1);
+  }
+  .card .tag{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--cyan);
+    padding: 5px 10px;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .card h3{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin-bottom: 0.65rem;
+  }
+  .card p{
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  /* ── Contact ── */
+  .contact-wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  .contact-info .contact-item{
+    margin-bottom: 1.6rem;
+  }
+  .contact-info .contact-label{
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 0.4rem;
+  }
+  .contact-info a,
+  .contact-info span{
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .contact-info a:hover{ color: var(--cyan); }
+
+  .contact-form{
+    display: grid;
+    gap: 1.1rem;
+    background: var(--navy-card-solid);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 2rem 1.9rem;
+  }
+  .contact-form label{
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+  .contact-form input,
+  .contact-form textarea{
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: var(--body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: rgba(42, 36, 32, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{ color: rgba(42, 36, 32, 0.3); }
+  .contact-form input:focus,
+  .contact-form textarea:focus{
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(217, 178, 76, 0.18);
+  }
+  .contact-form textarea{ resize: vertical; min-height: 120px; }
+
+  .contact-btn{
+    justify-self: start;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--cyan);
+    color: #2A2420;
+    font-weight: 700;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .contact-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(42, 36, 32, 0.1);
+  }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 2rem 6vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    position: relative;
+    z-index: 2;
+    background-color: var(--navy-card);
+  }
+
+  .footer-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .affiliates{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+  }
+  .affiliates-label{
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    margin-right: 0.4rem;
+  }
+  .affiliates-logos{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+  .affiliates-logos img{
+    height: 40px;
+    width: auto;
+    border-radius: 8px;
+    opacity: 0.9;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .affiliates-logos img:hover{
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  /* Huawei's mark ships on a white card; give it a light backing so it
+     doesn't sit as a stray white square on the dark footer. */
+  .affiliates-logos img.on-light{
+    background: #fff;
+    padding: 4px;
+  }
+
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 860px){
+    header{ padding: 14px 5vw; }
+    header > nav{ display: none; }
+    .burger{ display: flex; }
+
+    .hero{ min-height: auto; padding-top: 1rem; }
+    .hero-inner{
+      grid-template-columns: 1fr;
+      padding: 2.5rem 6vw 3.5rem;
+      gap: 2rem;
+    }
+    .hero-right{ padding: 0 0.4rem; order: 2; }
+    .hero-right h2{ font-size: 1.1rem; }
+    .about-card{ order: 1; border-radius: 18px 40px 18px 18px; padding: 2rem 1.6rem; }
+    .stat-row{ gap: 1.6rem; }
+
+    .section{ padding: 4rem 6vw; }
+    .about-body{ grid-template-columns: 1fr; }
+    .contact-wrap{ grid-template-columns: 1fr; gap: 2.2rem; }
+
+    .footer-row{ flex-direction: column; text-align: center; justify-content: center; }
+    .affiliates{ flex-direction: column; }
+  }
+
+  @media (max-width: 420px){
+    .about-card h1{ font-size: 2.1rem; }
+    .mark-text .main-name{ font-size: 1.1rem; }
+  }
+
+  /* Respect users who've asked for less motion */
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    .about-card{ animation: none; }
+    .card, .about-pillar, .nav-enroll, .contact-btn{ transition: none; }
+  }
 </style>
 </head>
 <body>
 
 <div id="progress"></div>
 
+
+<div class="bg-overlay"></div>
+
 <header>
   <div class="mark">
-    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 2 L24 8 L13 14 L2 8 Z" stroke="#1B2A4A" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M6 11 V18 C6 20 9 22 13 22 C17 22 20 20 20 18 V11" stroke="#1B2A4A" stroke-width="1.5" fill="none"/>
-    </svg>
-    TechBridge
+    <img src="{% static 'main/img/techbridge-logo.jpg' %}" alt="TechBridge logo">
+    <div class="mark-text">
+      <span class="main-name">TechBridge</span>
+      <span class="sub-name">LASUSTECH</span>
+    </div>
   </div>
+
   <nav id="nav">
     <ul>
-      <li><a href="{% url 'main' %}" class="nav-link">Home</a></li>
+      <li><a href="#home" class="nav-link">Home</a></li>
       <li><a href="#about" class="nav-link">About</a></li>
-      <li><a href="{% url 'programs' %}" class="nav-link">Programs</a></li>
-      <li><a href="{% url 'event' %}" class="nav-link">Events</a></li>
-      <li><a href="#team" class="nav-link">Team</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
       <li><a href="#contact" class="nav-link">Contact</a></li>
-      <li><a href="{% url 'studentdashboard' %}" class="nav-link">Dashboard</a></li> <!-- supposed to show only if the user is logged in -->
     </ul>
   </nav>
+
   <div class="nav-right">
     <a href="{% url 'signup' %}" class="nav-enroll">Enroll</a>
-    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false" onclick="openNav()">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<section class="hero" id="about">
-  <canvas id="bgCanvas"></canvas>
+<div id="mySidenav">
+  <button class="closebtn" onclick="closeNav()">&times;</button>
+  <nav>
+    <ul>
+      <li><a href="#home" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+      <li><a href="{% url 'signup' %}" class="nav-link" style="color:var(--cyan)">Enroll &rarr;</a></li>
+    </ul>
+  </nav>
+</div>
+
+<section class="hero" id="home">
   <div class="hero-inner">
     <div class="about-card">
-      <span class="eyebrow">About the Academy</span>
-      <h1>THINK</h1>
-      <h1>CREATE</h1>
-      <h1>TRANSFORM</h1>
-      <p>We're a small academy for people who'd rather build the real thing than sit through a slide deck about it. Small cohorts, working instructors, and a studio that stays open long after class ends.</p>
-      <a class="about-cta" href="{% url 'programs' %}">See how it's structured &rarr;</a>
+      <span class="eyebrow">Innovating the Future</span>
+      <h1>
+        <span class="word1">THINK.</span><br>
+        <span class="word2">CREATE.</span><br>
+        <span class="word3">TRANSFORM.</span>
+      </h1>
+      <p>TechBridge is LASUSTECH's home for builders — where ideas move from sketch to shipped product, guided by people who are still building themselves.</p>
+      <a class="about-cta" href="{% url 'programs' %}">Explore programs &rarr;</a>
     </div>
+
     <div class="hero-right">
       <h2>A space built for people who'd rather make the thing than talk about making it.</h2>
-      <span>Small cohorts. real projects. real mentors.</span>
+      <span>Small cohorts, real projects, real mentors</span>
+
+      <div class="stat-row">
+        <div>
+          <span class="num">200+</span>
+          <span class="label">Students trained</span>
+        </div>
+        <div>
+          <span class="num">15</span>
+          <span class="label">Active programs</span>
+        </div>
+        <div>
+          <span class="num">30+</span>
+          <span class="label">Industry mentors</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ COURSES ══════════ -->
-<section class="courses-section" id="courses">
+<!-- ══════════ ABOUT ══════════ -->
+<section class="section veil" id="about">
+  <span class="eyebrow">About us</span>
+  <div class="section-heading">
+    <h2>Creating impact through creativity and technology.</h2>
+    <p>TechBridge LASUSTECH brings together students, builders, and thinkers who want to turn ideas into meaningful digital solutions. Our work blends innovation, design, and purpose to deliver experiences that matter.</p>
+  </div>
 
-  <div class="ring r1"></div>
-  <div class="ring r2"></div>
-  <div class="ring r3"></div>
-  <div class="ring r4"></div>
-
-  <div class="glow g1"></div>
-  <div class="glow g2"></div>
-  <div class="glow g3"></div>
-  <div class="glow g4"></div>
-
-  <span class="speck gold drift s1"></span>
-  <span class="speck sage drift s2"></span>
-  <span class="speck cream s3"></span>
-  <span class="speck gold drift s4"></span>
-  <span class="speck sage s5"></span>
-  <span class="speck cream drift s6"></span>
-  <span class="speck gold s7"></span>
-  <span class="speck sage s8"></span>
-  <span class="speck gold drift s9"></span>
-  <span class="speck cream s10"></span>
-  <span class="speck sage s11"></span>
-  <span class="speck gold s12"></span>
-
-  <span class="mark-glyph mg1">◇</span>
-  <span class="mark-glyph mg2">◇</span>
-  <span class="mark-glyph mg3">◇</span>
-  <span class="mark-glyph plus mg4">+</span>
-  <span class="mark-glyph plus mg5">+</span>
-  <span class="mark-glyph mg6">◇</span>
-  <span class="mark-glyph plus mg7">+</span>
-  <span class="mark-glyph mg8">◇</span>
-
-  <span class="eyebrow">Courses</span>
-  <h2 class="courses-heading">Six paths. <em>One</em> direction forward.</h2>
-
-  <div class="cluster">
-    <svg class="connector" viewBox="0 0 920 600" fill="none">
-      <path id="journey-path" d="M150 470 C110 350 180 200 340 180 S560 60 700 140 S760 380 600 470 S260 560 150 470"/>
-      <circle class="travel-dot" r="4">
-        <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
-          <mpath href="#journey-path"/>
-        </animateMotion>
-      </circle>
-    </svg>
-
-    <a href="#" class="card" style="--x:0%;--y:48%;--w:300px;--h:180px;--accent:#C9973F">
-      <div class="card__top">
-        <span class="card__num">01</span>
-        <span class="card__icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
-        </span>
-      </div>
-      <h3>AI</h3>
-      <p>Your starting point for every learning journey.</p>
-      <span class="card__arrow">Start here →</span>
-    </a>
-
-    <a href="#" class="card" style="--x:34%;--y:60%;--w:290px;--h:175px;--accent:#7C9885">
-      <div class="card__top">
-        <span class="card__num">02</span>
-        <span class="card__icon" style="--accent:#7C9885">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="12" height="9" rx="2"/><path d="M9 9V6a3 3 0 0 1 6 0v3M9 14h.01M15 14h.01"/></svg>
-        </span>
-      </div>
-      <h3>ROBOTICS</h3>
-      <p>Cloud, Software Engineering and AI.</p>
-      <span class="card__arrow" style="--accent:#7C9885">Explore →</span>
-    </a>
-
-    <a href="#" class="card card--dark" style="--x:70%;--y:44%;--w:295px;--h:180px;--accent:#C9973F">
-      <div class="card__top">
-        <span class="card__num">03</span>
-        <span class="card__icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
-        </span>
-      </div>
-      <h3>CYBERSECURITY</h3>
-      <p>Mentorship, reviews and certification.</p>
-      <span class="card__arrow">Secure it →</span>
-    </a>
-
-    <a href="#" class="card" style="--x:74%;--y:6%;--w:280px;--h:150px;--accent:#7C9885">
-      <div class="card__top">
-        <span class="card__num">04</span>
-        <span class="card__icon" style="--accent:#7C9885">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg>
-        </span>
-      </div>
-      <h3>IOT</h3>
-      <p>Learn together.</p>
-      <span class="card__arrow" style="--accent:#7C9885">Connect →</span>
-    </a>
-
-    <a href="#" class="card" style="--x:36%;--y:0%;--w:310px;--h:158px;--accent:#C9973F">
-      <div class="card__top">
-        <span class="card__num">05</span>
-        <span class="card__icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6L2 12l6 6M16 6l6 6-6 6"/></svg>
-        </span>
-      </div>
-      <h3>SOFTWARE DEVELOPMENT</h3>
-      <p>Build real products.</p>
-      <span class="card__arrow">Build →</span>
-    </a>
-
-    <a href="#" class="card" style="--x:0%;--y:0%;--w:300px;--h:170px;--accent:#1B2A4A">
-      <div class="card__top">
-        <span class="card__num">06</span>
-        <span class="card__icon" style="--accent:#1B2A4A">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-        </span>
-      </div>
-      <h3>STARTUP INCUBATION</h3>
-      <p>Help after graduation.</p>
-      <span class="card__arrow" style="--accent:#1B2A4A">Launch →</span>
-    </a>
+  <div class="about-body">
+    <div class="about-pillar">
+      <span class="num">01</span>
+      <h3>Learn by building</h3>
+      <p>Every program centers on a real project, not a slide deck — you ship something before you graduate.</p>
+    </div>
+    <div class="about-pillar">
+      <span class="num">02</span>
+      <h3>Community-driven</h3>
+      <p>A network of students, mentors, and alumni who keep showing up long after the cohort ends.</p>
+    </div>
+    <div class="about-pillar">
+      <span class="num">03</span>
+      <h3>Future-ready</h3>
+      <p>Curriculum shaped by what LASUSTECH industry partners are actually hiring and building for.</p>
+    </div>
   </div>
 </section>
 
-<!-- ══════════ TEAM ══════════ -->
-<section class="team-section" id="team">
-  <div class="team-inner">
-    <span class="eyebrow">The people</span>
-    <h2 class="team-heading">Working instructors,<br>not guest speakers</h2>
-    <p class="team-lead">Everyone teaching here still ships product. Small team, deep experience, and a studio that stays open long after class ends.</p>
+<!-- ══════════ SERVICES ══════════ -->
+<section class="section veil-soft" id="services">
+  <span class="eyebrow">Our services</span>
+  <div class="section-heading">
+    <h2>Everything you need to launch your next big idea.</h2>
+  </div>
 
-    <div class="section-label">Core team</div>
-    <div class="team-grid">
-
-      <article class="member-card">
-        <div class="member-photo"><span class="initials">AM</span></div>
-        <div class="member-body">
-          <div class="member-role">Founder · Lead Instructor</div>
-          <h3>Amina Okonkwo</h3>
-          <p>Former product lead at two Series B startups. Builds the curriculum and still runs the systems design track.</p>
-          <div class="member-links">
-            <a href="#">LinkedIn</a>
-            <a href="#">Site</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="member-card">
-        <div class="member-photo"><span class="initials">JL</span></div>
-        <div class="member-body">
-          <div class="member-role">Engineering · Instructor</div>
-          <h3>Jonas Lindqvist</h3>
-          <p>Full-stack engineer who treats teaching like code review. Runs the prototype sprints and late-night studio hours.</p>
-          <div class="member-links">
-            <a href="#">GitHub</a>
-            <a href="#">LinkedIn</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="member-card">
-        <div class="member-photo"><span class="initials">SR</span></div>
-        <div class="member-body">
-          <div class="member-role">Design · Instructor</div>
-          <h3>Sofia Reyes</h3>
-          <p>Independent designer who has shipped interfaces for three different industries. Leads the visual systems and critique sessions.</p>
-          <div class="member-links">
-            <a href="#">Portfolio</a>
-            <a href="#">LinkedIn</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="member-card">
-        <div class="member-photo"><span class="initials">DK</span></div>
-        <div class="member-body">
-          <div class="member-role">Operations · Studio Lead</div>
-          <h3>David Kim</h3>
-          <p>Keeps the space running, the cohorts organized, and the coffee machine alive. First person most students meet.</p>
-          <div class="member-links">
-            <a href="#">LinkedIn</a>
-          </div>
-        </div>
-      </article>
-    </div>
-
-    <div class="section-label" style="margin-top: 3.5rem;">Advisors & frequent guests</div>
-    <div class="advisors-grid">
-
-      <div class="advisor-card">
-        <div class="advisor-avatar">EL</div>
-        <div class="advisor-info">
-          <h4>Elena Vargas</h4>
-          <div class="role">Advisor · Design Systems</div>
-          <p>Head of Design at a well-known design tool. Drops in for critiques and the occasional deep-dive session.</p>
-        </div>
-      </div>
-
-      <div class="advisor-card">
-        <div class="advisor-avatar">RH</div>
-        <div class="advisor-info">
-          <h4>Ravi Hossain</h4>
-          <div class="role">Advisor · Engineering</div>
-          <p>Staff engineer who has scaled three platforms. Occasional workshop lead on architecture and performance.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="studio-note">
-      <blockquote>
-        “We don’t bring in people who only talk about building. Everyone on the floor has shipped something real in the last year.”
-      </blockquote>
-      <cite>— Amina Okonkwo, Founder</cite>
-    </div>
+  <div class="cards">
+    <article class="card">
+      <span class="tag">Build</span>
+      <h3>Web Development</h3>
+      <p>Responsive websites and modern interfaces that look great on every device.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Design</span>
+      <h3>Product Design</h3>
+      <p>Thoughtful user experiences and polished visuals that tell your story clearly.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Strategy</span>
+      <h3>Innovation Support</h3>
+      <p>Strategy, prototyping, and project support for student and community initiatives.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Data</span>
+      <h3>AI &amp; Data Science</h3>
+      <p>Leveraging AI and data to create smarter solutions and insights for your projects.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Hardware</span>
+      <h3>IoT</h3>
+      <p>Connecting devices and systems to create innovative solutions for everyday problems.</p>
+    </article>
+    <article class="card">
+      <span class="tag">Robotics</span>
+      <h3>Robotics</h3>
+      <p>Designing and building robots for education, research, and real-world applications.</p>
+    </article>
   </div>
 </section>
 
 <!-- ══════════ CONTACT ══════════ -->
-<section class="contact-section" id="contact">
-  <div class="contact-inner">
-    <div class="contact-left">
-      <span class="eyebrow">Get in touch</span>
-      <h2 class="contact-heading">Let’s talk</h2>
-      <p class="contact-lead">Questions about the next cohort, partnerships, or just want to visit the studio? Send a note ,we read every message.</p>
+<section class="section veil" id="contact">
+  <span class="eyebrow">Contact</span>
+  <div class="section-heading">
+    <h2>Let's build something remarkable.</h2>
+  </div>
 
-      <div class="contact-details">
-        <div class="contact-item">
-          <span class="contact-label">Email</span>
-          <a href="mailto:hello@techbridge.studio">hello@techbridge.studio</a>
-        </div>
-        <div class="contact-item">
-          <span class="contact-label">Studio</span>
-          <span>12 Maker Lane, Floor 3<br>Lagos · Open weekdays 10–18</span>
-        </div>
-        <div class="contact-item">
-          <span class="contact-label">Social</span>
-          <div class="contact-social">
-            <button type="button" class="social-btn">
-              <img src="{% static 'main/img/discord.svg' %}" alt="Logo">
-            </button>
-            <button type="button" class="social-btn">
-              <img src="{% static 'main/img/x.svg' %}" alt="Logo">
-            </button>
-          </div>
-        </div>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <div class="contact-item">
+        <span class="contact-label">Email</span>
+        <a href="mailto:hello@techbridge.lasustech.edu.ng">hello@techbridge.lasustech.edu.ng</a>
       </div>
+      <div class="contact-item">
+        <span class="contact-label">Campus</span>
+        <span>LASUSTECH, Ikorodu<br>Lagos · Open weekdays 9–17</span>
+      </div>
+      <div class="affiliates-logos">
+      <span class="contact-label">Follow</span>
+      <a href="#"><img src="{% static 'main/img/x.webp' %}" alt="X"></a>
+      <a href="#"><img src="{% static 'main/img/discord.png' %}" alt="Discord" class="on-light"></a>
     </div>
-    {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-       <li class="msg-{{ message.tags }}">{{ message }}</li>
-      {% endfor%}
-    </ul>
-    {% endif %}
-    <form class="contact-form" id="contactForm" method="POST">
+    </div>
+    <form class="contact-form" method="post" action="#" onsubmit="return handleContact(event)">
       {% csrf_token %}
-      <div class="field">
+      <div>
         <label for="c-name">Name</label>
         <input type="text" id="c-name" name="name" placeholder="Your name" required>
       </div>
-      <div class="field">
+      <div>
         <label for="c-email">Email</label>
         <input type="email" id="c-email" name="email" placeholder="you@example.com" required>
       </div>
-      <div class="field">
-        <label for="c-subject">Subject</label>
-        <select id="c-subject" name="subject">
-          <option value="cohort">Next cohort</option>
-          <option value="visit">Studio visit</option>
-          <option value="partnership">Partnership</option>
-          <option value="teaching">Teaching / mentoring</option>
-          <option value="other">Something else</option>
-        </select>
-      </div>
-      <div class="field">
+      <div>
         <label for="c-message">Message</label>
-        <textarea id="c-message" name="message" rows="5" placeholder="Tell us what’s on your mind…" required></textarea>
+        <textarea id="c-message" name="message" rows="4" placeholder="Tell us about your idea" required></textarea>
       </div>
-      <button type="submit" class="contact-btn" name="contact-submit">Send message</button>
+      <button type="submit" class="contact-btn">Send Message</button>
     </form>
   </div>
 </section>
-<!-- ══════════ FOOTER ══════════ -->
+
 <footer>
-  <div class="mark">TechBridge</div>
-
- <div class="foot-partners">
-   <span class="foot-partners-label">In partnership with</span>
-   <div class="foot-partners-list">
-     <span class="partner-badge">
-      <a href="https://www.cisco.com" target="_blank" rel="noopener noreferrer">
-       <img src="{% static 'main/img/cisco.webp' %}" alt="Cisco Networking Academy">
-      </a>
-     </span>
-     <span class="partner-badge">
-       <a href="https://www.awsacademy.com" target="_blank" rel="noopener noreferrer">
-         <img src="{% static 'main/img/aws.webp' %}" alt="AWS Academy">
-       </a>
-     </span>
-     <span class="partner-badge">
-       <a href="https://www.huawei.com" target="_blank" rel="noopener noreferrer">
-         <img src="{% static 'main/img/huw.webp' %}" alt="Huawei">
-       </a>
-     </span>
-   </div>
- </div>
-
-  <div class="foot-links">
-   <span class="social-label">Social</span>
-   <div class="social-icons">
-     <button type="button" class="social-btn">
-       <img src="{% static 'main/img/discord.svg' %}" alt="Discord">
-     </button>
-     <button type="button" class="social-btn">
-       <img src="{% static 'main/img/x.svg' %}" alt="X">
-     </button>
-   </div>
- </div>
-  <div>&copy; 2026</div>
+  <div class="affiliates">
+    <span class="affiliates-label">TechBridge affiliates</span>
+    <div class="affiliates-logos">
+      <a href="https://aws.amazon.com/training/awsacademy/"><img src="{% static 'main/img/aws.jpg' %}" alt="AWS Academy"></a>
+      <a href="https://www.netacad.com/"><img src="{% static 'main/img/cisco.png' %}" alt="Cisco Networking Academy Partner"></a>
+      <a href="https://e.huawei.com/en/talent/ict-academy/"><img src="{% static 'main/img/huawei.jpg' %}" alt="Huawei ICT Academy" class="on-light"></a>
+    </div>
+  </div>
+  <div class="footer-row">
+    <div class="mark-text"><span class="main-name" style="font-size:1rem;">TechBridge</span></div>
+    <div>&copy; 2026 TechBridge LASUSTECH. All rights reserved.</div>
+  </div>
 </footer>
 
 <script>
-  const burger = document.getElementById('burger');
-  const nav = document.getElementById('nav');
-  burger.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    burger.classList.toggle('open', isOpen);
-    burger.setAttribute('aria-expanded', isOpen);
-  });
-  document.querySelectorAll('.nav-link').forEach(a => {
-    a.addEventListener('click', () => {
-      nav.classList.remove('open');
-      burger.classList.remove('open');
-      burger.setAttribute('aria-expanded', false);
-    });
-  });
-
-  const progress = document.getElementById('progress');
-  window.addEventListener('scroll', () => {
-    const h = document.documentElement;
-    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
-    progress.style.width = pct + '%';
-  });
-
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canvas = document.getElementById('bgCanvas');
-  const heroEl = document.querySelector('.hero');
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, heroEl.clientWidth / heroEl.clientHeight, 0.1, 2000);
-  camera.position.set(0, 0, 420);
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
-
-  const group = new THREE.Group();
-  scene.add(group);
-
-  const isMobile = window.innerWidth < 860;
-  const NODE_COUNT = isMobile ? 45 : 90;
-  const BOUND = { x: 480, y: 300, z: 260 };
-  const LINK_DIST = isMobile ? 110 : 130;
-
-  const nodeColors = [0x1B2A4A, 0xC9973F, 0x7C9885];
-  const nodes = [];
-  const positions = new Float32Array(NODE_COUNT * 3);
-  const colorsArr = new Float32Array(NODE_COUNT * 3);
-  const tmpColor = new THREE.Color();
-
-  for(let i = 0; i < NODE_COUNT; i++){
-    const x = (Math.random() - 0.5) * BOUND.x * 2;
-    const y = (Math.random() - 0.5) * BOUND.y * 2;
-    const z = (Math.random() - 0.5) * BOUND.z * 2;
-    nodes.push({
-      base: new THREE.Vector3(x, y, z),
-      speed: 0.15 + Math.random() * 0.25,
-      phase: Math.random() * Math.PI * 2
-    });
-    positions[i*3] = x; positions[i*3+1] = y; positions[i*3+2] = z;
-    tmpColor.setHex(nodeColors[i % nodeColors.length]);
-    colorsArr[i*3] = tmpColor.r; colorsArr[i*3+1] = tmpColor.g; colorsArr[i*3+2] = tmpColor.b;
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "280px";
+    document.getElementById("burger").classList.add("open");
+    document.getElementById("burger").setAttribute("aria-expanded", true);
   }
 
-  const pointGeo = new THREE.BufferGeometry();
-  pointGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  pointGeo.setAttribute('color', new THREE.BufferAttribute(colorsArr, 3));
-
-  const spriteCanvas = document.createElement('canvas');
-  spriteCanvas.width = 64; spriteCanvas.height = 64;
-  const sctx = spriteCanvas.getContext('2d');
-  const grad = sctx.createRadialGradient(32,32,0,32,32,32);
-  grad.addColorStop(0, 'rgba(255,255,255,1)');
-  grad.addColorStop(1, 'rgba(255,255,255,0)');
-  sctx.fillStyle = grad;
-  sctx.fillRect(0,0,64,64);
-  const spriteTex = new THREE.CanvasTexture(spriteCanvas);
-
-  const pointMat = new THREE.PointsMaterial({
-    size: isMobile ? 7 : 8,
-    map: spriteTex,
-    transparent: true,
-    vertexColors: true,
-    opacity: 0.85,
-    depthWrite: false,
-    blending: THREE.NormalBlending
-  });
-  const points = new THREE.Points(pointGeo, pointMat);
-  group.add(points);
-
-  const maxLines = NODE_COUNT * 8;
-  const linePositions = new Float32Array(maxLines * 6);
-  const lineColors = new Float32Array(maxLines * 6);
-  const lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-  lineGeo.setDrawRange(0, 0);
-  const lineMat = new THREE.LineBasicMaterial({
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.18,
-    blending: THREE.NormalBlending
-  });
-  const lines = new THREE.LineSegments(lineGeo, lineMat);
-  group.add(lines);
-
-  const mouse = { x: 0, y: 0 };
-  function setMouseFromClient(clientX, clientY){
-    const rect = heroEl.getBoundingClientRect();
-    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("burger").classList.remove("open");
+    document.getElementById("burger").setAttribute("aria-expanded", false);
   }
-  window.addEventListener('mousemove', e => setMouseFromClient(e.clientX, e.clientY));
-  window.addEventListener('touchmove', e => {
-    if(e.touches && e.touches[0]) setMouseFromClient(e.touches[0].clientX, e.touches[0].clientY);
+
+  document.querySelectorAll('#mySidenav .nav-link').forEach(a => {
+    a.addEventListener('click', closeNav);
+  });
+
+  // Swipe to open on mobile
+  let touchStartX = 0, touchEndX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX < 30 && touchEndX - touchStartX > 50) openNav();
   }, { passive: true });
 
-  if(isMobile && window.DeviceOrientationEvent){
-    window.addEventListener('deviceorientation', e => {
-      if(e.gamma === null) return;
-      mouse.x = Math.max(-1, Math.min(1, e.gamma / 30));
-      mouse.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
-    });
+  // Scroll progress bar — throttled to one update per animation frame
+  // (via requestAnimationFrame) and using a transform instead of `width`
+  // so it's a compositor-only change, not a layout-triggering one.
+  // The listener is also `passive` so it never blocks the browser's
+  // own scrolling work.
+  const progress = document.getElementById('progress');
+  const docEl = document.documentElement;
+  let scrollTicking = false;
+
+  function updateProgress() {
+    const scrollable = docEl.scrollHeight - docEl.clientHeight;
+    const pct = scrollable > 0 ? (docEl.scrollTop / scrollable) : 0;
+    progress.style.transform = `scaleX(${pct})`;
+    scrollTicking = false;
   }
 
-  function resizeScene(){
-    const w = heroEl.clientWidth, h = heroEl.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  }
-  window.addEventListener('resize', resizeScene);
-
-  const clock = new THREE.Clock();
-  let frame = 0;
-
-  function updateLines(){
-    let count = 0;
-    const posAttr = points.geometry.attributes.position.array;
-    for(let i = 0; i < NODE_COUNT && count < maxLines; i++){
-      const ax = posAttr[i*3], ay = posAttr[i*3+1], az = posAttr[i*3+2];
-      for(let j = i+1; j < NODE_COUNT && count < maxLines; j++){
-        const bx = posAttr[j*3], by = posAttr[j*3+1], bz = posAttr[j*3+2];
-        const dx = ax-bx, dy = ay-by, dz = az-bz;
-        const dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
-        if(dist < LINK_DIST){
-          const idx = count * 6;
-          linePositions[idx] = ax; linePositions[idx+1] = ay; linePositions[idx+2] = az;
-          linePositions[idx+3] = bx; linePositions[idx+4] = by; linePositions[idx+5] = bz;
-          const alpha = 1 - dist / LINK_DIST;
-          tmpColor.setHex(0x1B2A4A);
-          lineColors[idx] = tmpColor.r*alpha; lineColors[idx+1] = tmpColor.g*alpha; lineColors[idx+2] = tmpColor.b*alpha;
-          lineColors[idx+3] = lineColors[idx]; lineColors[idx+4] = lineColors[idx+1]; lineColors[idx+5] = lineColors[idx+2];
-          count++;
-        }
-      }
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(updateProgress);
+      scrollTicking = true;
     }
-    lineGeo.setDrawRange(0, count * 2);
-    lineGeo.attributes.position.needsUpdate = true;
-    lineGeo.attributes.color.needsUpdate = true;
+  }, { passive: true });
+
+  // Slow down the background video
+  const bgVideo = document.getElementById('bgVideo');
+  if (bgVideo) {
+    bgVideo.playbackRate = 0.5; // 1 = normal speed, 0.5 = half speed, 0.25 = quarter speed, etc.
   }
 
-  function animate(){
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-    frame++;
-
-    const posAttr = points.geometry.attributes.position.array;
-    for(let i = 0; i < NODE_COUNT; i++){
-      const n = nodes[i];
-      posAttr[i*3]   = n.base.x + Math.sin(t*n.speed + n.phase) * 14;
-      posAttr[i*3+1] = n.base.y + Math.cos(t*n.speed*0.8 + n.phase) * 14;
-      posAttr[i*3+2] = n.base.z + Math.sin(t*n.speed*0.6 + n.phase) * 14;
-    }
-    points.geometry.attributes.position.needsUpdate = true;
-
-    if(!reduceMotion && frame % 3 === 0) updateLines();
-    else if(reduceMotion && frame === 1) updateLines();
-
-    if(!reduceMotion){
-      group.rotation.y = t * 0.04;
-      group.rotation.x = Math.sin(t*0.05) * 0.08;
-      camera.position.x += (mouse.x * 70 - camera.position.x) * 0.04;
-      camera.position.y += (mouse.y * 50 - camera.position.y) * 0.04;
-      camera.lookAt(0,0,0);
-    }
-
-    renderer.render(scene, camera);
+  // Contact form — currently intercepted client-side for demo purposes.
+  // that view exists, delete this handler (and the onsubmit attribute)
+  // to let it submit for real.
+  function handleContact(e) {
+    e.preventDefault();
+    alert('Message sent (demo). We\'ll reply soon.');
+    e.target.reset();
+    return false;
   }
-
-  resizeScene();
-  updateLines();
-  animate();
 </script>
 
 </body>

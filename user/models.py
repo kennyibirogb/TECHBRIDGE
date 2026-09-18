@@ -1,49 +1,16 @@
+# user/models.py
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from core.constants import TRACK_CHOICES
 
-class Student(models.Model):
-    TRACK_CHOICES = [
-        ("AI & Machine Learning", "AI & Machine Learning"),
-        ("Robotics", "Robotics"),
-        ("Cybersecurity", "Cybersecurity"),
-        ("Software Development", "Software Development"),
-        ("IoT", "IoT"),
-        ("Startup Incubation", "Startup Incubation"),
-        ("UI/UX Design", "UI/UX Design"),
-        ("Data Science", "Data Science"),
-        ("Mobile Dev", "Mobile Dev"),
-        ("Cloud Computing", "Cloud Computing"),
-        ("Game Development Lab", "Game Development Lab"),
-        ("Digital Marketing & Growth", "Digital Marketing & Growth"),
-        ("Product Management Foundations", "Product Management Foundations"),
-        ("DevOps & Site Reliability", "DevOps & Site Reliability"),
-        ("AR/VR & Immersive Tech", "AR/VR & Immersive Tech"),
-    ]
 
-    full_name = models.CharField(max_length=150)
+class Student(AbstractUser):
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20, unique=True)
-    date_of_birth = models.DateField()
-    track = models.CharField(max_length=50, choices=TRACK_CHOICES)  # primary/signup track — unchanged
-    password = models.CharField(max_length=128)
-    created_at = models.DateField(auto_now_add=True)
+    full_name = models.CharField(max_length=150)
+    track = models.CharField(max_length=100, choices=TRACK_CHOICES)
 
-    def all_tracks(self):
-        """Primary track + any extra enrollments, deduped, in enrollment order."""
-        extra = list(self.enrollments.values_list("track", flat=True))
-        tracks = [self.track] + [t for t in extra if t != self.track]
-        return tracks
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.full_name
-
-
-class Enrollment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="enrollments")
-    track = models.CharField(max_length=50, choices=Student.TRACK_CHOICES)
-    enrolled_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ("student", "track")
-
-    def __str__(self):
-        return f"{self.student.full_name} → {self.track}"
+        return self.full_name or self.email

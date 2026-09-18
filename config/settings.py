@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'studentdashboard',
     'user',
     'admin_dashboard',
+    'instructor',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "techbridge_db",
+        "NAME": "techbridge",
         "USER": "postgres",
         "PASSWORD": "12345",
         "HOST": "localhost",
@@ -125,3 +126,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 ADMIN_SIGNUP_CODE = "adminsignup333"
+
+AUTH_USER_MODEL = 'user.Student'

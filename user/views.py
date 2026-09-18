@@ -1,52 +1,65 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
-from .models import Student 
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from .forms import StudentSignupForm, StudentLoginForm
+
+
+def _is_instructor(user):
+    return hasattr(user, 'instructor_profile')
+
 
 def signup(request):
-    if request.method == "POST":
-        email = request.POST["email"]
-        phone=request.POST["phone"]
-        
-        if Student.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered!!")
-            return redirect("signup")
-        
-        if Student.objects.filter(phone=phone).exists():
-            messages.error(request, "Phone Number already registered!!")
-            return redirect("signup")
-        
-        Student.objects.create(
-            full_name=request.POST["fullname"],
-            email=email,
-            phone=phone,
-            date_of_birth=request.POST["dob"],
-            track=request.POST["track"],
-            password=make_password(request.POST["password"])
-        )
-        messages.success(request, "Account created successfully.")
-        return redirect("login")
-    
-    return render(request, "user/signup.html")
+    if request.method == 'POST':
+        form = StudentSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            messages.success(request, 'Account created!')
+            return redirect('studentdashboard')
+    else:
+        form = StudentSignupForm()
+        track = request.GET.get('track')
+        if track:
+            form.fields['track'].initial = track
+
+    return render(request, 'user/signup.html', {'form': form})
+
 
 def login(request):
-    if request.method == "POST":
-        identifier = request.POST.get('identifier')
-        password = request.POST.get("password")
-        
-        try:
-            if "@" in identifier:
-                student = Student.objects.get(email=identifier)
-            else:
-                student = Student.objects.get(phone=identifier)
-        except Student.DoesNotExist:
-            messages.error(request, "Invalid email/phone or password!!")
-            return redirect("login")
-            
-        if check_password(password, student.password):
-            request.session['student_id'] = student.id
-            return redirect("studentdashboard")
+    if request.user.is_authenticated:
+        if _is_instructor(request.user):
+            auth_logout(request)
         else:
-            messages.error(request, "Invalid email/phone or password!!")
-            return redirect("login")
-    return render(request, "user/login.html")
+            return redirect('studentdashboard')
+
+    if request.method == 'POST':
+        form = StudentLoginForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            if _is_instructor(user):
+                form.add_error(None, 'This account is registered as an instructor. Please use the instructor login.')
+            else:
+                auth_login(request, user)
+                response = redirect('studentdashboard')
+                if form.cleaned_data.get('remember'):
+                    response.set_cookie('remember_email', user.email, max_age=60 * 60 * 24 * 30)
+                else:
+                    response.delete_cookie('remember_email')
+                return response
+    else:
+        initial = {}
+        if 'remember_email' in request.COOKIES:
+            initial['email'] = request.COOKIES['remember_email']
+            initial['remember'] = True
+        form = StudentLoginForm(initial=initial)
+
+    return render(request, 'user/login.html', {'form': form})
+
+
+def verify(request):
+    return render(request, 'user/verify-email.html')
+
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect('login')
